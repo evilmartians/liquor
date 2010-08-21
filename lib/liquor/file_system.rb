@@ -1,4 +1,4 @@
-module liquor
+module Liquor
   # A liquor file system is way to let your templates retrieve other templates for use with the include tag.
   #
   # You can implement subclasses that retrieve templates from the database, from the file system using a different 

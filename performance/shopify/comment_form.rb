@@ -1,5 +1,5 @@
-class CommentForm < Liquid::Block                                             
-  Syntax = /(#{Liquid::VariableSignature}+)/   
+class CommentForm < Liquor::Block                                             
+  Syntax = /(#{Liquor::VariableSignature}+)/   
 
   def initialize(tag_name, markup, tokens)
     if markup =~ Syntax
