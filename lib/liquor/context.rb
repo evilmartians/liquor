@@ -272,7 +272,7 @@ module Liquor
     
     def lookup_and_evaluate(obj, key)
       if obj.class != ActiveRecord::NamedScope::Scope && (value = obj[key]).is_a?(Proc) && obj.respond_to?(:[]=)
-        obj[key] = value.call(self)
+        obj[key] = (value.ariry == 0 ) ? value.call : value.call(self)
       else
         value
       end
