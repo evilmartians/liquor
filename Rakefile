@@ -7,8 +7,7 @@ PKG_NAME    = "liquor"
 PKG_DESC    = "A secure non evaling end user template engine with aesthetic markup based on Liquor template engine."
 
 Rake::TestTask.new(:test) do |t|
-  t.libs << "lib"
-  t.libs << "test"
+  t.libs << '.' << 'lib' << 'test'
   t.pattern = 'test/*_test.rb'
   t.verbose = false
 end
