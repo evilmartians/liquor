@@ -54,9 +54,7 @@ module Liquor
 
 
     def invoke(method, *args)
-      # This if-statement was added by Timothy N. Tsvetkov (2kan@evilmartians.com)
-      # It allows to use named_scopes (defined in your Liquor drops) as filters.
-      if args[0].class.name == "BaseDrop::DropProxy" && args[0].has_named_scope?(method)
+      if args[0].class == Drop::DropProxy && args[0].has_named_scope?(method)
         scope_args = args[1..args.length-1]
         return args[0].send(method, *scope_args)
       end
@@ -146,7 +144,7 @@ module Liquor
       when 'empty'
         :empty?
       # filtered variables 	
-      when SpacelessFilter	 	
+      when SpacelessFilter	
         filtered_variable(key)
       # Single quoted strings
       when /^'(.*)'$/
@@ -222,7 +220,7 @@ module Liquor
           #
           # Also when 'my_object.referenced_objects' expression evaluates, the 'object' should be a DropProxy, but you can find
           # that 'object = res.to_liquor' will convert it into an array. So 'to_liquor' method was defined in the DropProxy and always returns the itself.
-          #
+          #          
           if object.class == ActiveRecord::NamedScope::Scope && (['size', 'first', 'last', 'paginate'].include?(part) || part.is_a?(Integer))
             if part.is_a?(Integer)
               res = object[part]
@@ -232,7 +230,7 @@ module Liquor
             
             object = res.to_liquor
           
-          elsif object.is_a?(Drop::DropProxy) || object.is_a?(Drop) && (object.has_named_scope?(part) || object.has_many?(part))
+          elsif object.class == Drop::DropProxy || object.is_a?(Drop) && (object.has_named_scope?(part) || object.has_many?(part))
             if part.is_a?(Integer)
               object = object[part]
             else 
