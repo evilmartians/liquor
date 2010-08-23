@@ -48,7 +48,7 @@ module Liquor
     end
     
     def strip_html(input)
-      input.to_s.gsub(/<.*?>/, '')
+      nput.to_s.gsub(/<script.*?<\/script>/, '').gsub(/<.*?>/, '')
     end       
     
     # Remove all newlines from the string
