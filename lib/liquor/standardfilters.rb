@@ -29,6 +29,11 @@ module Liquor
       CGI.escapeHTML(input) rescue input
     end
     
+    # escape_once
+    def escape_once(input)
+      ActionView::Helpers::TagHelper.escape_once(input) rescue input	
+    end
+    
     alias_method :h, :escape
     
     # Truncate a string down to x characters
