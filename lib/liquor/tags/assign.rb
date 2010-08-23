@@ -23,7 +23,7 @@ module Liquor
     end
   
     def render(context)
-       context.scopes.last[@to.to_s] = context[@from]
+       context.scopes.last[@to] = context[@from]
        ''
     end 
   
