@@ -99,7 +99,7 @@ You can execute expressions in tags using standard filters syntax but spaces aro
 This is correct expression:
   {% assign playlist_array = site.playlists|by_name:artist.name %}
 
-And this is not
+And this is not:
   {% assign playlist_array = site.playlists | by_name:artist.name %}
 
 You can use expressions in other tags for example in for loops:
