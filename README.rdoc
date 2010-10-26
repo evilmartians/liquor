@@ -92,3 +92,15 @@ Few filters were added:
 * split — divides str into substrings based on a delimiter, returning an array of these substrings.
 * compact — returns a copy of self with all nil elements removed.
 * concat — concatenates two arrays
+
+===Expressions
+
+You can execute expressions in tags using standard filters syntax but spaces around separator are not allowed.
+This is correct expression:
+  {% assign playlist_array = site.playlists|by_name:artist.name %}
+
+And this is not
+  {% assign playlist_array = site.playlists | by_name:artist.name %}
+
+You can use expressions in other tags for example in for loops:
+   {% for artist in site.artists.active.with_orders|scoped_to:genre %}
