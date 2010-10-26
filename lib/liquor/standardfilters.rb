@@ -4,7 +4,7 @@ module Liquor
   
   module StandardFilters
     
-    # Return the size of an array or of an string
+    # Return the size of an array or of a string
     def size(input)
       
       input.respond_to?(:size) ? input.size : 0
@@ -20,7 +20,7 @@ module Liquor
       input.to_s.upcase
     end
     
-    # capitalize words in the input centence
+    # capitalize words in the input sentence
     def capitalize(input)
       input.to_s.capitalize
     end
@@ -222,18 +222,23 @@ module Liquor
       res
     end
     
-    def in_groups_of(array, num)
-      array.in_groups_of(num.to_i)
+    # splits over the array in groups of size num padding any remaining slots with fill_with unless it is false
+    def in_groups_of(array, num, fill_with = nil)
+      array.in_groups_of(num.to_i, fill_with)
     end
 
-    def in_groups(array, num)
+    # splits or iterates over the array in number of groups, padding any remaining slots with fill_with unless it is false
+    def in_groups(array, num, fill_with = nil)
       array.in_groups(num.to_i)
     end
     
+    # returns true if the given object is present in self (that is, if any object == anObject), false otherwise.
     def include(array, element)
       array.include? element
     end
 
+    # return a JSON string representing the model drop (using accepted attributes, methods and named_scopes)
+    # to_include is a list of related drops through associations 
     def to_json(array, to_include = nil)
       to_include = to_include.to_sym if to_include      
       options = { :include => to_include }
@@ -241,27 +246,33 @@ module Liquor
       array.to_json(options)
     end
 
+    # escape url
     def url_escape(input)
       CGI.escape(input) rescue input
     end
 
+    # returns a new array containing self’s elements in reverse order.
     def reverse(array)
       array.reverse
     end
 
+    # decodes html entities
     def decode_html_entities(string)
       coder = HTMLEntities.new
       coder.decode(string)
     end
 
+    # divides str into substrings based on a delimiter, returning an array of these substrings.
     def split(string, delimetr)
       string.split(delimetr)
     end
 
+    # returns a copy of self with all nil elements removed.
     def compact(array)
       array.compact
     end
-
+    
+    # concatenates two arrays
     def concat(array1, array2)
       array1 + array2
     end
