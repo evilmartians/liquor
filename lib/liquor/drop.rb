@@ -35,14 +35,6 @@ module Liquor
     def logger
       Rails.logger
     end
-
-    class UrlHelper
-      include ActionController::UrlWriter
-    end
-
-    def helper
-      @h ||= UrlHelper.new
-    end
     
     def self.has_one(name)
       self.instance_eval do
