@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/helper'
 
 class TemplateTest < Test::Unit::TestCase
-  include Liquid
+  include Liquor
   
   def test_tokenize_strings
     assert_equal [' '], Template.new.send(:tokenize, ' ')

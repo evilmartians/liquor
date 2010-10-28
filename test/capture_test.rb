@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/helper'
 
 class CaptureTest < Test::Unit::TestCase
-  include Liquid
+  include Liquor
   
   def test_captures_block_content_in_variable
     assert_template_result("test string", "{% capture 'var' %}test string{% endcapture %}{{var}}", {})    

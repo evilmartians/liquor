@@ -30,7 +30,7 @@ end
 
 
 class OutputTest < Test::Unit::TestCase
-  include Liquid
+  include Liquor
 
   def setup
     @assigns = {     
