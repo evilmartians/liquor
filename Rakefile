@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require 'rake'
+require 'rake/testtask'
 
 PKG_VERSION = "1.0.0"
 PKG_NAME    = "liquor"
