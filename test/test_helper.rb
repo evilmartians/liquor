@@ -5,7 +5,15 @@ require 'test/unit'
 require 'test/unit/assertions'
 require 'caller'
 require 'breakpoint'
+require 'active_record'
+require 'action_controller'
 require File.dirname(__FILE__) + '/../lib/liquid'
+
+
+ActiveRecord::Base.establish_connection(
+  :adapter  => "sqlite3",
+  :database => ":memory:"
+)
 
 
 module Test
