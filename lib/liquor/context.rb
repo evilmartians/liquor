@@ -143,9 +143,6 @@ module Liquor
         :blank?
       when 'empty'
         :empty?
-      # filtered variables 	
-      when SpacelessFilter	
-        filtered_variable(key)
       # Single quoted strings
       when /^'(.*)'$/
         $1.to_s
@@ -161,6 +158,9 @@ module Liquor
       # Floats
       when /^([+-]?\d[\d\.]+)$/
         $1.to_f
+      # filtered variables 	
+      when SpacelessFilter	
+        filtered_variable(key)
       else
         variable(key)
       end
@@ -207,10 +207,8 @@ module Liquor
       end
 
       if object = find_variable(first_part)
-
         parts.each do |part|
           part = resolve($1) if part_resolved = (part =~ square_bracketed)
-
           # DropProxy was designed like named_scopes for implementing has_many and named_scope wrappers in LiquorDrops. 
           # DropProxy delegates most Array methods to its internal function to convert an array of ActiveRecord objects to
           # an array of liquor drops when you work with it like with an array. 
@@ -242,7 +240,7 @@ module Liquor
           elsif object.respond_to?(:[]) and
             ((object.respond_to?(:has_key?) and object.has_key?(part)) or
              (object.respond_to?(:fetch) and part.is_a?(Integer)))
-
+            
             # if its a proc we will replace the entry with the proc
             # res = object[part]
             # res = object[part] = res.call(self) if res.is_a?(Proc) and object.respond_to?(:[]=)
@@ -252,8 +250,7 @@ module Liquor
           # Some special cases. If the part wasn't in square brackets and
           # no key with the same name was found we interpret following calls
           # as commands and call them on the current object
-          elsif !part_resolved and object.respond_to?(part) and ['size', 'first', 'last'].include?(part)
-
+          elsif !part_resolved and object.respond_to?(part) and ['size', 'first', 'last'].include?(part)            
             object = object.send(part.intern).to_liquor
 
           # No key was present with the desired value and it wasn't one of the directly supported
@@ -272,7 +269,7 @@ module Liquor
     
     def lookup_and_evaluate(obj, key)
       if obj.class != ActiveRecord::NamedScope::Scope && (value = obj[key]).is_a?(Proc) && obj.respond_to?(:[]=)
-        obj[key] = (value.ariry == 0 ) ? value.call : value.call(self)
+        obj[key] = (value.arity == 0 ) ? value.call : value.call(self)
       else
         value
       end
