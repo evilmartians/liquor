@@ -51,6 +51,11 @@ module Liquor
         end
       end
     end
+    
+    def respond_to?(val)
+      return true if liquor_attributes.include? val.to_sym
+      super
+    end
 
     def self.has_many(name, options={})
       options = options.reverse_merge({ :class_name => name.to_s.classify + "Drop", :sort_scope => :recent, :source_class_name => name.to_s.classify })
@@ -70,7 +75,7 @@ module Liquor
       end
     end
     
-    def initialize(source)
+    def initialize(source = nil)
       @source = source
       @liquor = liquor_attributes.inject({}) { |h, k| h.update k.to_s => @source.send(k) }
     end
@@ -80,7 +85,7 @@ module Liquor
     end
 
     def source_id
-      @source.id
+     @source.id
     end
 
     def has_named_scope?(meth)
@@ -97,7 +102,8 @@ module Liquor
     end
 
     def ==(comparison_object)
-      self.source == (comparison_object.is_a?(self.class) ? comparison_object.source : comparison_object)
+      our_self = self.source ? self.source : source
+      our_self == (comparison_object.is_a?(self.class) ? comparison_object.source : comparison_object)
     end
 
     # called by liquor to invoke a drop
