@@ -38,7 +38,7 @@ To define attributes you need just add line with with attributes you want to pro
 ====Named Scopes
 To define access to named scopes (result automatically will be converted to array of liquor drops automatically):
 
-  liquor_named_scopes << :recent << :limit << :scoped_to_user
+  liquor_scopes << :recent << :limit << :scoped_to_user
 
 Named scopes works like filters in templates. Don't worry about passing drop objects in templates as params in real calls they will be converted back to objects and then result will be converted to array of drops.
 
