@@ -11,7 +11,7 @@ module Liquor
   #   {{ user | link }}
   #
   class Variable
-    FilterParser = /(?:#{FilterSeparator}|(?:\s*(?!(?:#{FilterSeparator}))(?:#{QuotedFragment}|\S+)\s*)+)/
+    FilterParser = /(?:#{FilterSeparator}|(?:\s*(?!(?:#{FilterSeparator}))(?:(?:#{StrictQuotedFragment})(?:#{FirstFilterArgument}(?:#{OtherFilterArgument})*)?|\S+)\s*)+)/
     attr_accessor :filters, :name
 
     def initialize(markup)

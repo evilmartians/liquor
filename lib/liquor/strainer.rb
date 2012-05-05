@@ -30,6 +30,10 @@ module Liquor
       @@filters[filter.name] = filter
     end
 
+    def self.get_filters
+      @@filters
+    end
+
     def self.create(context)
       strainer = Strainer.new(context)
       @@filters.each { |k,m| strainer.extend(m) }

@@ -55,8 +55,18 @@ def nil.to_liquor # :nodoc:
   self
 end
 
-class ActiveRecord::NamedScope::Scope
+class ActiveRecord::Relation
   def to_liquor
     self
   end
+end
+
+class ActionDispatch::Request
+  def to_liquor
+    Liquor::RequestDrop.new self
+  end
+end
+
+class Liquor::RequestDrop < Liquor::Drop
+  allow_all_methods
 end

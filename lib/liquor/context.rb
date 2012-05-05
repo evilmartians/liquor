@@ -46,15 +46,15 @@ module Liquor
 
       case e
       when SyntaxError
-        "Liquor syntax error: #{e.message}"
-      else
-        "Liquor error: #{e.message}"
+        "Liquor syntax error: #{e.message.gsub("<", "&lt;").gsub(">", "&gt;")}"
+        else
+        "Liquor error: #{e.message.gsub("<", "&lt;").gsub(">", "&gt;")}"
       end
     end
 
 
     def invoke(method, *args)
-      if args[0].class == Drop::DropProxy && args[0].has_named_scope?(method)
+      if args[0].class == Drop::DropProxy && args[0].has_scope?(method)
         scope_args = args[1..args.length-1]
         return args[0].send(method, *scope_args)
       end
@@ -159,7 +159,7 @@ module Liquor
       when /^([+-]?\d[\d\.]+)$/
         $1.to_f
       # filtered variables 	
-      when SpacelessFilter	
+      when SpacelessFilter
         filtered_variable(key)
       else
         variable(key)
@@ -183,7 +183,7 @@ module Liquor
       
       variable = variable.to_liquor
       
-      if variable.class != ActiveRecord::NamedScope::Scope
+      if variable.class != ActiveRecord::Relation
         variable.context = self if variable.respond_to?(:context=)
       end
       return variable
@@ -218,8 +218,8 @@ module Liquor
           #
           # Also when 'my_object.referenced_objects' expression evaluates, the 'object' should be a DropProxy, but you can find
           # that 'object = res.to_liquor' will convert it into an array. So 'to_liquor' method was defined in the DropProxy and always returns the itself.
-          #          
-          if object.class == ActiveRecord::NamedScope::Scope && (['size', 'first', 'last', 'paginate'].include?(part) || part.is_a?(Integer))
+          #
+          if object.class == ActiveRecord::Relation && (['size', 'first', 'last', 'paginate'].include?(part) || part.is_a?(Integer))
             if part.is_a?(Integer)
               res = object[part]
             else
@@ -228,7 +228,7 @@ module Liquor
             
             object = res.to_liquor
           
-          elsif object.class == Drop::DropProxy || object.is_a?(Drop) && (object.has_named_scope?(part) || object.has_many?(part))
+          elsif object.class == Drop::DropProxy || object.is_a?(Drop) && (object.has_scope?(part) || object.has_many?(part))
             if part.is_a?(Integer)
               object = object[part]
             else 
@@ -268,7 +268,7 @@ module Liquor
     end
     
     def lookup_and_evaluate(obj, key)
-      if obj.class != ActiveRecord::NamedScope::Scope && (value = obj[key]).is_a?(Proc) && obj.respond_to?(:[]=)
+      if obj.class != ActiveRecord::Relation && (value = obj[key]).is_a?(Proc) && obj.respond_to?(:[]=)
         obj[key] = (value.arity == 0 ) ? value.call : value.call(self)
       else
         value

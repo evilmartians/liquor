@@ -40,6 +40,10 @@ module Liquor
         Strainer.global_filter(mod)
       end
 
+      def get_filters
+        Strainer.get_filters
+      end
+
       # creates a new <tt>Template</tt> object from liquor source code
       def parse(source)
         template = Template.new

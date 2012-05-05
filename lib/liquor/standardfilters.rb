@@ -208,6 +208,30 @@ module Liquor
       input / operand if input.respond_to?('/')
     end
     
+    # to_number / to_i
+    def to_number(obj)
+      case obj
+      when Numeric
+        obj
+      when String
+        (obj.strip =~ /^\d+\.\d+$/) ? obj.to_f : obj.to_i
+      else
+        0
+      end
+    end
+    alias :to_i :to_number
+    
+    # to_string / to_s, supposed to be used against Numeric objects
+    def to_string(obj)
+      case obj
+      when Numeric
+        obj.to_s
+      else
+        obj
+      end
+    end
+    alias :to_s :to_string
+    
     # yeild for content_for tag
     def yield(name)
       return '' if name.blank?
@@ -275,6 +299,14 @@ module Liquor
     # concatenates two arrays
     def concat(array1, array2)
       array1 + array2
+    end
+    
+    def even(input)
+      (input % 2) == 0
+    end
+    
+    def odd(input)
+      (input % 2) == 1
     end
     
   end
