@@ -22,15 +22,15 @@ module Liquor
   class Drop
     attr_writer :context
 
-    class_inheritable_reader :liquor_attributes
-    write_inheritable_attribute :liquor_attributes, []
+    class_attribute :liquor_attributes
+    self.liquor_attributes = []
 
-    class_inheritable_reader :liquor_scopes
-    write_inheritable_attribute :liquor_scopes, []
+    class_attribute :liquor_scopes
+    self.liquor_scopes = []
     attr_reader :source
 
-    class_inheritable_reader :has_manies
-    write_inheritable_attribute :has_manies, []
+    class_attribute :has_manies
+    self.has_manies = []
 
     def logger
       Rails.logger
@@ -79,8 +79,8 @@ module Liquor
       klass = options[:class_name].constantize
       source_klass = options[:source_class_name].constantize
 
-      self.instance_eval do
-        has_manies << name
+      self.class_eval do
+        self.has_manies << name
 
         define_method name do
           proxy = DropProxy.new(self, name, klass)
