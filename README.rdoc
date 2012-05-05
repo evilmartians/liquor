@@ -36,7 +36,7 @@ To define attributes you need just add line with with attributes you want to pro
   liquor_attributes :title, :body
 
 ====Named Scopes
-To define access to named scopes (result automatically will be converted to array of liquor drops automatically):
+To define access to named scopes (result automatically will be converted to array of liquor drops):
 
   liquor_scopes << :recent << :limit << :scoped_to_user
 
