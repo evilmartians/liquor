@@ -1,3 +1,5 @@
+* Rails 3.2+ support [Ivan Evtukhovich, Timothy N. Tsvetkov]
+
 * Forked and added powerful Drops with relations and some new tags. See more in docs [Timothy N. Tsvetkov]
 
 * Ruby 1.9.1 bugfixes

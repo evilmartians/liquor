@@ -9,5 +9,4 @@ gemfile:
 branches:
   only:
     - master
-    - rails
     - rails32
