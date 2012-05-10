@@ -1,5 +1,4 @@
-[https://secure.travis-ci.org/evilmartians/liquor.png](http://travis-ci.org/evilmartians/liquor)
-
+<a href="http://travis-ci.org/evilmartians/liquor"><img src="https://secure.travis-ci.org/evilmartians/liquor.png"></a>
 
 # Liquor template engine
 
@@ -21,7 +20,7 @@ Or install it yourself as:
 
 ## What does it look like?
 
-````
+```html
 	<ul id="products">
 	  {% for product in products %}
 	    <li>
@@ -32,17 +31,17 @@ Or install it yourself as:
  	    </li>
 	  {% endfor %}
 	</ul>
-````
+```
 
 ## Howto use Liquor
 
 Liquid supports a very simple API based around the Liquor::Template class.
 For standard use you can just pass it the content of a file and call render with a parameters hash.
 
-````
+```ruby
 	@template = Liquid::Template.parse("hi {{name}}") # Parses and compiles the template
 	@template.render( 'name' => '2kan' )              # => "hi 2kan"
-````
+```
 
 ## Differs from Liquid
 
@@ -54,20 +53,20 @@ Liquor drops are really powerful now. Now you can define access to methods, name
 #### Attributes
 To define attributes you need just add line with with attributes you want to provide access to:
 
-````
+```ruby
   class MyDrop < Liquor::Drop
     self.liquor_attributes << :title << :body
   end
-````
+```
 
 #### Named Scopes
 To define access to named scopes (result automatically will be converted to array of liquor drops):
 
-````
+```ruby
   class MyDrop < Liquor::Drop
     self.liquor_scopes << :recent << :limit << :scoped_to_user
   end
-````
+```
 
 Named scopes works like filters in templates. Don't worry about passing drop objects in templates as params in real calls they will be converted back to objects and then result will be converted to array of drops.
 
@@ -94,22 +93,22 @@ Within the context of a layout, yield identifies a section where content from th
 The simplest way to use this is to have a single yield, into which the entire contents of the view currently  being rendered is inserted.
 
 In your layout:
-````
+```erb
   <title>{% yield title %}</title>
   <body>{% yield %}</body>
-````
+```
 
 In the view:
-````
+```erb
   {% content_for title %} The title {% end_content_for %}
   The body
-````
+```
 
 Will produce:
-````
+```html
   <title>The title</title>
   <body>The body</body>
-````
+```
 
 ### Filters
 
