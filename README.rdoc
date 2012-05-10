@@ -1,3 +1,5 @@
+https://secure.travis-ci.org/evilmartians/liquor.png[http://travis-ci.org/evilmartians/liquor]
+
 =Liquor template engine
 
 Liquor is a safe (not evaling) template language based on Liquid template language. Safe means that templates cannot affect security of the server they are rendered on. So it is usable when you need to give an ability to edit templates to your users (HTML or email).
