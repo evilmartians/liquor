@@ -1,4 +1,6 @@
-https://secure.travis-ci.org/evilmartians/liquor.png[http://travis-ci.org/evilmartians/liquor]
+https://secure.travis-ci.org/evilmartians/liquor.png
+
+Travis[http://travis-ci.org/evilmartians/liquor]
 
 =Liquor template engine
 
