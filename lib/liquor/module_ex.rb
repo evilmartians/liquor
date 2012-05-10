@@ -44,10 +44,12 @@ class Module
 
   def liquor_methods(*allowed_methods)
     drop_class_str = "class #{self.to_s}::LiquorDropClass < Liquor::Drop\n"
+    drop_class_str += "class_attribute :liquor_attributes\n"
+    drop_class_str += "self.liquor_attributes = []\n"
     drop_class_str += "liquor_attributes << #{allowed_methods.collect{|meth| ":#{meth}"}.join(" << ") }\n" if allowed_methods.present?
     drop_class_str += "self\n"
     drop_class_str += "end"
-    
+
     drop_class = eval drop_class_str
 
     define_method :to_liquor do

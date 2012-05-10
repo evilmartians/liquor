@@ -47,6 +47,9 @@ module Liquor
   VariableParser              = /\[[^\]]+\]|#{VariableSegment}+\??/
 end
 
+require 'active_support'
+require 'active_support/core_ext/module/delegation' # Bug in AS?
+require 'action_dispatch'
 require 'liquor/drop'
 require 'liquor/extensions'
 require 'liquor/errors'
