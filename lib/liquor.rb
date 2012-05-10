@@ -50,6 +50,7 @@ end
 require 'active_support'
 require 'active_support/core_ext/module/delegation' # Bug in AS?
 require 'action_dispatch'
+require 'liquor/version'
 require 'liquor/drop'
 require 'liquor/extensions'
 require 'liquor/errors'

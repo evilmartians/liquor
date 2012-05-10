@@ -1,0 +1,148 @@
+[https://secure.travis-ci.org/evilmartians/liquor.png](http://travis-ci.org/evilmartians/liquor)
+
+
+# Liquor template engine
+
+Liquor is a safe (not evaling) template language based on Liquid template language. Safe means that templates cannot affect security of the server they are rendered on. So it is usable when you need to give an ability to edit templates to your users (HTML or email).
+
+## Installation
+
+Add this line to your application's Gemfile:
+
+    gem 'liquor'
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install liquor
+
+## What does it look like?
+
+````
+	<ul id="products">
+	  {% for product in products %}
+	    <li>
+	      <h2>{{product.name}}</h2>
+	      Only {{product.price | price }}
+
+	      {{product.description | prettyprint | paragraph }}
+ 	    </li>
+	  {% endfor %}
+	</ul>
+````
+
+## Howto use Liquor
+
+Liquid supports a very simple API based around the Liquor::Template class.
+For standard use you can just pass it the content of a file and call render with a parameters hash.
+
+````
+	@template = Liquid::Template.parse("hi {{name}}") # Parses and compiles the template
+	@template.render( 'name' => '2kan' )              # => "hi 2kan"
+````
+
+## Differs from Liquid
+
+You can find Liquid docs here: http://github.com/tobi/liquid/wiki
+
+### Liquor Drops
+Liquor drops are really powerful now. Now you can define access to methods, named scopes and relations.
+
+#### Attributes
+To define attributes you need just add line with with attributes you want to provide access to:
+
+````
+  class MyDrop < Liquor::Drop
+    self.liquor_attributes << :title << :body
+  end
+````
+
+#### Named Scopes
+To define access to named scopes (result automatically will be converted to array of liquor drops):
+
+````
+  class MyDrop < Liquor::Drop
+    self.liquor_scopes << :recent << :limit << :scoped_to_user
+  end
+````
+
+Named scopes works like filters in templates. Don't worry about passing drop objects in templates as params in real calls they will be converted back to objects and then result will be converted to array of drops.
+
+#### Relations
+
+We have now has_many, has_one and belongs_to relations. You don't need to pass any additional parameters to has_one or belongs_to relations because you just define ability to call real methods (results will be converted to liquid drops).
+
+But has_many method a bit more complicated since it defines a special proxy object from which you can call your named_scopes. There are several options for has_many relation:
+
+* class_name — A drop class name (ex. PostDrop)
+* sort_scope — Default scope for sorting objects in relations. If you class responds_to recent it will be used as the default one.
+* source_class_name — Class name of the source class (ex. Post)
+* with_scope — this scope always will be used for this relation
+
+### Named Scope
+
+Sometimes you need to pass a Named Scope object to a template. Now it is possible. When you assign a NamedScope to a template it assigns as is. But you are not able to execute any methods except array methods and paginate method, the last one was added for  for better integration with will_paginate plugin.
+
+### Tags
+
+Two new tags were added: content_for and yield.
+
+Within the context of a layout, yield identifies a section where content from the view should be inserted.
+The simplest way to use this is to have a single yield, into which the entire contents of the view currently  being rendered is inserted.
+
+In your layout:
+````
+  <title>{% yield title %}</title>
+  <body>{% yield %}</body>
+````
+
+In the view:
+````
+  {% content_for title %} The title {% end_content_for %}
+  The body
+````
+
+Will produce:
+````
+  <title>The title</title>
+  <body>The body</body>
+````
+
+### Filters
+
+Few filters were added:
+
+* yield — yield for content_for tag
+* in_groups_of — splits over the array in groups of size num padding any remaining slots with fill_with unless it is false
+* in_groups — splits or iterates over the array in number of groups, padding any remaining slots with fill_with unless it is false
+* include — returns true if the given object is present in self (that is, if any object == anObject), false otherwise.
+* to_json — return a JSON string representing the model drop (using accepted attributes, methods and named_scopes) to_include is a list of related drops through associations
+* url_escape — escape url
+* reverse — returns a new array containing self’s elements in reverse order.
+* decode_html_entities — decodes html entities
+* split — divides str into substrings based on a delimiter, returning an array of these substrings.
+* compact — returns a copy of self with all nil elements removed.
+* concat — concatenates two arrays
+
+### Expressions
+
+You can execute expressions in tags using standard filters syntax but spaces around separator are not allowed.
+This is correct expression:
+  {% assign playlist_array = site.playlists|by_name:artist.name %}
+
+And this is not:
+  {% assign playlist_array = site.playlists | by_name:artist.name %}
+
+You can use expressions in other tags for example in for loops:
+   {% for artist in site.artists.active.with_orders|scoped_to:genre %}
+
+## Contributing
+
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Added some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request

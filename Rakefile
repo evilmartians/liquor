@@ -2,6 +2,7 @@
 require 'rubygems'
 require 'rake'
 require 'rake/testtask'
+require "bundler/gem_tasks"
 
 PKG_VERSION = "1.0.0"
 PKG_NAME    = "liquor"
