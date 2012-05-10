@@ -16,18 +16,16 @@ end
 
 namespace :profile do
   task :default => [:run]
-  
+
   desc "Run the liquor profile/perforamce coverage"
   task :run do
-  
+
     ruby "performance/shopify.rb"
-  
+
   end
-  
-  desc "Run KCacheGrind" 
+
+  desc "Run KCacheGrind"
   task :grind => :run  do
     system "kcachegrind /tmp/liquor.rubyprof_calltreeprinter.txt"
   end
 end
-  
-  
