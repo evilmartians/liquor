@@ -140,7 +140,7 @@ Liquor does not have non-local control flow constructs by itself, such as except
 
 Liquor has distinct compile-time and runtime error checking. There are no fatal runtime errors, i.e. a Liquor program always evaluates to some value.
 
-### 2.2 Types and Variables
+### 2.2 Types and Values
 
 Liquor has the following basic types: **Null**, **Boolean**, **Integer**, **String**, **Tuple** and **External**. A value of every type except **External** can be created from within a Liquor program. Values of type **External** can only be returned by the host environment.
 
@@ -344,7 +344,7 @@ All of the following are examples of syntactically valid tags:
 
 The following Extended Backus-Naur form grammar is normative. The native character set of Liquor is Unicode, and every character literal specified is an explicit codepoint or continuous codepoint set.
 
-### 3.1 Basic syntax
+### 3.1 Basic Syntax
 
 Whitespace
 : **U+0007** \| **U+0020**
@@ -368,8 +368,8 @@ IntegerLiteral
 : _Digit_+
 
 StringLiteral
-: **\"** ( **\\\\**  \| **\\\"** \| _Any_ not **\"** )* **\"**
-: **\'** ( **\\\\**  \| **\\\'** \| _Any_ not **\'** )* **\'**
+: **\"** ( **\\\\**  \| **\\\"** \| _Any_ except **\"** )* **\"**
+: **\'** ( **\\\\**  \| **\\\'** \| _Any_ except **\'** )* **\'**
 
 TupleLiteral
 : **[** _TupleLiteralContent_ **]**
