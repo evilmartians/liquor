@@ -128,7 +128,7 @@ This specification is primarily targeted at language implementors.
 
 ### 2.1 Introduction
 
-Liquor 2.0 language is a templating language for text-based content, e.g. HTML pages. As Liquor is a templating language, it is useless without extension with domain-specific features from a host environment; it is similar to [Lua](http://www.lua.org/) in this fashion.
+Liquor 2.0 language is a templating language for text-based content, e.g. HTML pages. As Liquor is a templating language, it is useless without extension with domain-specific features from a host environment; it is similar to [Lua](http://www.lua.org/) in this aspect.
 
 Liquor is meant to be statically compiled to another language for efficiency, typically to the one the host environment is executed in. It also provides sandbox restrictions, which allow Liquor code to invoke certain methods on the host objects, but only ones explicitly marked as scriptable.
 

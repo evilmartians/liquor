@@ -16,4 +16,5 @@ Gem::Specification.new do |gem|
   gem.version       = Liquor::VERSION
 
   gem.add_development_dependency 'kramdown'
+  gem.add_development_dependency 'rake'
 end

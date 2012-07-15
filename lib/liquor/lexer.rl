@@ -7,8 +7,6 @@ symbol      = [a-zA-Z_];
 any_newline = '\n' @ { line_starts.push(p + 1) } | any;
 identifier  = symbol ( symbol | digit )*;
 
-keyword_argument = identifier ':';
-
 lblock  = '{%';
 rblock  = '%}';
 
@@ -42,9 +40,6 @@ sqstring := |*
 tag_start := |*
     whitespace;
 
-    lblock =>
-      { tok.(:lblock) };
-
     'end' identifier =>
       { tag = data[ts + 3...te]
         if tag_stack.last == tag
@@ -75,45 +70,43 @@ tag_start := |*
 code := |*
     whitespace;
 
-    keyword_argument => { tok.(:kwarg, data[ts...te-1]) };
-
     identifier => { tok.(:ident, data[ts...te]) };
 
     ( digit+ ) => { tok.(:integer, data[ts...te].to_i) };
 
-    ',' => { tok.(:comma) };
-    '.' => { tok.(:dot) };
+    identifier ':' => { tok.(:kwarg, data[ts...te-1]) };
 
-    '[' => { tok.(:lbracket) };
-    ']' => { tok.(:rbracket) };
+    ','  => { tok.(:comma) };
+    '.'  => { tok.(:dot)   };
 
-    '(' => { tok.(:lparen) };
-    ')' => { tok.(:rparen) };
+    '['  => { tok.(:lbracket) };
+    ']'  => { tok.(:rbracket) };
 
-    '|' => { tok.(:pipe) };
+    '('  => { tok.(:lparen) };
+    ')'  => { tok.(:rparen) };
 
-    '+' => { tok.(:op_plus) };
-    '-' => { tok.(:op_minus) };
-    '*' => { tok.(:op_mul) };
-    '/' => { tok.(:op_div) };
-    '%' => { tok.(:op_mod) };
+    '|'  => { tok.(:pipe) };
 
-    '==' => { tok.(:op_eq) };
+    '+'  => { tok.(:op_plus)  };
+    '-'  => { tok.(:op_minus) };
+    '*'  => { tok.(:op_mul)   };
+    '/'  => { tok.(:op_div)   };
+    '%'  => { tok.(:op_mod)   };
+
+    '==' => { tok.(:op_eq)  };
     '!=' => { tok.(:op_neq) };
-    '>'  => { tok.(:op_gt) };
+    '>'  => { tok.(:op_gt)  };
     '>=' => { tok.(:op_gte) };
-    '<'  => { tok.(:op_lt) };
+    '<'  => { tok.(:op_lt)  };
     '<=' => { tok.(:op_lte) };
 
-    '!' => { tok.(:op_not) };
+    '!'  => { tok.(:op_not) };
 
-    '"' => { lit_start = p; fgoto dqstring; };
-    "'" => { lit_start = p; fgoto sqstring; };
+    '"'  => { lit_start = p; fgoto dqstring; };
+    "'"  => { lit_start = p; fgoto sqstring; };
 
-    linterp => { tok.(:linterp) };
     rinterp => { tok.(:rinterp); fgoto plaintext; };
-
-    rblock => { tok.(:rblock); fgoto plaintext; };
+    rblock  => { tok.(:rblock);  fgoto plaintext; };
 
     any => {
       error = SyntaxError.new("unexpected #{data[p].inspect}",
@@ -128,8 +121,11 @@ plaintext := |*
     ( '\\{' [%{]? | any_newline - '{' )* =>
       { tok.(:plaintext, data[ts...te]); };
 
+    '{{' =>
+      { tok.(:linterp); fgoto code; };
+
     '{%' =>
-      { fhold; fhold; fgoto tag_start; };
+      { tok.(:lblock);  fgoto tag_start; };
 
     any_newline =>
       { fhold; fgoto code; };
@@ -138,20 +134,6 @@ plaintext := |*
 }%%
 
 module Liquor
-  class SyntaxError < StandardError
-    def initialize(message, options={})
-      super("#{message} at line #{options[:line] + 1}, column #{options[:start] + 1}")
-      @options = options
-    end
-
-    def decorate(source)
-      line = source.lines.drop(@options[:line]).first
-      pointer =  "~" * (@options[:start])
-      pointer += "^" * (@options[:end] - @options[:start] + 1)
-      [ line, pointer ]
-    end
-  end
-
   module Lexer
     %% write data;
 
@@ -177,7 +159,7 @@ module Liquor
       }
       pos = ->(index) {
         line_start_index = find_line_start.(index)
-        [ line_start_index + 1, index - line_starts[line_start_index] ]
+        [ line_start_index, index - line_starts[line_start_index] ]
       }
 
       tokens = []
@@ -220,10 +202,13 @@ if $0 == __FILE__
     '{{ "test\\" }}',
     '{{ "test\\\\" }}',
     '{{ "test" }}',
+    '{% {% %}',
+    '{{ 1 += 2 }}',
+    '{% let x be: 10 %}',
     %|
 {% if length(params.test) == 1 then: %}
   Test has length 1.
-{% elsif: length(params.test) == 2 then: %}
+{% elsif: length(params.test) != 2 then: %}
   Test has length 2.
 {% else: %}
   Test has unidentified length.
