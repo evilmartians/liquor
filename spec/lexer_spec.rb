@@ -30,14 +30,14 @@ describe Liquor::Lexer do
   end
 
   it "fails on nested blocks and interpolations" do
-    expect { lex('abc {{ def {{') }.to raise_error(Liquor::SyntaxError, %r|unexpected "{"|)
-    expect { lex('abc {{ def {%') }.to raise_error(Liquor::SyntaxError, %r|unexpected "{"|)
-    expect { lex('abc {% def {{') }.to raise_error(Liquor::SyntaxError, %r|unexpected "{"|)
-    expect { lex('abc {% def {%') }.to raise_error(Liquor::SyntaxError, %r|unexpected "{"|)
+    expect { lex('abc {{ def {{') }.to raise_error(Liquor::SyntaxError, %r|unexpected `{'|)
+    expect { lex('abc {{ def {%') }.to raise_error(Liquor::SyntaxError, %r|unexpected `{'|)
+    expect { lex('abc {% def {{') }.to raise_error(Liquor::SyntaxError, %r|unexpected `{'|)
+    expect { lex('abc {% def {%') }.to raise_error(Liquor::SyntaxError, %r|unexpected `{'|)
   end
 
   it "fails on unrecognized symbols" do
-    expect { lex('abc {{ # }}') }.to raise_error(Liquor::SyntaxError, %r|unexpected "#"|)
+    expect { lex('abc {{ # }}') }.to raise_error(Liquor::SyntaxError, %r|unexpected `#'|)
   end
 
   it "parses complex expressions" do
@@ -69,8 +69,8 @@ describe Liquor::Lexer do
   end
 
   it "fails on multiline blocks and interpolations" do
-    expect { lex("{% \n %}") }.to raise_error(Liquor::SyntaxError, %r|unexpected "\\n"|)
-    expect { lex("{{ \n }}") }.to raise_error(Liquor::SyntaxError, %r|unexpected "\\n"|)
+    expect { lex("{% \n %}") }.to raise_error(Liquor::SyntaxError, %r|unexpected `\\n'|)
+    expect { lex("{{ \n }}") }.to raise_error(Liquor::SyntaxError, %r|unexpected `\\n'|)
   end
 
   it "parses complex string literals" do

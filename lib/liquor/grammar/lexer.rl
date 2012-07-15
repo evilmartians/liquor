@@ -18,6 +18,7 @@ action string_append {
 }
 
 action string_end {
+  ts = lit_start
   tok.(:string, string); fgoto code;
 }
 
@@ -118,7 +119,7 @@ code := |*
     rblock  => { tok.(:rblock);  fgoto plaintext; };
 
     any => {
-      error = SyntaxError.new("unexpected #{data[p].inspect}",
+      error = SyntaxError.new("unexpected `#{data[p].inspect[1..-2]}'",
         line:  line_starts.count - 1,
         start: p - line_starts.last,
         end:   p - line_starts.last)

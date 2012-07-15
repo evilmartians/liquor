@@ -270,7 +270,11 @@ Referencing an undefined variable shall result in a compile-time error.
 
 #### 2.4.5 Filter Expressions
 
-Filter expressions are a syntactic sugar for method composition and currying.
+Filter expressions are a syntactic sugar for method composition and currying. Filter expressions are only available directly in an [interpolation](#interpolations) context.
+
+Filter expressions consist of a linear chain of function calls where _n_-th function's return value is passed to _n+1_-th function's unnamed parameter. Named parameters may be specified without parentheses within a corresponding chain element.
+
+All functions used in a filter expression should accept an unnamed parameter. If this is not the case, a compile-time error is raised. Semantics of mandatory and optional named parameters are the same as for [regular function calls](#function-calls).
 
 <p markdown="0">
 In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent to <code><em>g</em>(<em>f</em>(<em>e</em>() a: 1))</code>.
@@ -291,6 +295,8 @@ A block can have other elements embedded into it. When such a block is executed,
 ### 2.6 Interpolations
 
 An interpolation is a syntactic construct of form `{{ expr }}` which can be embedded in a block. The expression `expr` should evaluate to a value of type **String**; an [implicit conversion](#type-conversion) might take place. If this is not the case, a runtime error condition is signaled.
+
+Unlike any other context where an expression is expected, interpolations may include [filter expressions](#filter-expressions).
 
 An example of using an interpolation would be:
 
@@ -381,7 +387,7 @@ TupleLiteralContent
 
 ### 3.2 Expressions
 
-Operator precedence table is present in section [Operators](#operators).
+Operator precedence table is provided in section [Operators](#operators).
 
 PrimaryExpression
 : _Identifier_
@@ -419,6 +425,16 @@ FunctionArguments
 FunctionKeywordArguments
 : _Keyword_ _Expression_ _FunctionKeywordArguments_
 : empty
+
+FilterChain
+: _FilterFunctionCall_ **\|** _FilterChainContinuation_
+
+FilterChainContinuation
+: _FilterFunctionCall_ **\|** _FilterChainContinuation_
+: _FilterFunctionCall_
+
+FilterFunctionCall
+: _Identifier_ _FunctionKeywordArguments_
 
 ### 3.3 Blocks
 

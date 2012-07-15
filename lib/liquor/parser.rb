@@ -8,9 +8,9 @@ require 'racc/parser.rb'
 module Liquor
   class Parser < Racc::Parser
 
-module_eval(<<'...end parser.racc/module_eval...', 'parser.racc', 109)
-  def parse(stream)
-    @stream = stream
+module_eval(<<'...end parser.racc/module_eval...', 'parser.racc', 111)
+  def parse(string)
+    @stream = Lexer.lex(string)
     do_parse
   end
 
@@ -59,7 +59,6 @@ module_eval(<<'...end parser.racc/module_eval...', 'parser.racc', 109)
       end:    last[1][:end],
     }
   end
-
 ...end parser.racc/module_eval...
 ##### State transition tables begin ###
 
@@ -371,21 +370,21 @@ Racc_debug_parser = false
 
 # reduce 1 omitted
 
-module_eval(<<'.,.,', 'parser.racc', 20)
+module_eval(<<'.,.,', 'parser.racc', 22)
   def _reduce_2(val, _values, result)
      result = [ val[0], *val[1] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 22)
+module_eval(<<'.,.,', 'parser.racc', 24)
   def _reduce_3(val, _values, result)
      result = [ val[0], *val[1] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 26)
+module_eval(<<'.,.,', 'parser.racc', 28)
   def _reduce_4(val, _values, result)
      result = [ :interp, retag(val), val[1] ] 
     result
@@ -394,9 +393,9 @@ module_eval(<<'.,.,', 'parser.racc', 26)
 
 # reduce 5 omitted
 
-module_eval(<<'.,.,', 'parser.racc', 31)
+module_eval(<<'.,.,', 'parser.racc', 33)
   def _reduce_6(val, _values, result)
-     result = [ val[1][0], retag(val), val[1][2..-1] ] 
+     result = [ val[1][0], retag(val), *val[1][2..-1] ] 
     result
   end
 .,.,
@@ -407,126 +406,126 @@ module_eval(<<'.,.,', 'parser.racc', 31)
 
 # reduce 9 omitted
 
-module_eval(<<'.,.,', 'parser.racc', 38)
+module_eval(<<'.,.,', 'parser.racc', 40)
   def _reduce_10(val, _values, result)
      result = [ :call,   retag(val), val[0], val[2] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 40)
+module_eval(<<'.,.,', 'parser.racc', 42)
   def _reduce_11(val, _values, result)
      result = [ :index,  retag(val), val[0], val[2] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 42)
+module_eval(<<'.,.,', 'parser.racc', 44)
   def _reduce_12(val, _values, result)
      result = [ :access, retag(val), val[0], val[2] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 44)
+module_eval(<<'.,.,', 'parser.racc', 46)
   def _reduce_13(val, _values, result)
      result = [ :uminus, retag(val), val[1] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 46)
+module_eval(<<'.,.,', 'parser.racc', 48)
   def _reduce_14(val, _values, result)
      result = [ :not, retag(val), val[1] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 48)
+module_eval(<<'.,.,', 'parser.racc', 50)
   def _reduce_15(val, _values, result)
      result = [ :mul, retag(val), val[0], val[2] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 50)
+module_eval(<<'.,.,', 'parser.racc', 52)
   def _reduce_16(val, _values, result)
      result = [ :div, retag(val), val[0], val[2] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 52)
+module_eval(<<'.,.,', 'parser.racc', 54)
   def _reduce_17(val, _values, result)
      result = [ :mod, retag(val), val[0], val[2] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 54)
+module_eval(<<'.,.,', 'parser.racc', 56)
   def _reduce_18(val, _values, result)
      result = [ :plus, retag(val), val[0], val[2] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 56)
+module_eval(<<'.,.,', 'parser.racc', 58)
   def _reduce_19(val, _values, result)
      result = [ :minus, retag(val), val[0], val[2] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 58)
+module_eval(<<'.,.,', 'parser.racc', 60)
   def _reduce_20(val, _values, result)
      result = [ :eq, retag(val), val[0], val[2] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 60)
+module_eval(<<'.,.,', 'parser.racc', 62)
   def _reduce_21(val, _values, result)
      result = [ :neq, retag(val), val[0], val[2] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 62)
+module_eval(<<'.,.,', 'parser.racc', 64)
   def _reduce_22(val, _values, result)
      result = [ :lt, retag(val), val[0], val[2] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 64)
+module_eval(<<'.,.,', 'parser.racc', 66)
   def _reduce_23(val, _values, result)
      result = [ :leq, retag(val), val[0], val[2] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 66)
+module_eval(<<'.,.,', 'parser.racc', 68)
   def _reduce_24(val, _values, result)
      result = [ :gt, retag(val), val[0], val[2] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 68)
+module_eval(<<'.,.,', 'parser.racc', 70)
   def _reduce_25(val, _values, result)
      result = [ :geq, retag(val), val[0], val[2] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 70)
+module_eval(<<'.,.,', 'parser.racc', 72)
   def _reduce_26(val, _values, result)
      result = [ :and, retag(val), val[0], val[2] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 72)
+module_eval(<<'.,.,', 'parser.racc', 74)
   def _reduce_27(val, _values, result)
      result = [ :or, retag(val), val[0], val[2] ] 
     result
@@ -535,49 +534,49 @@ module_eval(<<'.,.,', 'parser.racc', 72)
 
 # reduce 28 omitted
 
-module_eval(<<'.,.,', 'parser.racc', 77)
+module_eval(<<'.,.,', 'parser.racc', 79)
   def _reduce_29(val, _values, result)
      result = [ :tuple, retag(val), val[1].compact ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 81)
+module_eval(<<'.,.,', 'parser.racc', 83)
   def _reduce_30(val, _values, result)
      result = [ val[0], *val[2] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 83)
+module_eval(<<'.,.,', 'parser.racc', 85)
   def _reduce_31(val, _values, result)
      result = [ val[0] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 85)
+module_eval(<<'.,.,', 'parser.racc', 87)
   def _reduce_32(val, _values, result)
      result = [ ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 89)
+module_eval(<<'.,.,', 'parser.racc', 91)
   def _reduce_33(val, _values, result)
      result = [ val[0], val[1] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 91)
+module_eval(<<'.,.,', 'parser.racc', 93)
   def _reduce_34(val, _values, result)
      result = [ nil, val[0] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 95)
+module_eval(<<'.,.,', 'parser.racc', 97)
   def _reduce_35(val, _values, result)
      # voodoo. well, it could be worse with (cdadr val) and stuff.
         if val[2].include? val[0][2]
@@ -585,14 +584,14 @@ module_eval(<<'.,.,', 'parser.racc', 95)
               val[2][val[0][2]][1])
         end
         result = {
-          val[0][2] => [ val[1][0], retag([ val[0], val[1] ]), val[1][2..-1] ]
+          val[0][2] => [ val[1][0], retag([ val[0], val[1] ]), *val[1][2..-1] ]
         }.merge(val[2])
       
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 105)
+module_eval(<<'.,.,', 'parser.racc', 107)
   def _reduce_36(val, _values, result)
      result = {} 
     result
@@ -605,13 +604,3 @@ end
 
   end   # class Parser
   end   # module Liquor
-
-  pr = Liquor::Parser.new
-  require 'pp'
-  src = '{{f.e}}'
-  begin
-    pp pr.parse(Liquor::Lexer.lex(src))
-  rescue Liquor::SyntaxError => e
-    puts "Syntax error: #{e.message}"
-    puts e.decorate(src)
-  end

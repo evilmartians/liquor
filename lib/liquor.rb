@@ -6,4 +6,4 @@ end
 
 require "liquor/syntax_error"
 require "liquor/lexer"
-# require "liquor/parser"
+require "liquor/parser"

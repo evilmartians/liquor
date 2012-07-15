@@ -13,6 +13,8 @@ class Liquor::Parser
     left op_or
   preclow
 
+  expect 13
+
   start block
 
 rule
@@ -29,7 +31,7 @@ rule
   primary_expr:
       ident
     | lparen expr rparen
-      { result = [ val[1][0], retag(val), val[1][2..-1] ] }
+      { result = [ val[1][0], retag(val), *val[1][2..-1] ] }
 
   expr:
       integer
@@ -99,15 +101,15 @@ rule
               val[2][val[0][2]][1])
         end
         result = {
-          val[0][2] => [ val[1][0], retag([ val[0], val[1] ]), val[1][2..-1] ]
+          val[0][2] => [ val[1][0], retag([ val[0], val[1] ]), *val[1][2..-1] ]
         }.merge(val[2])
       }
     | /* empty */
       { result = {} }
 
 ---- inner
-  def parse(stream)
-    @stream = stream
+  def parse(string)
+    @stream = Lexer.lex(string)
     do_parse
   end
 
@@ -155,15 +157,4 @@ rule
       start: first[1][:start],
       end:    last[1][:end],
     }
-  end
-
----- footer
-  pr = Liquor::Parser.new
-  require 'pp'
-  src = '{{f.e}}'
-  begin
-    pp pr.parse(Liquor::Lexer.lex(src))
-  rescue Liquor::SyntaxError => e
-    puts "Syntax error: #{e.message}"
-    puts e.decorate(src)
   end

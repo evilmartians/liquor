@@ -7,14 +7,19 @@
 
 require 'liquor'
 
-module LexerSpecHelpers
+module LiquorSpecHelpers
   def lex(string)
     Liquor::Lexer.lex(string)
+  end
+
+  def parse(string)
+    parser = Liquor::Parser.new
+    parser.parse string
   end
 end
 
 RSpec.configure do |config|
-  config.include LexerSpecHelpers
+  config.include LiquorSpecHelpers
 end
 
 RSpec::Matchers.define :have_token_structure do |*expected|
@@ -26,5 +31,28 @@ RSpec::Matchers.define :have_token_structure do |*expected|
       expected_type == actual_type &&
           (expected_value.nil? || expected_value == actual_value)
     end
+  end
+end
+
+RSpec::Matchers.define :have_node_structure do |*expected|
+  to_structure = ->(tree) {
+    if tree.is_a?(Array)
+      if tree[0].is_a?(Symbol)
+        [ tree[0], *tree[2..-1].map(&to_structure) ]
+      else
+        tree.map(&to_structure)
+      end
+    elsif tree.is_a?(Hash)
+      tree = tree.dup
+      tree.each do |k, v|
+        tree[k] = to_structure.(v)
+      end
+    else
+      tree
+    end
+  }
+
+  match do |actual|
+    actual.map(&to_structure) == expected
   end
 end

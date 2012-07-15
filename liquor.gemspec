@@ -15,6 +15,8 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Liquor::VERSION
 
+  gem.required_ruby_version = '>= 1.9'
+
   gem.add_development_dependency 'kramdown'
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'racc'

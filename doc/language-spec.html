@@ -119,7 +119,7 @@ dt em {
       <li><a href="#preface">1 Preface</a></li>
       <li><a href="#overview">2 Overview</a>        <ul>
           <li><a href="#introduction">2.1 Introduction</a></li>
-          <li><a href="#types-and-variables">2.2 Types and Variables</a></li>
+          <li><a href="#types-and-values">2.2 Types and Values</a></li>
           <li><a href="#type-conversion">2.3 Type Conversion</a></li>
           <li><a href="#expressions">2.4 Expressions</a>            <ul>
               <li><a href="#literals">2.4.1 Literals</a></li>
@@ -142,7 +142,7 @@ dt em {
         </ul>
       </li>
       <li><a href="#grammar">3 Grammar</a>        <ul>
-          <li><a href="#basic-syntax">3.1 Basic syntax</a></li>
+          <li><a href="#basic-syntax">3.1 Basic Syntax</a></li>
           <li><a href="#expressions-1">3.2 Expressions</a></li>
           <li><a href="#blocks-1">3.3 Blocks</a></li>
         </ul>
@@ -183,7 +183,7 @@ dt em {
 
 <p>Liquor has distinct compile-time and runtime error checking. There are no fatal runtime errors, i.e. a Liquor program always evaluates to some value.</p>
 
-<h3 id="types-and-variables">2.2 Types and Variables</h3>
+<h3 id="types-and-values">2.2 Types and Values</h3>
 
 <p>Liquor has the following basic types: <strong>Null</strong>, <strong>Boolean</strong>, <strong>Integer</strong>, <strong>String</strong>, <strong>Tuple</strong> and <strong>External</strong>. A value of every type except <strong>External</strong> can be created from within a Liquor program. Values of type <strong>External</strong> can only be returned by the host environment.</p>
 
@@ -317,7 +317,11 @@ The following operators are infix and unary: <code>-</code>, <code>!</code>.</p>
 
 <h4 id="filter-expressions">2.4.5 Filter Expressions</h4>
 
-<p>Filter expressions are a syntactic sugar for method composition and currying.</p>
+<p>Filter expressions are a syntactic sugar for method composition and currying. Filter expressions are only available directly in an <a href="#interpolations">interpolation</a> context.</p>
+
+<p>Filter expressions consist of a linear chain of function calls where <em>n</em>-th function’s return value is passed to <em>n+1</em>-th function’s unnamed parameter. Named parameters may be specified without parentheses within a corresponding chain element.</p>
+
+<p>All functions used in a filter expression should accept an unnamed parameter. If this is not the case, a compile-time error is raised. Semantics of mandatory and optional named parameters are the same as for <a href="#function-calls">regular function calls</a>.</p>
 
 <p>
 In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent to <code><em>g</em>(<em>f</em>(<em>e</em>() a: 1))</code>.
@@ -339,6 +343,8 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 <h3 id="interpolations">2.6 Interpolations</h3>
 
 <p>An interpolation is a syntactic construct of form <code>{{ expr }}</code> which can be embedded in a block. The expression <code>expr</code> should evaluate to a value of type <strong>String</strong>; an <a href="#type-conversion">implicit conversion</a> might take place. If this is not the case, a runtime error condition is signaled.</p>
+
+<p>Unlike any other context where an expression is expected, interpolations may include <a href="#filter-expressions">filter expressions</a>.</p>
 
 <p>An example of using an interpolation would be:</p>
 
@@ -392,7 +398,7 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <p>The following Extended Backus-Naur form grammar is normative. The native character set of Liquor is Unicode, and every character literal specified is an explicit codepoint or continuous codepoint set.</p>
 
-<h3 id="basic-syntax">3.1 Basic syntax</h3>
+<h3 id="basic-syntax">3.1 Basic Syntax</h3>
 
 <dl>
   <dt>Whitespace</dt>
@@ -410,8 +416,8 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
   <dt>IntegerLiteral</dt>
   <dd><em>Digit</em>+</dd>
   <dt>StringLiteral</dt>
-  <dd><strong>"</strong> ( <strong>\\</strong>  | <strong>\"</strong> | <em>Any</em> not <strong>"</strong> )* <strong>"</strong></dd>
-  <dd><strong>'</strong> ( <strong>\\</strong>  | <strong>\'</strong> | <em>Any</em> not <strong>'</strong> )* <strong>'</strong></dd>
+  <dd><strong>"</strong> ( <strong>\\</strong>  | <strong>\"</strong> | <em>Any</em> except <strong>"</strong> )* <strong>"</strong></dd>
+  <dd><strong>'</strong> ( <strong>\\</strong>  | <strong>\'</strong> | <em>Any</em> except <strong>'</strong> )* <strong>'</strong></dd>
   <dt>TupleLiteral</dt>
   <dd><strong>[</strong> <em>TupleLiteralContent</em> <strong>]</strong></dd>
   <dt>TupleLiteralContent</dt>
@@ -422,7 +428,7 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <h3 id="expressions-1">3.2 Expressions</h3>
 
-<p>Operator precedence table is present in section <a href="#operators">Operators</a>.</p>
+<p>Operator precedence table is provided in section <a href="#operators">Operators</a>.</p>
 
 <dl>
   <dt>PrimaryExpression</dt>
@@ -458,6 +464,13 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
   <dt>FunctionKeywordArguments</dt>
   <dd><em>Keyword</em> <em>Expression</em> <em>FunctionKeywordArguments</em></dd>
   <dd>empty</dd>
+  <dt>FilterChain</dt>
+  <dd><em>FilterFunctionCall</em> <strong>|</strong> <em>FilterChainContinuation</em></dd>
+  <dt>FilterChainContinuation</dt>
+  <dd><em>FilterFunctionCall</em> <strong>|</strong> <em>FilterChainContinuation</em></dd>
+  <dd><em>FilterFunctionCall</em></dd>
+  <dt>FilterFunctionCall</dt>
+  <dd><em>Identifier</em> <em>FunctionKeywordArguments</em></dd>
 </dl>
 
 <h3 id="blocks-1">3.3 Blocks</h3>
