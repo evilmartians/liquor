@@ -1,4 +1,5 @@
 #!/usr/bin/env rake
+
 require "bundler/gem_tasks"
 
 file 'lib/liquor/lexer.rb' => 'lib/liquor/lexer.rl' do

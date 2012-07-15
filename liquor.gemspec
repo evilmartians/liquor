@@ -17,4 +17,6 @@ Gem::Specification.new do |gem|
 
   gem.add_development_dependency 'kramdown'
   gem.add_development_dependency 'rake'
+  gem.add_development_dependency 'racc'
+  gem.add_development_dependency 'rspec'
 end

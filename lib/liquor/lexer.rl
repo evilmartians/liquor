@@ -21,20 +21,26 @@ action string_end {
   tok.(:string, string); fgoto code;
 }
 
+action runaway {
+  runaway = true
+}
+
 dqstring := |*
     '\\"'  => { string << '"' };
     '\\\\' => { string << '\\' };
     '"'    => string_end;
-    any @eof { runaway = true }
+    [^\n] @eof runaway
            => string_append;
+    "\n"   => runaway;
 *|;
 
 sqstring := |*
     "\\'"  => { string << "'" };
     "\\\\" => { string << '\\' };
     "'"    => string_end;
-    any @eof { runaway = true }
+    [^\n] @eof runaway
            => string_append;
+    "\n"   => runaway;
 *|;
 
 tag_start := |*
@@ -118,7 +124,7 @@ code := |*
 *|;
 
 plaintext := |*
-    ( '\\{' [%{]? | any_newline - '{' )* =>
+    ( '\\{' [%{]? | '{' [^%{] | any_newline - '{' )* =>
       { tok.(:plaintext, data[ts...te]); };
 
     '{{' =>
@@ -176,7 +182,7 @@ module Liquor
         line_start_index = find_line_start.(lit_start)
         line_start = line_starts[line_start_index]
 
-        error = SyntaxError.new("literal not closed",
+        error = SyntaxError.new("literal not terminated",
           line:  line_start_index,
           start: lit_start - line_start,
           end:   lit_start - line_start)
@@ -184,43 +190,6 @@ module Liquor
       end
 
       tokens
-    end
-  end
-end
-
-if $0 == __FILE__
-  require 'pp'
-  [
-    'abc \{{ def',
-    'abc \{ def',
-    'abc \{% def',
-    'abc {% def test: 1 %}',
-    'abc {% 1 # ',
-    'abc {% for x in: [ 1, 2, q ] do: %} value: {{ x }} {% endfor %}',
-    '{{ 1 * 2 + substr("abc" from: 1 to: 10) }}',
-    '{{ a | b | c }}',
-    '{{ "test\\" }}',
-    '{{ "test\\\\" }}',
-    '{{ "test" }}',
-    '{% {% %}',
-    '{{ 1 += 2 }}',
-    '{% let x be: 10 %}',
-    %|
-{% if length(params.test) == 1 then: %}
-  Test has length 1.
-{% elsif: length(params.test) != 2 then: %}
-  Test has length 2.
-{% else: %}
-  Test has unidentified length.
-{% endif %}
-    |
-  ].each do |str|
-    puts "INPUT: #{str}"
-    begin
-      pp Liquor::Lexer.lex(str)
-    rescue Liquor::SyntaxError => e
-      puts "Syntax error: #{e.message}"
-      puts e.decorate(str)
     end
   end
 end
