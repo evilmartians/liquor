@@ -1,0 +1,122 @@
+class Liquor::Parser
+  token comma dot endtag ident integer kwarg lblock lbracket linterp
+        lparen op_div op_eq op_gt op_geq op_lt op_leq op_minus op_mod
+        op_mul op_neq op_not op_plus pipe plaintext rblock rbracket
+        rinterp rparen string tag
+
+  prechigh
+    nonassoc op_uminus op_neg
+    left op_mul op_div op_mod
+    left op_plus op_minus
+    left op_eq op_neq op_lt op_leq op_gt op_geq
+    left op_and
+    left op_or
+  preclow
+
+  start block
+
+rule
+  block: /* empty */
+    | plaintext block
+      { result = [ val[0], *val[1] ] }
+    | interp block
+      { result = [ val[0], *val[1] ] }
+
+  interp:
+      linterp expr rinterp
+      { result = [ :interp, retag(val), val[1] ] }
+
+  primary_expr:
+      ident
+    | lparen expr rparen
+      { result = [ val[1][0], retag(val), val[1][2..-1] ] }
+
+  expr:
+      integer
+    | string
+    | tuple
+    | ident lparen rparen
+      { result = [ :call,   retag(val), val[0], val[2] ] }
+    | primary_expr lbracket expr rbracket
+      { result = [ :index,  retag(val), val[0], val[2] ] }
+    | primary_expr dot ident
+      { result = [ :access, retag(val), val[0], val[2] ] }
+    | op_minus expr =op_uminus
+      { result = [ :uminus, retag(val), val[1] ] }
+    | op_neg expr
+      { result = [ :neg, retag(val), val[1] ] }
+    | expr op_mul expr
+      { result = [ :mul, retag(val), val[0], val[2] ] }
+    | expr op_div expr
+      { result = [ :div, retag(val), val[0], val[2] ] }
+    | expr op_mod expr
+      { result = [ :mod, retag(val), val[0], val[2] ] }
+    | expr op_plus expr
+      { result = [ :plus, retag(val), val[0], val[2] ] }
+    | expr op_minus expr
+      { result = [ :minus, retag(val), val[0], val[2] ] }
+    | expr op_eq expr
+      { result = [ :eq, retag(val), val[0], val[2] ] }
+    | expr op_neq expr
+      { result = [ :neq, retag(val), val[0], val[2] ] }
+    | expr op_lt expr
+      { result = [ :lt, retag(val), val[0], val[2] ] }
+    | expr op_leq expr
+      { result = [ :leq, retag(val), val[0], val[2] ] }
+    | expr op_gt expr
+      { result = [ :gt, retag(val), val[0], val[2] ] }
+    | expr op_geq expr
+      { result = [ :geq, retag(val), val[0], val[2] ] }
+    | expr op_and expr
+      { result = [ :and, retag(val), val[0], val[2] ] }
+    | expr op_or expr
+      { result = [ :or, retag(val), val[0], val[2] ] }
+    | primary_expr
+
+  tuple:
+      lbracket tuple_content rbracket
+      { result = [ :tuple, retag([ val[0], val[2] ]), val[1].compact ] }
+
+  tuple_content:
+      expr comma tuple_content
+      { result = [ val[0], *val[2] ] }
+    | expr
+      { result = [ val[0] ] }
+    | /* empty */
+      { result = [ ] }
+
+---- inner
+  def parse(stream)
+    @stream = stream
+    do_parse
+  end
+
+  def next_token
+    tok = @stream.shift
+    [ tok[0], tok ] if tok
+  end
+
+  def on_error(error_token_id, error_token, value_stack)
+    type, (pos, value) = error_token
+    raise Liquor::SyntaxError.new("unexpected #{type}", pos)
+  end
+
+  def retag(pos_list)
+    first, *, last = pos_list
+    {
+      line:  first[1][:line],
+      start: first[1][:start],
+      end:   last[1][:end],
+    }
+  end
+
+---- footer
+  pr = Liquor::Parser.new
+  require 'pp'
+  src = 'a {{ a && b || c && d }}{{ a || b && (c || d) }}{{ 1 - 2}}'
+  begin
+    pp pr.parse(Liquor::Lexer.lex(src))
+  rescue Liquor::SyntaxError => e
+    puts "Syntax error: #{e.message}"
+    puts e.decorate(src)
+  end

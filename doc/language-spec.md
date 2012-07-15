@@ -332,7 +332,7 @@ All of the following are examples of syntactically valid tags:
       Test has unidentified length.
     {% endif %}
 
-    {% capture "buffer" %}
+    {% capture "buffer" do: %}
       This text will be printed twice.
     {% endcapture %}
     {% yield from: "buffer" %}
@@ -344,7 +344,7 @@ All of the following are examples of syntactically valid tags:
 
 The following Extended Backus-Naur form grammar is normative. The native character set of Liquor is Unicode, and every character literal specified is an explicit codepoint or continuous codepoint set.
 
-### 3.1 Syntax
+### 3.1 Basic syntax
 
 Whitespace
 : ( **U+0007** \| **U+0020** )+
@@ -375,11 +375,13 @@ TupleLiteral
 : **[** _TupleLiteralContent_ **]**
 
 TupleLiteralContent
-: empty
 : _Expression_ **,** _TupleLiteralContent_
 : _Expression_
+: empty
 
 ### 3.2 Expressions
+
+Operator priority table is present in section [Operators](#operators).
 
 PrimaryExpression
 : _Identifier_
@@ -389,12 +391,37 @@ Expression
 : _IntegerLiteral_
 : _StringLiteral_
 : _TupleLiteral_
-: _Identifier_ **(** _Arguments_ **)**
+: _Identifier_ **(** _FunctionArguments_ **)**
 : _PrimaryExpression_ **[** _Expression_ **]**
 : _PrimaryExpression_ **.** _Identifier_
 : **-** _Expression_
 : **!** _Expression_
-: TODO
+: _Expression_ **\*** _Expression_
+: _Expression_ **/** _Expression_
+: _Expression_ **%** _Expression_
+: _Expression_ **+** _Expression_
+: _Expression_ **-** _Expression_
+: _Expression_ **==** _Expression_
+: _Expression_ **!=** _Expression_
+: _Expression_ **<** _Expression_
+: _Expression_ **<=** _Expression_
+: _Expression_ **>** _Expression_
+: _Expression_ **>=** _Expression_
+: _Expression_ **&&** _Expression_
+: _Expression_ **\|\|** _Expression_
+
+FunctionArguments
+: _Expression_ _FunctionKeywordArguments_
+: _FunctionKeywordArguments_
+: empty
+
+FunctionKeywordArguments
+: _Keyword_ _Expression_ _FunctionKeywordArguments_
+: empty
+
+### 3.3 Blocks
+
+TODO
 
 4 Compile-time Behavior
 -----------------------

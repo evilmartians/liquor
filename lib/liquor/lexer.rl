@@ -102,11 +102,14 @@ code := |*
     '==' => { tok.(:op_eq)  };
     '!=' => { tok.(:op_neq) };
     '>'  => { tok.(:op_gt)  };
-    '>=' => { tok.(:op_gte) };
+    '>=' => { tok.(:op_geq) };
     '<'  => { tok.(:op_lt)  };
-    '<=' => { tok.(:op_lte) };
+    '<=' => { tok.(:op_leq) };
 
     '!'  => { tok.(:op_not) };
+
+    '&&' => { tok.(:op_and) };
+    '||' => { tok.(:op_or) };
 
     '"'  => { lit_start = p; fgoto dqstring; };
     "'"  => { lit_start = p; fgoto sqstring; };
@@ -172,7 +175,7 @@ module Liquor
 
       tok = ->(type, *data) {
         sl, sc, el, ec = *pos.(ts), *pos.(te - 1)
-        tokens << [type, [{ line: sl, start: sc, end: ec }, *data]]
+        tokens << [type, { line: sl, start: sc, end: ec }, *data]
       }
 
       %% write init;
