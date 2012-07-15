@@ -107,5 +107,15 @@ describe Liquor::Lexer do
       [:plaintext, " 5 "],
       [:lblock], [:tag, "ender"], [:rblock],
     )
+    lex('{% capture do: %}{% if a then: %} 1 {% elsif: b then: %} 2 {% endif %}{% endcapture %}').
+            should have_token_structure(
+      [:lblock], [:tag, "capture"], [:kwarg, "do"], [:rblock],
+      [:lblock], [:tag, "if"], [:ident, "a"], [:kwarg, "then"], [:rblock],
+      [:plaintext, " 1 "],
+      [:lblock], [:kwarg, "elsif"], [:ident, "b"], [:kwarg, "then"], [:rblock],
+      [:plaintext, " 2 "],
+      [:lblock], [:endtag], [:rblock],
+      [:lblock], [:endtag], [:rblock],
+    )
   end
 end

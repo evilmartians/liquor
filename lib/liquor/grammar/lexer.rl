@@ -82,8 +82,11 @@ code := |*
 
     identifier %{ kw_stop = p } ':' whitespace* rblock =>
       { tok.(:kwarg,  data[ts...kw_stop], te: kw_stop)
-        tok.(:rblock, ts: te - 2)
-        tag_stack.push last_tag
+        tok.(:rblock, nil,                ts: te - 2)
+        if last_tag
+          tag_stack.push last_tag
+          last_tag = nil
+        end
         fgoto plaintext; };
 
     identifier ':' =>
