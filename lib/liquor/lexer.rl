@@ -172,7 +172,7 @@ module Liquor
 
       tok = ->(type, *data) {
         sl, sc, el, ec = *pos.(ts), *pos.(te - 1)
-        tokens << [type, { line: sl, start: sc, end: ec }, *data]
+        tokens << [type, [{ line: sl, start: sc, end: ec }, *data]]
       }
 
       %% write init;

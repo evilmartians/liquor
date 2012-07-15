@@ -21,7 +21,7 @@ RSpec::Matchers.define :have_token_structure do |*expected|
   match do |actual|
     expected.zip(actual).all? do |tok_expected, tok_actual|
       expected_type, expected_value = *tok_expected
-      actual_type, actual_pos, actual_value = *tok_actual
+      actual_type, (actual_pos, actual_value) = *tok_actual
 
       expected_type == actual_type &&
           (expected_value.nil? || expected_value == actual_value)

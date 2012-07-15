@@ -5,9 +5,6 @@ rvm:
   - 1.9.3
 gemfile:
   - Gemfile
-after_install:
-  - sudo aptitude update
-  - sudo aptitude install ragel
 branches:
   only:
     - master
