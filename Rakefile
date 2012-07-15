@@ -2,11 +2,11 @@
 require "bundler/gem_tasks"
 
 file 'lib/liquor/lexer.rb' => 'lib/liquor/lexer.rl' do
-  %x{ragel -R lib/liquor/lexer.rl}
+  sh "ragel -R lib/liquor/lexer.rl"
 end
 
 file 'doc/language-spec.html' => 'doc/language-spec.md' do
-  %x{kramdown --template document doc/language-spec.md >doc/language-spec.html}
+  sh "kramdown --template document doc/language-spec.md >doc/language-spec.html"
 end
 
 task :default => [ 'lib/liquor/lexer.rb', 'doc/language-spec.html' ]
