@@ -40,6 +40,10 @@ describe Liquor::Lexer do
     expect { lex('abc {{ # }}') }.to raise_error(Liquor::SyntaxError, %r|unexpected `#'|)
   end
 
+  it "fails invalid integer literals the correct way" do
+    expect { lex('{{ 1a }}') }.to raise_error(Liquor::SyntaxError, %r|unexpected `a'|)
+  end
+
   it "parses complex expressions" do
     lex('{{ 1 * 2 + substr("abc" from: 1 to: 10) }}').should have_token_structure(
       [:linterp],

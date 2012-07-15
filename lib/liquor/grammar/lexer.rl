@@ -25,6 +25,14 @@ action runaway {
   runaway = true
 }
 
+action error {
+  error = SyntaxError.new("unexpected `#{data[p].inspect[1..-2]}'",
+    line:  line_starts.count - 1,
+    start: p - line_starts.last,
+    end:   p - line_starts.last)
+  raise error
+}
+
 dqstring := |*
     '\\"'  => { string << '"' };
     '\\\\' => { string << '\\' };
@@ -41,6 +49,12 @@ sqstring := |*
     [^\n] @eof runaway
            => string_append;
     "\n"   => runaway;
+*|;
+
+integer := |*
+    digit+  => { tok.(:integer, data[ts...te].to_i) };
+    symbol  => error;
+    any     => { fhold; fgoto code; };
 *|;
 
 tag_start := |*
@@ -78,7 +92,7 @@ code := |*
 
     identifier => { tok.(:ident, data[ts...te]) };
 
-    ( digit+ ) => { tok.(:integer, data[ts...te].to_i) };
+    digit => { fhold; fgoto integer; };
 
     identifier %{ kw_stop = p } ':' whitespace* rblock =>
       { tok.(:kwarg,  data[ts...kw_stop], te: kw_stop)
@@ -87,7 +101,8 @@ code := |*
           tag_stack.push last_tag
           last_tag = nil
         end
-        fgoto plaintext; };
+        fgoto plaintext;
+      };
 
     identifier ':' =>
       { tok.(:kwarg, data[ts...te-1]) };
@@ -127,13 +142,7 @@ code := |*
     rinterp => { tok.(:rinterp); fgoto plaintext; };
     rblock  => { tok.(:rblock);  fgoto plaintext; };
 
-    any => {
-      error = SyntaxError.new("unexpected `#{data[p].inspect[1..-2]}'",
-        line:  line_starts.count - 1,
-        start: p - line_starts.last,
-        end:   p - line_starts.last)
-      raise error
-    };
+    any => error;
 *|;
 
 plaintext := |*

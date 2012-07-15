@@ -60,9 +60,6 @@ code {
   line-height: 1.5;
   font-size: 13px;
   background: #E9E8E7;
-  border: 1px solid #E0DDDA;
-  border-radius: 0.2em;
-  padding: 1px;
 }
 pre > code {
   border: none;
@@ -95,8 +92,10 @@ dt:after {
   padding-left: 0.5em;
   content: '::';
 }
-dt em {
-
+dd strong, code {
+  padding: 1px;
+  border: 1px solid #E0DDDA;
+  border-radius: 0.2em;
 }
 </style>
 
@@ -370,8 +369,11 @@ Symbol
 Identifier
 : _Symbol_ ( _Symbol_ \| _Digit_ )*
 
+Keyword
+: _Identifier_ **:**
+
 IntegerLiteral
-: _Digit_+
+: _Digit_+ lookahead _Any_ except _Symbol_
 
 StringLiteral
 : **\"** ( **\\\\**  \| **\\\"** \| _Any_ except **\"** )* **\"**

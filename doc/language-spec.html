@@ -67,9 +67,6 @@ code {
   line-height: 1.5;
   font-size: 13px;
   background: #E9E8E7;
-  border: 1px solid #E0DDDA;
-  border-radius: 0.2em;
-  padding: 1px;
 }
 pre > code {
   border: none;
@@ -102,8 +99,10 @@ dt:after {
   padding-left: 0.5em;
   content: '::';
 }
-dt em {
-
+dd strong, code {
+  padding: 1px;
+  border: 1px solid #E0DDDA;
+  border-radius: 0.2em;
 }
 </style>
 
@@ -413,8 +412,10 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
   <dd><em>Alpha</em> | <strong>_</strong></dd>
   <dt>Identifier</dt>
   <dd><em>Symbol</em> ( <em>Symbol</em> | <em>Digit</em> )*</dd>
+  <dt>Keyword</dt>
+  <dd><em>Identifier</em> <strong>:</strong></dd>
   <dt>IntegerLiteral</dt>
-  <dd><em>Digit</em>+</dd>
+  <dd><em>Digit</em>+ lookahead <em>Any</em> except <em>Symbol</em></dd>
   <dt>StringLiteral</dt>
   <dd><strong>"</strong> ( <strong>\\</strong>  | <strong>\"</strong> | <em>Any</em> except <strong>"</strong> )* <strong>"</strong></dd>
   <dd><strong>'</strong> ( <strong>\\</strong>  | <strong>\'</strong> | <em>Any</em> except <strong>'</strong> )* <strong>'</strong></dd>
