@@ -91,4 +91,21 @@ describe Liquor::Lexer do
 
     expect { lex(%|{{ "test\n" }}|) }.to raise_error(Liquor::SyntaxError, %r|literal not terminated|)
   end
+
+  it "parses nested tags correctly" do
+    lex('{% a do: %} 1 {% b %} 2 {% c do: %} 3 {% endc %} 4 {% enda %} 5 {% ender %}').
+            should have_token_structure(
+      [:lblock], [:tag, "a"], [:kwarg, "do"], [:rblock],
+      [:plaintext, " 1 "],
+      [:lblock], [:tag, "b"], [:rblock],
+      [:plaintext, " 2 "],
+      [:lblock], [:tag, "c"], [:kwarg, "do"], [:rblock],
+      [:plaintext, " 3 "],
+      [:lblock], [:endtag], [:rblock],
+      [:plaintext, " 4 "],
+      [:lblock], [:endtag], [:rblock],
+      [:plaintext, " 5 "],
+      [:lblock], [:tag, "ender"], [:rblock],
+    )
+  end
 end

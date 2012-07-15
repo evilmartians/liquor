@@ -18,8 +18,7 @@ action string_append {
 }
 
 action string_end {
-  ts = lit_start
-  tok.(:string, string); fgoto code;
+  tok.(:string, string, ts: str_start); fgoto code;
 }
 
 action runaway {
@@ -61,7 +60,7 @@ tag_start := |*
     identifier =>
       { tag = data[ts...te]
         tok.(:tag, tag)
-        tag_stack.push tag
+        last_tag = tag
         fgoto code;
       };
 
@@ -81,7 +80,14 @@ code := |*
 
     ( digit+ ) => { tok.(:integer, data[ts...te].to_i) };
 
-    identifier ':' => { tok.(:kwarg, data[ts...te-1]) };
+    identifier %{ kw_stop = p } ':' whitespace* rblock =>
+      { tok.(:kwarg,  data[ts...kw_stop], te: kw_stop)
+        tok.(:rblock, ts: te - 2)
+        tag_stack.push last_tag
+        fgoto plaintext; };
+
+    identifier ':' =>
+      { tok.(:kwarg, data[ts...te-1]) };
 
     ','  => { tok.(:comma) };
     '.'  => { tok.(:dot)   };
@@ -112,8 +118,8 @@ code := |*
     '&&' => { tok.(:op_and) };
     '||' => { tok.(:op_or) };
 
-    '"'  => { lit_start = p; fgoto dqstring; };
-    "'"  => { lit_start = p; fgoto sqstring; };
+    '"'  => { str_start = p; fgoto dqstring; };
+    "'"  => { str_start = p; fgoto sqstring; };
 
     rinterp => { tok.(:rinterp); fgoto plaintext; };
     rblock  => { tok.(:rblock);  fgoto plaintext; };
@@ -152,12 +158,15 @@ module Liquor
       ts     = nil # token start
       te     = nil # token end
 
-      string  = ""
-
-      lit_start = nil
+      # Strings
+      string    = ""
+      str_start = nil
       runaway   = false
 
+      # Tags
       tag_stack = []
+      last_tag  = nil
+      kw_stop   = nil
 
       line_starts = [0]
 
@@ -174,8 +183,9 @@ module Liquor
 
       tokens = []
 
-      tok = ->(type, *data) {
-        sl, sc, el, ec = *pos.(ts), *pos.(te - 1)
+      tok = ->(type, data=nil, options={}) {
+        sl, sc, el, ec = *pos.(options[:ts] || ts),
+                         *pos.(options[:te] || te - 1)
         tokens << [type, { line: sl, start: sc, end: ec }, *data]
       }
 
@@ -183,13 +193,13 @@ module Liquor
       %% write exec;
 
       if runaway
-        line_start_index = find_line_start.(lit_start)
+        line_start_index = find_line_start.(str_start)
         line_start = line_starts[line_start_index]
 
         error = SyntaxError.new("literal not terminated",
           line:  line_start_index,
-          start: lit_start - line_start,
-          end:   lit_start - line_start)
+          start: str_start - line_start,
+          end:   str_start - line_start)
         raise error
       end
 
