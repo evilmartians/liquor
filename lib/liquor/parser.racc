@@ -35,7 +35,7 @@ rule
       integer
     | string
     | tuple
-    | ident lparen rparen
+    | ident lparen function_args rparen
       { result = [ :call,   retag(val), val[0], val[2] ] }
     | primary_expr lbracket expr rbracket
       { result = [ :index,  retag(val), val[0], val[2] ] }
@@ -43,8 +43,8 @@ rule
       { result = [ :access, retag(val), val[0], val[2] ] }
     | op_minus expr =op_uminus
       { result = [ :uminus, retag(val), val[1] ] }
-    | op_neg expr
-      { result = [ :neg, retag(val), val[1] ] }
+    | op_not expr
+      { result = [ :not, retag(val), val[1] ] }
     | expr op_mul expr
       { result = [ :mul, retag(val), val[0], val[2] ] }
     | expr op_div expr
@@ -75,7 +75,7 @@ rule
 
   tuple:
       lbracket tuple_content rbracket
-      { result = [ :tuple, retag([ val[0], val[2] ]), val[1].compact ] }
+      { result = [ :tuple, retag(val), val[1].compact ] }
 
   tuple_content:
       expr comma tuple_content
@@ -84,6 +84,26 @@ rule
       { result = [ val[0] ] }
     | /* empty */
       { result = [ ] }
+
+  function_args:
+      expr function_kwargs
+      { result = [ val[0], val[1] ] }
+    | function_kwargs
+      { result = [ nil, val[0] ] }
+
+  function_kwargs:
+      kwarg expr function_kwargs
+      { # voodoo. well, it could be worse with (cdadr val) and stuff.
+        if val[2].include? val[0][2]
+          raise SyntaxError.new("duplicate keyword argument `#{val[0][2]}'",
+              val[2][val[0][2]][1])
+        end
+        result = {
+          val[0][2] => [ val[1][0], retag([ val[0], val[1] ]), val[1][2..-1] ]
+        }.merge(val[2])
+      }
+    | /* empty */
+      { result = {} }
 
 ---- inner
   def parse(stream)
@@ -96,9 +116,36 @@ rule
     [ tok[0], tok ] if tok
   end
 
+  TOKEN_NAME_MAP = {
+    :comma    => ',',
+    :dot      => '.',
+    :lblock   => '{%',
+    :rblock   => '%}',
+    :linterp  => '{{',
+    :rinterp  => '}}',
+    :lbracket => '[',
+    :rbracket => ']',
+    :lparen   => '(',
+    :rparen   => ')',
+    :pipe     => '|',
+    :op_not   => '!',
+    :op_mul   => '*',
+    :op_div   => '/',
+    :op_mod   => '%',
+    :op_plus  => '+',
+    :op_minus => '-',
+    :op_eq    => '==',
+    :op_neq   => '!=',
+    :op_lt    => '<',
+    :op_leq   => '<=',
+    :op_gt    => '>',
+    :op_geq   => '>=',
+  }
+
   def on_error(error_token_id, error_token, value_stack)
     type, (pos, value) = error_token
-    raise Liquor::SyntaxError.new("unexpected #{type}", pos)
+    type = TOKEN_NAME_MAP[type] || type
+    raise Liquor::SyntaxError.new("unexpected token `#{type}'", pos)
   end
 
   def retag(pos_list)
@@ -106,14 +153,14 @@ rule
     {
       line:  first[1][:line],
       start: first[1][:start],
-      end:   last[1][:end],
+      end:    last[1][:end],
     }
   end
 
 ---- footer
   pr = Liquor::Parser.new
   require 'pp'
-  src = 'a {{ a && b || c && d }}{{ a || b && (c || d) }}{{ 1 - 2}}'
+  src = '{{f.e}}'
   begin
     pp pr.parse(Liquor::Lexer.lex(src))
   rescue Liquor::SyntaxError => e

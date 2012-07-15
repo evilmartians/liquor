@@ -142,8 +142,9 @@ dt em {
         </ul>
       </li>
       <li><a href="#grammar">3 Grammar</a>        <ul>
-          <li><a href="#syntax">3.1 Syntax</a></li>
+          <li><a href="#basic-syntax">3.1 Basic syntax</a></li>
           <li><a href="#expressions-1">3.2 Expressions</a></li>
+          <li><a href="#blocks-1">3.3 Blocks</a></li>
         </ul>
       </li>
       <li><a href="#compile-time-behavior">4 Compile-time Behavior</a></li>
@@ -380,7 +381,7 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
   Test has unidentified length.
 {% endif %}
 
-{% capture "buffer" %}
+{% capture "buffer" do: %}
   This text will be printed twice.
 {% endcapture %}
 {% yield from: "buffer" %}
@@ -391,11 +392,11 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <p>The following Extended Backus-Naur form grammar is normative. The native character set of Liquor is Unicode, and every character literal specified is an explicit codepoint or continuous codepoint set.</p>
 
-<h3 id="syntax">3.1 Syntax</h3>
+<h3 id="basic-syntax">3.1 Basic syntax</h3>
 
 <dl>
   <dt>Whitespace</dt>
-  <dd>( <strong>U+0007</strong> | <strong>U+0020</strong> )+</dd>
+  <dd><strong>U+0007</strong> | <strong>U+0020</strong></dd>
   <dt>Alpha</dt>
   <dd><strong>a</strong> to <strong>z</strong> | <strong>A</strong> to <strong>Z</strong></dd>
   <dt>Digit</dt>
@@ -414,12 +415,14 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
   <dt>TupleLiteral</dt>
   <dd><strong>[</strong> <em>TupleLiteralContent</em> <strong>]</strong></dd>
   <dt>TupleLiteralContent</dt>
-  <dd>empty</dd>
   <dd><em>Expression</em> <strong>,</strong> <em>TupleLiteralContent</em></dd>
   <dd><em>Expression</em></dd>
+  <dd>empty</dd>
 </dl>
 
 <h3 id="expressions-1">3.2 Expressions</h3>
+
+<p>Operator precedence table is present in section <a href="#operators">Operators</a>.</p>
 
 <dl>
   <dt>PrimaryExpression</dt>
@@ -429,13 +432,37 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
   <dd><em>IntegerLiteral</em></dd>
   <dd><em>StringLiteral</em></dd>
   <dd><em>TupleLiteral</em></dd>
-  <dd><em>Identifier</em> <strong>(</strong> <em>Arguments</em> <strong>)</strong></dd>
+  <dd><em>Identifier</em> <strong>(</strong> <em>FunctionArguments</em> <strong>)</strong></dd>
   <dd><em>PrimaryExpression</em> <strong>[</strong> <em>Expression</em> <strong>]</strong></dd>
   <dd><em>PrimaryExpression</em> <strong>.</strong> <em>Identifier</em></dd>
   <dd><strong>-</strong> <em>Expression</em></dd>
   <dd><strong>!</strong> <em>Expression</em></dd>
-  <dd>TODO</dd>
+  <dd><em>Expression</em> <strong>*</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>/</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>%</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>+</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>-</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>==</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>!=</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>&lt;</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>&lt;=</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>&gt;</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>&gt;=</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>&amp;&amp;</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>||</strong> <em>Expression</em></dd>
+  <dt>FunctionArguments</dt>
+  <dd><em>Expression</em> <em>FunctionKeywordArguments</em></dd>
+  <dd><em>FunctionKeywordArguments</em></dd>
+  <dd><em>Expression</em></dd>
+  <dd>empty</dd>
+  <dt>FunctionKeywordArguments</dt>
+  <dd><em>Keyword</em> <em>Expression</em> <em>FunctionKeywordArguments</em></dd>
+  <dd>empty</dd>
 </dl>
+
+<h3 id="blocks-1">3.3 Blocks</h3>
+
+<p>TODO</p>
 
 <h2 id="compile-time-behavior">4 Compile-time Behavior</h2>
 

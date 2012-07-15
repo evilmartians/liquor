@@ -347,7 +347,7 @@ The following Extended Backus-Naur form grammar is normative. The native charact
 ### 3.1 Basic syntax
 
 Whitespace
-: ( **U+0007** \| **U+0020** )+
+: **U+0007** \| **U+0020**
 
 Alpha
 : **a** to **z** \| **A** to **Z**
@@ -381,7 +381,7 @@ TupleLiteralContent
 
 ### 3.2 Expressions
 
-Operator priority table is present in section [Operators](#operators).
+Operator precedence table is present in section [Operators](#operators).
 
 PrimaryExpression
 : _Identifier_
@@ -413,6 +413,7 @@ Expression
 FunctionArguments
 : _Expression_ _FunctionKeywordArguments_
 : _FunctionKeywordArguments_
+: _Expression_
 : empty
 
 FunctionKeywordArguments
