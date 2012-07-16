@@ -6,7 +6,7 @@ module Liquor
       node[0]
     end
 
-    def npos(node)
+    def nloc(node)
       node[1]
     end
 

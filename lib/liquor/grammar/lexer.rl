@@ -190,7 +190,7 @@ module Liquor
               line_starts[i + 1].nil? || line_starts[i + 1] > index
             }
       }
-      pos = ->(index) {
+      loc = ->(index) {
         line_start_index = find_line_start.(index)
         [ line_start_index, index - line_starts[line_start_index] ]
       }
@@ -201,8 +201,8 @@ module Liquor
         tokens.last[0] = new_type
       }
       tok = ->(type, data=nil, options={}) {
-        sl, sc, el, ec = *pos.(options[:ts] || ts),
-                         *pos.(options[:te] || te - 1)
+        sl, sc, el, ec = *loc.(options[:ts] || ts),
+                         *loc.(options[:te] || te - 1)
         tokens << [type, { line: sl, start: sc, end: ec }, *data]
       }
 

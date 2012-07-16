@@ -71,15 +71,15 @@ module_eval(<<'...end parser.racc/module_eval...', 'parser.racc', 178)
     if token_to_str(error_token_id) == "$end"
       raise Liquor::SyntaxError.new("unexpected end of stream")
     else
-      type, (pos, value) = error_token
+      type, (loc, value) = error_token
       type = TOKEN_NAME_MAP[type] || type
-      raise Liquor::SyntaxError.new("unexpected token `#{type}'", pos)
+      raise Liquor::SyntaxError.new("unexpected token `#{type}'", loc)
     end
   end
 
   def retag(nodes)
-    pos = nodes.map { |node| node[1] }.compact
-    first, *, last = pos
+    loc = nodes.map { |node| node[1] }.compact
+    first, *, last = loc
     return first if last.nil?
 
     {
@@ -760,12 +760,12 @@ module_eval(<<'.,.,', 'parser.racc', 124)
 
 module_eval(<<'.,.,', 'parser.racc', 128)
   def _reduce_42(val, _values, result)
-     ident_pos = val[0][1]
-        empty_args_pos = { line:  ident_pos[:line],
-                           start: ident_pos[:end] + 1,
-                           end:   ident_pos[:end] + 1, }
+     ident_loc = val[0][1]
+        empty_args_loc = { line:  ident_loc[:line],
+                           start: ident_loc[:end] + 1,
+                           end:   ident_loc[:end] + 1, }
         result = [ :call, val[0][1], val[0],
-                   [ :args, val[1][1] || empty_args_pos, nil, val[1][2] ] ]
+                   [ :args, val[1][1] || empty_args_loc, nil, val[1][2] ] ]
       
     result
   end
