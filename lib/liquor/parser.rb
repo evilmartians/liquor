@@ -9,9 +9,23 @@ module Liquor
   class Parser < Racc::Parser
 
 module_eval(<<'...end parser.racc/module_eval...', 'parser.racc', 178)
+  attr_reader :errors, :ast
+
+  def success?
+    @errors.empty?
+  end
+
   def parse(string)
-    @stream = Lexer.lex(string)
-    do_parse
+    @errors = []
+
+    begin
+      @stream = Lexer.lex(string)
+      @ast = do_parse
+    rescue Liquor::SyntaxError => e
+      @errors << e
+    end
+
+    success?
   end
 
   def next_token
@@ -694,7 +708,7 @@ module_eval(<<'.,.,', 'parser.racc', 101)
   def _reduce_37(val, _values, result)
      # voodoo. well, it could be worse with (cdadr val) and stuff.
         if val[2][2].include? val[0][2]
-          raise SyntaxError.new("duplicate keyword argument `#{val[0][2]}'",
+          @errors << SyntaxError.new("duplicate keyword argument `#{val[0][2]}'",
               val[2][2][val[0][2]][1])
         end
         hash = {

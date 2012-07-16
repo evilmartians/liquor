@@ -101,7 +101,7 @@ rule
       keyword expr function_keywords
       { # voodoo. well, it could be worse with (cdadr val) and stuff.
         if val[2][2].include? val[0][2]
-          raise SyntaxError.new("duplicate keyword argument `#{val[0][2]}'",
+          @errors << SyntaxError.new("duplicate keyword argument `#{val[0][2]}'",
               val[2][2][val[0][2]][1])
         end
         hash = {
@@ -175,9 +175,23 @@ rule
       { result = [ val[0], *val[1] ] }
 
 ---- inner
+  attr_reader :errors, :ast
+
+  def success?
+    @errors.empty?
+  end
+
   def parse(string)
-    @stream = Lexer.lex(string)
-    do_parse
+    @errors = []
+
+    begin
+      @stream = Lexer.lex(string)
+      @ast = do_parse
+    rescue Liquor::SyntaxError => e
+      @errors << e
+    end
+
+    success?
   end
 
   def next_token

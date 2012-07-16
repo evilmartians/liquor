@@ -14,7 +14,13 @@ module LiquorSpecHelpers
 
   def parse(string)
     parser = Liquor::Parser.new
-    parser.parse string
+    if parser.parse string
+      parser.ast
+    elsif parser.errors.count == 1
+      raise parser.errors.first
+    else
+      raise Exception, "more than one error"
+    end
   end
 end
 

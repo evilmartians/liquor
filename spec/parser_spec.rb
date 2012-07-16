@@ -258,4 +258,25 @@ describe Liquor::Parser do
   it "reports EOF errors" do
     expect { parse('{% if a1 then: %} 1 {% wat %}') }.to raise_error(Liquor::SyntaxError, %r|unexpected end of stream|)
   end
+
+  it "handles lexer errors" do
+    parser = Liquor::Parser.new
+    parser.parse '{{ $'
+    parser.success?.should == false
+  end
+
+  it "correctly handles multiple errors" do
+    parser = Liquor::Parser.new
+    parser.parse '{{ fun(a: 1 a: 1) + fun(b: 1 b: 1) }}'
+    parser.errors.count.should == 2
+  end
+
+  it "resets error state on next parse" do
+    parser = Liquor::Parser.new
+    parser.parse '{{ fun(a: 1 a: 1) + fun(b: 1 b: 1) }}'
+    parser.errors.count.should == 2
+    parser.parse '{{ 1 }}'
+    parser.errors.count.should == 0
+    parser.success?.should == true
+  end
 end
