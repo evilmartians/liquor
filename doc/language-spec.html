@@ -399,6 +399,8 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <p>Statement <code><em>a</em> to <em>b</em></code> is equivalent to codepoint set which includes every codepoint from <em>a</em> to <em>b</em> inclusive. Statement <code><em>a</em> except <em>b</em></code> means that both <em>a</em> and <em>b</em> are tokens which consist of exactly one codepoint, and every character satisfying <em>a</em> and not satisfying in <em>b</em> is accepted. Statement <code>lookahead <em>a</em></code> means that the current token should only be produced if the codepoint immediately following it satisfies <em>a</em>.</p>
 
+<p>Strictly, this grammar lies within <em>GLR</em> domain, but if, as it is usually the case, an implementation has separate lexer and parser, an <em>LL(1)</em> parser could be used. This will be further explained in section <a href="#blocks-1">Blocks</a>.</p>
+
 <h3 id="basic-syntax">3.1 Basic Syntax</h3>
 
 <dl>
@@ -413,9 +415,9 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
   <dt>Symbol</dt>
   <dd><em>Alpha</em> | <strong>_</strong></dd>
   <dt>Identifier</dt>
-  <dd><em>Symbol</em> ( <em>Symbol</em> | <em>Digit</em> )*</dd>
+  <dd><em>Symbol</em> ( <em>Symbol</em> | <em>Digit</em> )* lookahead ( <em>Any</em> except <strong>:</strong> )</dd>
   <dt>Keyword</dt>
-  <dd><em>Identifier</em> <strong>:</strong></dd>
+  <dd><em>Symbol</em> ( <em>Symbol</em> | <em>Digit</em> )* <strong>:</strong></dd>
   <dt>IntegerLiteral</dt>
   <dd><em>Digit</em>+ lookahead ( <em>Any</em> except <em>Symbol</em> )</dd>
   <dt>StringLiteral</dt>
@@ -441,7 +443,7 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
   <dd><em>IntegerLiteral</em></dd>
   <dd><em>StringLiteral</em></dd>
   <dd><em>TupleLiteral</em></dd>
-  <dd><em>Identifier</em> <strong>(</strong> <em>FunctionArguments</em> <strong>)</strong></dd>
+  <dd><em>Identifier</em> <strong>(</strong> <em>Expression</em>? <em>KeywordArguments</em> <strong>)</strong></dd>
   <dd><em>PrimaryExpression</em> <strong>[</strong> <em>Expression</em> <strong>]</strong></dd>
   <dd><em>PrimaryExpression</em> <strong>.</strong> <em>Identifier</em></dd>
   <dd><strong>-</strong> <em>Expression</em></dd>
@@ -459,14 +461,8 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
   <dd><em>Expression</em> <strong>&gt;=</strong> <em>Expression</em></dd>
   <dd><em>Expression</em> <strong>&amp;&amp;</strong> <em>Expression</em></dd>
   <dd><em>Expression</em> <strong>||</strong> <em>Expression</em></dd>
-  <dt>FunctionArguments</dt>
-  <dd><em>Expression</em> <em>FunctionKeywordArguments</em></dd>
-  <dd><em>FunctionKeywordArguments</em></dd>
-  <dd><em>Expression</em></dd>
-  <dd>empty</dd>
-  <dt>FunctionKeywordArguments</dt>
-  <dd><em>Keyword</em> <em>Expression</em> <em>FunctionKeywordArguments</em></dd>
-  <dd>empty</dd>
+  <dt>KeywordArguments</dt>
+  <dd>( <em>Keyword</em> <em>Expression</em> )*</dd>
   <dt>FilterChain</dt>
   <dd><em>FilterFunctionCall</em> <strong>|</strong> <em>FilterChainContinuation</em></dd>
   <dt>FilterChainContinuation</dt>
@@ -478,9 +474,37 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <h3 id="blocks-1">3.3 Blocks</h3>
 
-<p>Inside a <em>Tag</em> or <em>Interpolation</em> body any <em>Whitespace</em> is used to separate adjacent tokens, but is otherwise ignored. The only case when naïvely removing <em>Whitespace</em> would cause ambiguity is whether <em>IntegerLiteral</em> is directly or indirectly followed by <em>Identifier</em>.</p>
+<p>Inside a <em>Tag</em> or <em>Interpolation</em> body any <em>Whitespace</em> is used to separate adjacent tokens, but is otherwise ignored. The cases where naïvely removing <em>Whitespace</em> would cause ambiguity can be determined by watching for <code>lookahead</code> clauses.</p>
 
-<p>TODO</p>
+<p>The <em>Tag</em>, <em>TagFirstContinuation</em> and <em>EndTag</em> production rules deviate from canonical <em>LR(1)</em> grammar structure. To parse these rules correctly, a <em>LALR(1)</em> parser should maintain a stack of tag identifiers and correctly decide on ambiguous reduction of rules <em>Identifier</em> and <em>EndTag</em>.</p>
+
+<p>When the parser follows the second reduction for rule <em>TagFirstContinuation</em>, it should push the corresponding <em>Tag</em> <em>Identifier</em> on the top of the tag stack.</p>
+
+<p>When the parser is about to decide whether it should reduce the sequence satisfying <em>Identifier</em> to <em>EndTag</em> or leave it as is, it should only reduce the sequence to <em>EndTag</em> if the <em>Identifier</em> part of the <em>EndTag</em> rule equals the value at the top of the tag stack. If this is the case, the topmost value is popped from the tag stack.</p>
+
+<dl>
+  <dt>Block</dt>
+  <dd><em>Plaintext</em> <em>Block</em></dd>
+  <dd><em>Interpolation</em> <em>Block</em></dd>
+  <dd><em>Tag</em> <em>Block</em></dd>
+  <dd>empty</dd>
+  <dt>Plaintext</dt>
+  <dd>( <em>Any</em> except <strong>{</strong> | <strong>{</strong> <em>Any</em> except ( <strong>{</strong> | <strong>%</strong> ) )+</dd>
+  <dt>Interpolation</dt>
+  <dd><strong>{{</strong> ( <em>Expression</em> | <em>FilterChain</em> ) <strong>}}</strong></dd>
+  <dt>Tag</dt>
+  <dd><strong>{%</strong> <em>Identifier</em> <em>Expression</em>? <em>KeywordArguments</em> <em>TagFirstContinuation</em></dd>
+  <dt>TagFirstContinuation</dt>
+  <dd><strong>%}</strong></dd>
+  <dd><em>TagBlock</em> <em>TagNextContinuation</em></dd>
+  <dt>TagNextContinuation</dt>
+  <dd><em>KeywordArguments</em> <em>TagBlock</em> <em>TagNextContinuation</em></dd>
+  <dd><em>EndTag</em> <strong>%}</strong></dd>
+  <dt>TagBlock</dt>
+  <dd><em>Keyword</em> <strong>%}</strong> <em>Block</em> <strong>{%</strong></dd>
+  <dt>EndTag</dt>
+  <dd><strong>end</strong> <em>Identifier</em> at the top of tag stack</dd>
+</dl>
 
 <h2 id="compile-time-behavior">4 Compile-time Behavior</h2>
 

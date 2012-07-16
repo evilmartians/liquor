@@ -177,4 +177,85 @@ describe Liquor::Parser do
     expect { parse('{{ a | b(b: 1)') }.to raise_error(Liquor::SyntaxError, %r{unexpected token `\('})
     expect { parse('{{ a | b("str", b: 1)') }.to raise_error(Liquor::SyntaxError, %r{unexpected token `\('})
   end
+
+  it "parses blocks correctly" do
+    parse('{% yield %}').should have_node_structure(
+      [:tag,
+        [:ident, "yield"],
+        nil]
+    )
+    parse('{% yield 1 %}').should have_node_structure(
+      [:tag,
+        [:ident, "yield"],
+        [:integer, 1]]
+    )
+    parse('{% yield from: 1 %}').should have_node_structure(
+      [:tag,
+        [:ident, "yield"],
+        nil,
+        [:kwarg, [:keyword, "from"], [:integer, 1]]]
+    )
+    parse('{% yield "str" from: 1 %}').should have_node_structure(
+      [:tag,
+        [:ident, "yield"],
+        [:string, "str"],
+        [:kwarg, [:keyword, "from"], [:integer, 1]]]
+    )
+    parse('{% yield from: 1 to: 2 from: 3 %}').should have_node_structure(
+      [:tag,
+        [:ident, "yield"],
+        nil,
+        [:kwarg, [:keyword, "from" ], [:integer, 1]],
+        [:kwarg, [:keyword, "to" ],   [:integer, 2]],
+        [:kwarg, [:keyword, "from" ], [:integer, 3]]]
+    )
+    parse('{% capture do: %} 1 {% endcapture %}').
+              should have_node_structure(
+      [:tag,
+        [:ident, "capture"],
+        nil,
+        [:blockarg, [:keyword, "do"],
+          [
+            [:plaintext, " 1 "]
+          ]]]
+    )
+    parse('{% capture "test" do: %} 1 {% endcapture %}').
+              should have_node_structure(
+      [:tag,
+        [:ident, "capture"],
+        [:string, "test"],
+        [:blockarg, [:keyword, "do"],
+          [
+            [:plaintext, " 1 "]
+          ]]]
+    )
+    parse('{% capture as: "test" do: %} 1 {% endcapture %}').
+              should have_node_structure(
+      [:tag,
+        [:ident, "capture"],
+        nil,
+        [:kwarg, [:keyword, "as"], [:string, "test"]],
+        [:blockarg, [:keyword, "do"],
+          [
+            [:plaintext, " 1 "]
+          ]]]
+    )
+    parse('{% if a1 then: %} 1 {% elsif: a2 then: %} 2 {% else: %} 3 {% endif %}').
+              should have_node_structure(
+      [:tag,
+        [:ident, "if"],
+        [:ident, "a1"],
+        [:blockarg, [:keyword, "then"],
+          [[:plaintext, " 1 "]]],
+        [:kwarg, [:keyword, "elsif"], [:ident, "a2"]],
+        [:blockarg, [:keyword, "then"],
+          [[:plaintext, " 2 "]]],
+        [:blockarg, [:keyword, "else"],
+          [[:plaintext, " 3 "]]]]
+    )
+  end
+
+  it "reports EOF errors" do
+    expect { parse('{% if a1 then: %} 1 {% wat %}') }.to raise_error(Liquor::SyntaxError, %r|unexpected end of stream|)
+  end
 end

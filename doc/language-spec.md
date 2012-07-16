@@ -351,6 +351,8 @@ The following Extended Backus-Naur form grammar is normative. The native charact
 
 Statement <code><em>a</em> to <em>b</em></code> is equivalent to codepoint set which includes every codepoint from _a_ to _b_ inclusive. Statement <code><em>a</em> except <em>b</em></code> means that both _a_ and _b_ are tokens which consist of exactly one codepoint, and every character satisfying _a_ and not satisfying in _b_ is accepted. Statement <code>lookahead <em>a</em></code> means that the current token should only be produced if the codepoint immediately following it satisfies _a_.
 
+Strictly, this grammar lies within _GLR_ domain, but if, as it is usually the case, an implementation has separate lexer and parser, an _LL(1)_ parser could be used. This will be further explained in section [Blocks](#blocks-1).
+
 ### 3.1 Basic Syntax
 
 Whitespace
@@ -369,10 +371,10 @@ Symbol
 : _Alpha_ \| **_**
 
 Identifier
-: _Symbol_ ( _Symbol_ \| _Digit_ )*
+: _Symbol_ ( _Symbol_ \| _Digit_ )* lookahead ( _Any_ except **:** )
 
 Keyword
-: _Identifier_ **:**
+: _Symbol_ ( _Symbol_ \| _Digit_ )* **:**
 
 IntegerLiteral
 : _Digit_+ lookahead ( _Any_ except _Symbol_ )
@@ -401,7 +403,7 @@ Expression
 : _IntegerLiteral_
 : _StringLiteral_
 : _TupleLiteral_
-: _Identifier_ **(** _FunctionArguments_ **)**
+: _Identifier_ **(** _Expression_? _KeywordArguments_ **)**
 : _PrimaryExpression_ **[** _Expression_ **]**
 : _PrimaryExpression_ **.** _Identifier_
 : **-** _Expression_
@@ -420,15 +422,8 @@ Expression
 : _Expression_ **&&** _Expression_
 : _Expression_ **\|\|** _Expression_
 
-FunctionArguments
-: _Expression_ _FunctionKeywordArguments_
-: _FunctionKeywordArguments_
-: _Expression_
-: empty
-
-FunctionKeywordArguments
-: _Keyword_ _Expression_ _FunctionKeywordArguments_
-: empty
+KeywordArguments
+: ( _Keyword_ _Expression_ )*
 
 FilterChain
 : _FilterFunctionCall_ **\|** _FilterChainContinuation_
@@ -442,9 +437,42 @@ FilterFunctionCall
 
 ### 3.3 Blocks
 
-Inside a _Tag_ or _Interpolation_ body any _Whitespace_ is used to separate adjacent tokens, but is otherwise ignored. The only case when na&iuml;vely removing _Whitespace_ would cause ambiguity is whether _IntegerLiteral_ is directly or indirectly followed by _Identifier_.
+Inside a _Tag_ or _Interpolation_ body any _Whitespace_ is used to separate adjacent tokens, but is otherwise ignored. The cases where na&iuml;vely removing _Whitespace_ would cause ambiguity can be determined by watching for `lookahead` clauses.
 
-TODO
+The _Tag_, _TagFirstContinuation_ and _EndTag_ production rules deviate from canonical _LR(1)_ grammar structure. To parse these rules correctly, a _LALR(1)_ parser should maintain a stack of tag identifiers and correctly decide on ambiguous reduction of rules _Identifier_ and _EndTag_.
+
+When the parser follows the second reduction for rule _TagFirstContinuation_, it should push the corresponding _Tag_ _Identifier_ on the top of the tag stack.
+
+When the parser is about to decide whether it should reduce the sequence satisfying _Identifier_ to _EndTag_ or leave it as is, it should only reduce the sequence to _EndTag_ if the _Identifier_ part of the _EndTag_ rule equals the value at the top of the tag stack. If this is the case, the topmost value is popped from the tag stack.
+
+Block
+: _Plaintext_ _Block_
+: _Interpolation_ _Block_
+: _Tag_ _Block_
+: empty
+
+Plaintext
+: ( _Any_ except **{** \| **{** _Any_ except ( **{** \| **%** ) )+
+
+Interpolation
+: **{{** ( _Expression_ \| _FilterChain_ ) **}}**
+
+Tag
+: **{%** _Identifier_ _Expression_? _KeywordArguments_ _TagFirstContinuation_
+
+TagFirstContinuation
+: **%}**
+: _TagBlock_ _TagNextContinuation_
+
+TagNextContinuation
+: _KeywordArguments_ _TagBlock_ _TagNextContinuation_
+: _EndTag_ **%}**
+
+TagBlock
+: _Keyword_ **%}** _Block_ **{%**
+
+EndTag
+: **end** _Identifier_ at the top of tag stack
 
 4 Compile-time Behavior
 -----------------------

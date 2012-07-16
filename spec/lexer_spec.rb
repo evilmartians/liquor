@@ -24,7 +24,7 @@ describe Liquor::Lexer do
     lex('abc {% def %}').should have_token_structure(
       [:plaintext],
       [:lblock],
-      [:tag],
+      [:ident],
       [:rblock],
     )
   end
@@ -50,8 +50,8 @@ describe Liquor::Lexer do
       [:integer, 1], [:op_mul], [:integer, 2], [:op_plus],
       [:ident], [:lparen],
       [:string, "abc"],
-      [:kwarg, "from"], [:integer, 1],
-      [:kwarg, "to"],   [:integer, 10],
+      [:keyword, "from"], [:integer, 1],
+      [:keyword, "to"],   [:integer, 10],
       [:rparen],
       [:rinterp],
     )
@@ -60,15 +60,15 @@ describe Liquor::Lexer do
   it "parses blocks with embedded blocks" do
     lex('{% for x in: [ 1, 2, q ] do: %} value: {{ x }} {% endfor %}').should have_token_structure(
       [:lblock],
-      [:tag, "for"], [:ident, "x"],
-      [:kwarg, "in"],
+      [:ident, "for"], [:ident, "x"],
+      [:keyword, "in"],
       [:lbracket], [:integer, 1], [:comma], [:integer, 2], [:comma], [:ident, "q"], [:rbracket],
-      [:kwarg, "do"],
+      [:keyword, "do"],
       [:rblock],
       [:plaintext],
       [:linterp], [:ident], [:rinterp],
       [:plaintext],
-      [:lblock], [:endtag], [:rblock],
+      [:lblock2], [:endtag], [:rblock],
     )
   end
 
@@ -99,27 +99,27 @@ describe Liquor::Lexer do
   it "parses nested tags correctly" do
     lex('{% a do: %} 1 {% b %} 2 {% c do: %} 3 {% endc %} 4 {% enda %} 5 {% ender %}').
             should have_token_structure(
-      [:lblock], [:tag, "a"], [:kwarg, "do"], [:rblock],
+      [:lblock], [:ident, "a"], [:keyword, "do"], [:rblock],
       [:plaintext, " 1 "],
-      [:lblock], [:tag, "b"], [:rblock],
+      [:lblock], [:ident, "b"], [:rblock],
       [:plaintext, " 2 "],
-      [:lblock], [:tag, "c"], [:kwarg, "do"], [:rblock],
+      [:lblock], [:ident, "c"], [:keyword, "do"], [:rblock],
       [:plaintext, " 3 "],
-      [:lblock], [:endtag], [:rblock],
+      [:lblock2], [:endtag], [:rblock],
       [:plaintext, " 4 "],
-      [:lblock], [:endtag], [:rblock],
+      [:lblock2], [:endtag], [:rblock],
       [:plaintext, " 5 "],
-      [:lblock], [:tag, "ender"], [:rblock],
+      [:lblock], [:ident, "ender"], [:rblock],
     )
     lex('{% capture do: %}{% if a then: %} 1 {% elsif: b then: %} 2 {% endif %}{% endcapture %}').
             should have_token_structure(
-      [:lblock], [:tag, "capture"], [:kwarg, "do"], [:rblock],
-      [:lblock], [:tag, "if"], [:ident, "a"], [:kwarg, "then"], [:rblock],
+      [:lblock], [:ident, "capture"], [:keyword, "do"], [:rblock],
+      [:lblock], [:ident, "if"], [:ident, "a"], [:keyword, "then"], [:rblock],
       [:plaintext, " 1 "],
-      [:lblock], [:kwarg, "elsif"], [:ident, "b"], [:kwarg, "then"], [:rblock],
+      [:lblock2], [:keyword, "elsif"], [:ident, "b"], [:keyword, "then"], [:rblock],
       [:plaintext, " 2 "],
-      [:lblock], [:endtag], [:rblock],
-      [:lblock], [:endtag], [:rblock],
+      [:lblock2], [:endtag], [:rblock],
+      [:lblock2], [:endtag], [:rblock],
     )
   end
 end

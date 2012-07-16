@@ -63,23 +63,25 @@ tag_start := |*
     'end' identifier =>
       { tag = data[ts + 3...te]
         if tag_stack.last == tag
+          fixtok.(:lblock2)
           tok.(:endtag)
           tag_stack.pop
         else
-          tok.(:tag, data[ts...te])
+          tok.(:ident, data[ts...te])
         end
         fgoto code;
       };
 
     identifier =>
       { tag = data[ts...te]
-        tok.(:tag, tag)
+        tok.(:ident, tag)
         last_tag = tag
         fgoto code;
       };
 
     identifier ':' =>
-      { tok.(:kwarg, data[ts...te - 1])
+      { fixtok.(:lblock2)
+        tok.(:keyword, data[ts...te - 1])
         fgoto code;
       };
 
@@ -95,8 +97,8 @@ code := |*
     digit => { fhold; fgoto integer; };
 
     identifier %{ kw_stop = p } ':' whitespace* rblock =>
-      { tok.(:kwarg,  data[ts...kw_stop], te: kw_stop)
-        tok.(:rblock, nil,                ts: te - 2)
+      { tok.(:keyword, data[ts...kw_stop], te: kw_stop)
+        tok.(:rblock,  nil,                ts: te - 2)
         if last_tag
           tag_stack.push last_tag
           last_tag = nil
@@ -105,7 +107,7 @@ code := |*
       };
 
     identifier ':' =>
-      { tok.(:kwarg, data[ts...te-1]) };
+      { tok.(:keyword, data[ts...te-1]) };
 
     ','  => { tok.(:comma) };
     '.'  => { tok.(:dot)   };
@@ -195,6 +197,9 @@ module Liquor
 
       tokens = []
 
+      fixtok = ->(new_type) {
+        tokens.last[0] = new_type
+      }
       tok = ->(type, data=nil, options={}) {
         sl, sc, el, ec = *pos.(options[:ts] || ts),
                          *pos.(options[:te] || te - 1)
