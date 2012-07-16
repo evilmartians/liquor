@@ -263,12 +263,14 @@ describe Liquor::Parser do
     parser = Liquor::Parser.new
     parser.parse '{{ $'
     parser.success?.should == false
+    parser.ast.should == nil
   end
 
   it "correctly handles multiple errors" do
     parser = Liquor::Parser.new
     parser.parse '{{ fun(a: 1 a: 1) + fun(b: 1 b: 1) }}'
     parser.errors.count.should == 2
+    parser.ast.should_not == nil
   end
 
   it "resets error state on next parse" do

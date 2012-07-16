@@ -11,12 +11,20 @@ module Liquor
 module_eval(<<'...end parser.racc/module_eval...', 'parser.racc', 178)
   attr_reader :errors, :ast
 
+  def initialize
+    super
+
+    @errors = []
+    @ast = nil
+  end
+
   def success?
     @errors.empty?
   end
 
   def parse(string)
-    @errors = []
+    @errors.clear
+    @ast = nil
 
     begin
       @stream = Lexer.lex(string)

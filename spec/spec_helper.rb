@@ -22,6 +22,15 @@ module LiquorSpecHelpers
       raise Exception, "more than one error"
     end
   end
+
+  def compile(string)
+    compiler = Liquor::Compiler.new
+    compiler.compile! string
+  end
+
+  def exec(string, env={})
+    compile(string).call(env)
+  end
 end
 
 RSpec.configure do |config|
