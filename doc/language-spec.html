@@ -395,7 +395,9 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <h2 id="grammar">3 Grammar</h2>
 
-<p>The following Extended Backus-Naur form grammar is normative. The native character set of Liquor is Unicode, and every character literal specified is an explicit codepoint or continuous codepoint set.</p>
+<p>The following Extended Backus-Naur form grammar is normative. The native character set of Liquor is Unicode, and every character literal specified is an explicit codepoint.</p>
+
+<p>Statement <code><em>a</em> to <em>b</em></code> is equivalent to codepoint set which includes every codepoint from <em>a</em> to <em>b</em> inclusive. Statement <code><em>a</em> except <em>b</em></code> means that both <em>a</em> and <em>b</em> are tokens which consist of exactly one codepoint, and every character satisfying <em>a</em> and not satisfying in <em>b</em> is accepted. Statement <code>lookahead <em>a</em></code> means that the current token should only be produced if the codepoint immediately following it satisfies <em>a</em>.</p>
 
 <h3 id="basic-syntax">3.1 Basic Syntax</h3>
 
@@ -415,7 +417,7 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
   <dt>Keyword</dt>
   <dd><em>Identifier</em> <strong>:</strong></dd>
   <dt>IntegerLiteral</dt>
-  <dd><em>Digit</em>+ lookahead <em>Any</em> except <em>Symbol</em></dd>
+  <dd><em>Digit</em>+ lookahead ( <em>Any</em> except <em>Symbol</em> )</dd>
   <dt>StringLiteral</dt>
   <dd><strong>"</strong> ( <strong>\\</strong>  | <strong>\"</strong> | <em>Any</em> except <strong>"</strong> )* <strong>"</strong></dd>
   <dd><strong>'</strong> ( <strong>\\</strong>  | <strong>\'</strong> | <em>Any</em> except <strong>'</strong> )* <strong>'</strong></dd>
@@ -475,6 +477,8 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 </dl>
 
 <h3 id="blocks-1">3.3 Blocks</h3>
+
+<p>Inside a <em>Tag</em> or <em>Interpolation</em> body any <em>Whitespace</em> is used to separate adjacent tokens, but is otherwise ignored. The only case when naïvely removing <em>Whitespace</em> would cause ambiguity is whether <em>IntegerLiteral</em> is directly or indirectly followed by <em>Identifier</em>.</p>
 
 <p>TODO</p>
 

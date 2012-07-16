@@ -1,3 +1,5 @@
+#coding:utf-8
+
 require 'spec_helper'
 
 describe Liquor::Parser do
@@ -106,33 +108,73 @@ describe Liquor::Parser do
       [:interp,
         [:call,
           [:ident, "a"],
-          [nil, {}]]]
+          [:args, nil, {}]]]
     )
     parse('{{ a("str") }}').should have_node_structure(
       [:interp,
         [:call,
           [:ident, "a"],
-          [[:string, "str"], {}]]]
+          [:args, [:string, "str"], {}]]]
     )
     parse('{{ a("str" from: 1) }}').should have_node_structure(
       [:interp,
         [:call,
           [:ident, "a"],
-          [[:string, "str"],
-           {"from" => [:integer, 1]}]]]
+          [:args, [:string, "str"],
+                  {"from" => [:integer, 1]}]]]
     )
     parse('{{ a(from: 1 to: 2) }}').should have_node_structure(
       [:interp,
         [:call,
           [:ident, "a"],
-          [nil,
-           {"from" => [:integer, 1],
-            "to"   => [:integer, 2]}]]]
+          [:args, nil,
+                  {"from" => [:integer, 1],
+                   "to"   => [:integer, 2]}]]]
     )
   end
 
   it "rejects method calls with duplicate keyword arguments" do
     expect { parse('{{ a(to: 1 to: 1) }}') }.to \
                 raise_error(Liquor::SyntaxError, %r|duplicate keyword argument `to'|)
+  end
+
+  it "accepts correct filter expressions" do
+    parse('{{ a | b }}').should have_node_structure(
+      [:interp,
+        [:call,
+          [:ident, "b"],
+          [:args,
+            [:call,
+              [:ident, "a"],
+              [:args,
+                nil,
+                {}]],
+            {}]]]
+    )
+    parse('{{ a x: 1 | b y: 2 z: 3 | c p: 4 }}').should have_node_structure(
+      [:interp,
+        [:call,
+          [:ident, "c"],
+          [:args,
+            [:call,
+              [:ident, "b"],
+              [:args,
+                [:call,
+                  [:ident, "a"],
+                  [:args,
+                    nil,
+                    { "x" => [:integer, 1] }]],
+                { "y" => [:integer, 2],
+                  "z" => [:integer, 3] }]],
+            { "p" => [:integer, 4] }]]]
+    )
+  end
+
+  it "rejects malformed filter expressions" do
+    expect { parse('{{ a b: 1 }}') }.to raise_error(Liquor::SyntaxError)
+    expect { parse('{{ a(b: 1) | b ') }.to raise_error(Liquor::SyntaxError, %r{unexpected token `|'})
+    expect { parse('{{ a("str", b: 1) | b ') }.to raise_error(Liquor::SyntaxError, %r{unexpected token `|'})
+    expect { parse('{{ a | b(b: 1)') }.to raise_error(Liquor::SyntaxError, %r{unexpected token `\('})
+    expect { parse('{{ a | b("str", b: 1)') }.to raise_error(Liquor::SyntaxError, %r{unexpected token `\('})
   end
 end

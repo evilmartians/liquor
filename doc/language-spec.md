@@ -347,7 +347,9 @@ All of the following are examples of syntactically valid tags:
 3 Grammar
 ---------
 
-The following Extended Backus-Naur form grammar is normative. The native character set of Liquor is Unicode, and every character literal specified is an explicit codepoint or continuous codepoint set.
+The following Extended Backus-Naur form grammar is normative. The native character set of Liquor is Unicode, and every character literal specified is an explicit codepoint.
+
+Statement <code><em>a</em> to <em>b</em></code> is equivalent to codepoint set which includes every codepoint from _a_ to _b_ inclusive. Statement <code><em>a</em> except <em>b</em></code> means that both _a_ and _b_ are tokens which consist of exactly one codepoint, and every character satisfying _a_ and not satisfying in _b_ is accepted. Statement <code>lookahead <em>a</em></code> means that the current token should only be produced if the codepoint immediately following it satisfies _a_.
 
 ### 3.1 Basic Syntax
 
@@ -373,7 +375,7 @@ Keyword
 : _Identifier_ **:**
 
 IntegerLiteral
-: _Digit_+ lookahead _Any_ except _Symbol_
+: _Digit_+ lookahead ( _Any_ except _Symbol_ )
 
 StringLiteral
 : **\"** ( **\\\\**  \| **\\\"** \| _Any_ except **\"** )* **\"**
@@ -439,6 +441,8 @@ FilterFunctionCall
 : _Identifier_ _FunctionKeywordArguments_
 
 ### 3.3 Blocks
+
+Inside a _Tag_ or _Interpolation_ body any _Whitespace_ is used to separate adjacent tokens, but is otherwise ignored. The only case when na&iuml;vely removing _Whitespace_ would cause ambiguity is whether _IntegerLiteral_ is directly or indirectly followed by _Identifier_.
 
 TODO
 

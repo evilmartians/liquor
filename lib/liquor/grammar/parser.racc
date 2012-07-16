@@ -27,6 +27,8 @@ rule
   interp:
       linterp expr rinterp
       { result = [ :interp, retag(val), val[1] ] }
+    | linterp filter_chain rinterp
+      { result = [ :interp, retag(val), val[1] ] }
 
   primary_expr:
       ident
@@ -89,23 +91,46 @@ rule
 
   function_args:
       expr function_kwargs
-      { result = [ val[0], val[1] ] }
+      { result = [ :args, retag(val), val[0], val[1][2] ] }
     | function_kwargs
-      { result = [ nil, val[0] ] }
+      { result = [ :args, retag(val), nil, val[0][2] ] }
 
   function_kwargs:
       kwarg expr function_kwargs
       { # voodoo. well, it could be worse with (cdadr val) and stuff.
-        if val[2].include? val[0][2]
+        if val[2][2].include? val[0][2]
           raise SyntaxError.new("duplicate keyword argument `#{val[0][2]}'",
-              val[2][val[0][2]][1])
+              val[2][2][val[0][2]][1])
         end
-        result = {
+        hash = {
           val[0][2] => [ val[1][0], retag([ val[0], val[1] ]), *val[1][2..-1] ]
-        }.merge(val[2])
+        }.merge(val[2][2])
+        result = [ :kwargs, retag([ val[0], val[2] ]), hash ]
       }
     | /* empty */
-      { result = {} }
+      { result = [ :kwargs, nil, {} ] }
+
+  filter_chain:
+      filter_call pipe filter_chain_cont
+      { result = [ val[0], *val[2] ].
+            reduce { |tree, node| node[3][2] = tree; node }
+      }
+
+  filter_chain_cont:
+      filter_call pipe filter_chain_cont
+      { result = [ val[0], *val[2] ] }
+    | filter_call
+      { result = [ val[0] ] }
+
+  filter_call:
+      ident function_kwargs
+      { ident_pos = val[0][1]
+        empty_args_pos = { line:  ident_pos[:line],
+                           start: ident_pos[:end] + 1,
+                           end:   ident_pos[:end] + 1, }
+        result = [ :call, val[0][1], val[0],
+                   [ :args, val[1][1] || empty_args_pos, nil, val[1][2] ] ]
+      }
 
 ---- inner
   def parse(string)
@@ -150,11 +175,14 @@ rule
     raise Liquor::SyntaxError.new("unexpected token `#{type}'", pos)
   end
 
-  def retag(pos_list)
-    first, *, last = pos_list
+  def retag(nodes)
+    pos = nodes.map { |node| node[1] }.compact
+    first, *, last = pos
+    return first if last.nil?
+
     {
-      line:  first[1][:line],
-      start: first[1][:start],
-      end:    last[1][:end],
+      line:  first[:line],
+      start: first[:start],
+      end:    last[:end],
     }
   end
