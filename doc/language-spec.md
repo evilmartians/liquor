@@ -251,11 +251,11 @@ If the requested field does not exist in the external object, a runtime error co
 
 Identifiers can be bound to functions prior to compilation. Identifiers _null_, _true_ and _false_ cannot be bound to a function.
 
-Functions are defined in an implementation-specific way. Functions can have zero to one unnamed formal parameters and any amount of named formal parameters. If an unnamed formal parameter exists, it is mandatory. Named formal parameters can be either mandatory or optional. Absence of a mandatory formal parameter will result in a compile-time error. Named formal parameter order is irrelevant.
+Functions are defined in an implementation-specific way. Functions can have zero to one unnamed formal parameters and any amount of named formal parameters. If an unnamed formal parameter is accepted, it is mandatory. Named formal parameters can be either mandatory or optional. Absence of a mandatory formal parameter will result in a compile-time error ([argument error](#argument-error)). Named formal parameter order is irrelevant.
 
 Function calls have mandatory parentheses, and arguments are whitespace-delimited.
 
-If a function call includes two named parameters with the same name, a compile-time error is raised.
+If a function call includes two named parameters with the same name, a compile-time error ([syntax error](#syntax-error)) is raised.
 
 If a hypothetical function _substr_ has one unnamed formal parameter and two optional named formal parameters _from_ and _length_, then all of the following expressions are syntactically valid and will not result in a compile-time error: `substr("foobar")`, `substr("foobar" from: 1)`, `substr("foobar" from: 1 length:(5 - 2))`. The following expression, however, is syntactically valid but will result in a compile-time error: `substr(from: 1)`.
 
@@ -265,7 +265,7 @@ Every identifier except _null_, _true_ and _false_ which is not bound to a funct
 
 Variable definition and scoping will be further discussed in section [Tags](#tags).
 
-Referencing an undefined variable shall result in a compile-time error.
+Referencing an undefined variable will result in a compile-time error ([name error](#name-error)).
 
 #### 2.4.5 Filter Expressions
 
@@ -273,7 +273,7 @@ Filter expressions are a syntactic sugar for method composition and currying. Fi
 
 Filter expressions consist of a linear chain of function calls where _n_-th function's return value is passed to _n+1_-th function's unnamed parameter. Named parameters may be specified without parentheses within a corresponding chain element.
 
-All functions used in a filter expression should accept an unnamed parameter. If this is not the case, a compile-time error is raised. Semantics of mandatory and optional named parameters are the same as for [regular function calls](#function-calls).
+All functions used in a filter expression should accept an unnamed parameter. If this is not the case, a compile-time error ([argument error](#argument-error)) is raised. Semantics of mandatory and optional named parameters are the same as for [regular function calls](#function-calls).
 
 <p markdown="0">
 In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent to <code><em>g</em>(<em>f</em>(<em>e</em>() a: 1))</code>.
@@ -307,15 +307,13 @@ This program would evaluate to a string `The sum of two and three is: 5`.
 
 A tag is a syntactic construct of form `{% tag expr kw: arg do: %} ... {% endtag %}`. A tag has a syntax similar to a function call, but it can receive blocks of code as argument values and lazily evaluate passed expressions and blocks of code.
 
-Tags are defined in an implementation-specific way. Tags can have zero to one unnamed formal parameters and any amount of named formal parameters. If an unnamed formal parameter exists, it is mandatory. Named formal parameters can be either mandatory or optional. Absence of a mandatory formal parameter will result in a compile-time error.
-
 Tags have full control upon parameter evaluation. Tags can require arguments to be of a certain lexical form, e.g. a `for` tag could require its unnamed formal parameter to be a lexical identifier.
 
 To pass a block of code to a tag, the closing tag delimiter should immediately follow a parameter name. Everything from the closing tag delimiter to the matching opening tag delimiter should be parsed as a block and passed as a value of the corresponding parameter. After the matching opening tag delimiter, the parameter list is continued.
 
 If a tag <code><em>t</em></code> does not include any embedded blocks, it ends after a first matching closing tag delimiter. Otherwise, the tag ends after a first matching construct of the form <code>{% end<em>t</em> %}</code>.
 
-Unlike functions, tags can receive multiple named parameters with the same name. Tag named parameters are a syntactic tool and should be thoroughly verified by the tag implementation. Incorrect names or order of named parameters should result in a compile-time error.
+Unlike functions, tags can receive multiple named parameters with the same name. Tag named parameters are a syntactic tool and should be thoroughly verified by the tag implementation. Specifying incorrect names or order of named parameters may result in a compile-time error ([syntax error](#syntax-error)).
 
 All of the following are examples of syntactically valid tags:
 
@@ -351,7 +349,7 @@ The following Extended Backus-Naur form grammar is normative. The native charact
 
 Statement <code><em>a</em> to <em>b</em></code> is equivalent to codepoint set which includes every codepoint from _a_ to _b_ inclusive. Statement <code><em>a</em> except <em>b</em></code> means that both _a_ and _b_ are tokens which consist of exactly one codepoint, and every character satisfying _a_ and not satisfying in _b_ is accepted. Statement <code>lookahead <em>a</em></code> means that the current token should only be produced if the codepoint immediately following it satisfies _a_.
 
-Strictly, this grammar lies within _GLR_ domain, but if, as it is usually the case, an implementation has separate lexer and parser, an _LL(1)_ parser could be used. This will be further explained in section [Blocks](#blocks-1).
+Strictly, this grammar lies within _GLR_ domain, but if, as it is usually the case, an implementation has separate lexer and parser, an _LR(1)_ parser could be used. This will be further explained in section [Blocks](#blocks-1).
 
 ### 3.1 Basic Syntax
 
@@ -477,7 +475,45 @@ EndTag
 4 Compile-time Behavior
 -----------------------
 
-TODO
+Liquor compiling process consists of three distinct parts: _parsing_, _scope resolution_ and _translation_. Each stage includes exhaustive error checking; additionally, scope resolution and translation are heavily dependent on the defined tags and their behavior.
+
+### 4.1 Errors {#compile-time-errors}
+
+To ease development process, an implementation generally should not stop compilation after encountering an error. As an exception to the general rule, implementation must stop parsing and abandon any intermediate result after encountering a syntax error. Rationale to this behavior is that with Liquor's interleaved structure, successful error recovery after parsing errors is unlikely.
+
+Every error must carry accurate location information.
+
+#### 4.1.1 Syntax Error
+
+Syntax error will be raised upon encountering any of the following conditions:
+
+1. Parsing failure (section [Grammar](#grammar))
+2. Duplicate function keyword arguments (section [Function Calls](#function-calls))
+3. Incorrect tag syntax (section [Tags](#tags))
+
+Syntax errors must include source location information and point to the exact token which caused the error.
+
+#### 4.1.2 Argument Error
+
+Argument error will be raised upon encountering any of the following conditions:
+
+1. Absence of a mandatory parameter, or presence of non-accepted parameter (sections [Function Calls](#function-calls), [Tags](#tags))
+
+Argument errors must include source location information and point either to the exact parameter which caused the error, or to the argument list in case of a missing parameter.
+
+#### 4.1.3 Name Error
+
+Name error will be raised upon encountering any of the following conditions:
+
+1. Referencing an undefined variable (section [Variable Access](#variable-access))
+1. Referencing an undefined function (section [Function Calls](#function-calls))
+1. Encountering an undefined tag (section [Tags](#tags))
+
+Name errors must include source location information and point to the exact token which caused the error.
+
+### 4.2 Scope Resolution
+
+
 
 5 Runtime Behavior
 ------------------

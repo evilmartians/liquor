@@ -146,7 +146,16 @@ dd strong, code {
           <li><a href="#blocks-1">3.3 Blocks</a></li>
         </ul>
       </li>
-      <li><a href="#compile-time-behavior">4 Compile-time Behavior</a></li>
+      <li><a href="#compile-time-behavior">4 Compile-time Behavior</a>        <ul>
+          <li><a href="#compile-time-errors">4.1 Errors</a>            <ul>
+              <li><a href="#syntax-error">4.1.1 Syntax Error</a></li>
+              <li><a href="#argument-error">4.1.2 Argument Error</a></li>
+              <li><a href="#name-error">4.1.3 Name Error</a></li>
+            </ul>
+          </li>
+          <li><a href="#scope-resolution">4.2 Scope Resolution</a></li>
+        </ul>
+      </li>
       <li><a href="#runtime-behavior">5 Runtime Behavior</a></li>
       <li><a href="#builtins">6 Builtins</a></li>
     </ul>
@@ -298,11 +307,11 @@ The following operators are infix and unary: <code>-</code>, <code>!</code>.</p>
 
 <p>Identifiers can be bound to functions prior to compilation. Identifiers <em>null</em>, <em>true</em> and <em>false</em> cannot be bound to a function.</p>
 
-<p>Functions are defined in an implementation-specific way. Functions can have zero to one unnamed formal parameters and any amount of named formal parameters. If an unnamed formal parameter exists, it is mandatory. Named formal parameters can be either mandatory or optional. Absence of a mandatory formal parameter will result in a compile-time error. Named formal parameter order is irrelevant.</p>
+<p>Functions are defined in an implementation-specific way. Functions can have zero to one unnamed formal parameters and any amount of named formal parameters. If an unnamed formal parameter is accepted, it is mandatory. Named formal parameters can be either mandatory or optional. Absence of a mandatory formal parameter will result in a compile-time error (<a href="#argument-error">argument error</a>). Named formal parameter order is irrelevant.</p>
 
 <p>Function calls have mandatory parentheses, and arguments are whitespace-delimited.</p>
 
-<p>If a function call includes two named parameters with the same name, a compile-time error is raised.</p>
+<p>If a function call includes two named parameters with the same name, a compile-time error (<a href="#syntax-error">syntax error</a>) is raised.</p>
 
 <p>If a hypothetical function <em>substr</em> has one unnamed formal parameter and two optional named formal parameters <em>from</em> and <em>length</em>, then all of the following expressions are syntactically valid and will not result in a compile-time error: <code>substr("foobar")</code>, <code>substr("foobar" from: 1)</code>, <code>substr("foobar" from: 1 length:(5 - 2))</code>. The following expression, however, is syntactically valid but will result in a compile-time error: <code>substr(from: 1)</code>.</p>
 
@@ -312,7 +321,7 @@ The following operators are infix and unary: <code>-</code>, <code>!</code>.</p>
 
 <p>Variable definition and scoping will be further discussed in section <a href="#tags">Tags</a>.</p>
 
-<p>Referencing an undefined variable shall result in a compile-time error.</p>
+<p>Referencing an undefined variable will result in a compile-time error (<a href="#name-error">name error</a>).</p>
 
 <h4 id="filter-expressions">2.4.5 Filter Expressions</h4>
 
@@ -320,7 +329,7 @@ The following operators are infix and unary: <code>-</code>, <code>!</code>.</p>
 
 <p>Filter expressions consist of a linear chain of function calls where <em>n</em>-th function’s return value is passed to <em>n+1</em>-th function’s unnamed parameter. Named parameters may be specified without parentheses within a corresponding chain element.</p>
 
-<p>All functions used in a filter expression should accept an unnamed parameter. If this is not the case, a compile-time error is raised. Semantics of mandatory and optional named parameters are the same as for <a href="#function-calls">regular function calls</a>.</p>
+<p>All functions used in a filter expression should accept an unnamed parameter. If this is not the case, a compile-time error (<a href="#argument-error">argument error</a>) is raised. Semantics of mandatory and optional named parameters are the same as for <a href="#function-calls">regular function calls</a>.</p>
 
 <p>
 In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent to <code><em>g</em>(<em>f</em>(<em>e</em>() a: 1))</code>.
@@ -356,15 +365,13 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <p>A tag is a syntactic construct of form <code>{% tag expr kw: arg do: %} ... {% endtag %}</code>. A tag has a syntax similar to a function call, but it can receive blocks of code as argument values and lazily evaluate passed expressions and blocks of code.</p>
 
-<p>Tags are defined in an implementation-specific way. Tags can have zero to one unnamed formal parameters and any amount of named formal parameters. If an unnamed formal parameter exists, it is mandatory. Named formal parameters can be either mandatory or optional. Absence of a mandatory formal parameter will result in a compile-time error.</p>
-
 <p>Tags have full control upon parameter evaluation. Tags can require arguments to be of a certain lexical form, e.g. a <code>for</code> tag could require its unnamed formal parameter to be a lexical identifier.</p>
 
 <p>To pass a block of code to a tag, the closing tag delimiter should immediately follow a parameter name. Everything from the closing tag delimiter to the matching opening tag delimiter should be parsed as a block and passed as a value of the corresponding parameter. After the matching opening tag delimiter, the parameter list is continued.</p>
 
 <p>If a tag <code><em>t</em></code> does not include any embedded blocks, it ends after a first matching closing tag delimiter. Otherwise, the tag ends after a first matching construct of the form <code>{% end<em>t</em> %}</code>.</p>
 
-<p>Unlike functions, tags can receive multiple named parameters with the same name. Tag named parameters are a syntactic tool and should be thoroughly verified by the tag implementation. Incorrect names or order of named parameters should result in a compile-time error.</p>
+<p>Unlike functions, tags can receive multiple named parameters with the same name. Tag named parameters are a syntactic tool and should be thoroughly verified by the tag implementation. Specifying incorrect names or order of named parameters may result in a compile-time error (<a href="#syntax-error">syntax error</a>).</p>
 
 <p>All of the following are examples of syntactically valid tags:</p>
 
@@ -399,7 +406,7 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <p>Statement <code><em>a</em> to <em>b</em></code> is equivalent to codepoint set which includes every codepoint from <em>a</em> to <em>b</em> inclusive. Statement <code><em>a</em> except <em>b</em></code> means that both <em>a</em> and <em>b</em> are tokens which consist of exactly one codepoint, and every character satisfying <em>a</em> and not satisfying in <em>b</em> is accepted. Statement <code>lookahead <em>a</em></code> means that the current token should only be produced if the codepoint immediately following it satisfies <em>a</em>.</p>
 
-<p>Strictly, this grammar lies within <em>GLR</em> domain, but if, as it is usually the case, an implementation has separate lexer and parser, an <em>LL(1)</em> parser could be used. This will be further explained in section <a href="#blocks-1">Blocks</a>.</p>
+<p>Strictly, this grammar lies within <em>GLR</em> domain, but if, as it is usually the case, an implementation has separate lexer and parser, an <em>LR(1)</em> parser could be used. This will be further explained in section <a href="#blocks-1">Blocks</a>.</p>
 
 <h3 id="basic-syntax">3.1 Basic Syntax</h3>
 
@@ -508,7 +515,49 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <h2 id="compile-time-behavior">4 Compile-time Behavior</h2>
 
-<p>TODO</p>
+<p>Liquor compiling process consists of three distinct parts: <em>parsing</em>, <em>scope resolution</em> and <em>translation</em>. Each stage includes exhaustive error checking; additionally, scope resolution and translation are heavily dependent on the defined tags and their behavior.</p>
+
+<h3 id="compile-time-errors">4.1 Errors</h3>
+
+<p>To ease development process, an implementation generally should not stop compilation after encountering an error. As an exception to the general rule, implementation must stop parsing and abandon any intermediate result after encountering a syntax error. Rationale to this behavior is that with Liquor’s interleaved structure, successful error recovery after parsing errors is unlikely.</p>
+
+<p>Every error must carry accurate location information.</p>
+
+<h4 id="syntax-error">4.1.1 Syntax Error</h4>
+
+<p>Syntax error will be raised upon encountering any of the following conditions:</p>
+
+<ol>
+  <li>Parsing failure (section <a href="#grammar">Grammar</a>)</li>
+  <li>Duplicate function keyword arguments (section <a href="#function-calls">Function Calls</a>)</li>
+  <li>Incorrect tag syntax (section <a href="#tags">Tags</a>)</li>
+</ol>
+
+<p>Syntax errors must include source location information and point to the exact token which caused the error.</p>
+
+<h4 id="argument-error">4.1.2 Argument Error</h4>
+
+<p>Argument error will be raised upon encountering any of the following conditions:</p>
+
+<ol>
+  <li>Absence of a mandatory parameter, or presence of non-accepted parameter (sections <a href="#function-calls">Function Calls</a>, <a href="#tags">Tags</a>)</li>
+</ol>
+
+<p>Argument errors must include source location information and point either to the exact parameter which caused the error, or to the argument list in case of a missing parameter.</p>
+
+<h4 id="name-error">4.1.3 Name Error</h4>
+
+<p>Name error will be raised upon encountering any of the following conditions:</p>
+
+<ol>
+  <li>Referencing an undefined variable (section <a href="#variable-access">Variable Access</a>)</li>
+  <li>Referencing an undefined function (section <a href="#function-calls">Function Calls</a>)</li>
+  <li>Encountering an undefined tag (section <a href="#tags">Tags</a>)</li>
+</ol>
+
+<p>Name errors must include source location information and point to the exact token which caused the error.</p>
+
+<h3 id="scope-resolution">4.2 Scope Resolution</h3>
 
 <h2 id="runtime-behavior">5 Runtime Behavior</h2>
 
