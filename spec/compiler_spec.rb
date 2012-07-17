@@ -97,4 +97,39 @@ describe Liquor::Compiler do
       compiler.compile! '{{ yield("a" buffer: "test") }}'
     }.to raise_error(Liquor::ArgumentError, %r|unnamed argument is not accepted|)
   end
+
+  it "works with filter expressions" do
+    compiler = Liquor::Compiler.new
+
+    a = Liquor::Function.new("capitalize") do
+      unnamed_arg true
+
+      body do |arg, kw|
+        arg.capitalize
+      end
+    end
+    compiler.register_function a
+
+    b = Liquor::Function.new("reverse") do
+      unnamed_arg true
+
+      body do |arg, kw|
+        arg.reverse
+      end
+    end
+    compiler.register_function b
+
+    c = Liquor::Function.new("trim") do
+      unnamed_arg true
+      mandatory_named_args :length
+
+      body do |arg, kw|
+        arg[0...kw[:length]]
+      end
+    end
+    compiler.register_function c
+
+    compiler.compile '{{ "hello world" | reverse | trim length: 3 | capitalize }}'
+    compiler.code.call.should == 'Dlr'
+  end
 end

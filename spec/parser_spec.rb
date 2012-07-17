@@ -144,14 +144,10 @@ describe Liquor::Parser do
         [:call,
           [:ident, "b"],
           [:args,
-            [:call,
-              [:ident, "a"],
-              [:args,
-                nil,
-                {}]],
+            [:ident, "a"],
             {}]]]
     )
-    parse('{{ a x: 1 | b y: 2 z: 3 | c p: 4 }}').should have_node_structure(
+    parse('{{ a(x: 1) | b y: 2 z: 3 | c p: 4 }}').should have_node_structure(
       [:interp,
         [:call,
           [:ident, "c"],
@@ -172,7 +168,6 @@ describe Liquor::Parser do
 
   it "rejects malformed filter expressions" do
     expect { parse('{{ a b: 1 }}') }.to raise_error(Liquor::SyntaxError)
-    expect { parse('{{ a(b: 1) | b ') }.to raise_error(Liquor::SyntaxError, %r{unexpected token `|'})
     expect { parse('{{ a("str", b: 1) | b ') }.to raise_error(Liquor::SyntaxError, %r{unexpected token `|'})
     expect { parse('{{ a | b(b: 1)') }.to raise_error(Liquor::SyntaxError, %r{unexpected token `\('})
     expect { parse('{{ a | b("str", b: 1)') }.to raise_error(Liquor::SyntaxError, %r{unexpected token `\('})

@@ -424,7 +424,7 @@ KeywordArguments
 : ( _Keyword_ _Expression_ )*
 
 FilterChain
-: _FilterFunctionCall_ **\|** _FilterChainContinuation_
+: _Expression_ **\|** _FilterChainContinuation_
 
 FilterChainContinuation
 : _FilterFunctionCall_ **\|** _FilterChainContinuation_

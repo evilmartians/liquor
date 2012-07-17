@@ -101,6 +101,7 @@ rule
       keyword expr function_keywords
       { name = val[0][2].to_sym
         tail = val[2][2]
+        loc  = retag([ val[0], val[1] ])
 
         if tail.include? name
           @errors << SyntaxError.new("duplicate keyword argument `#{val[0][2]}'",
@@ -108,16 +109,16 @@ rule
         end
 
         hash = {
-          name => [ val[1][0], retag([ val[0], val[1] ]), *val[1][2..-1] ]
+          name => [ val[1][0], loc, *val[1][2..-1] ]
         }.merge(tail)
 
-        result = [ :keywords, retag([ val[0], val[2] ]), hash ]
+        result = [ :keywords, retag([ loc, val[2] ]), hash ]
       }
     | /* empty */
       { result = [ :keywords, nil, {} ] }
 
   filter_chain:
-      filter_call pipe filter_chain_cont
+      expr pipe filter_chain_cont
       { result = [ val[0], *val[2] ].
             reduce { |tree, node| node[3][2] = tree; node }
       }

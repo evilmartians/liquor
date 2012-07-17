@@ -82,24 +82,24 @@ module Liquor
       arg, kw  = nvalue(rhs)
 
       if !@context.function? name
-        raise NameError.new("undefined function `#{name}'", lhs)
+        raise NameError.new("undefined function `#{name}'", nloc(lhs))
       end
 
       function = @context.compiler.function(name)
       if function.unnamed_arg && arg.nil?
-        raise ArgumentError.new("unnamed argument is required, but none provided", rhs)
+        raise ArgumentError.new("unnamed argument is required, but none provided", nloc(rhs))
       elsif !function.unnamed_arg && !arg.nil?
-        raise ArgumentError.new("unnamed argument is not accepted, but is provided", arg)
+        raise ArgumentError.new("unnamed argument is not accepted, but is provided", nloc(arg))
       else
         function.mandatory_named_args.each do |kwarg|
           unless kw.include? kwarg
-            raise ArgumentError.new("named argument `#{kwarg}' is required, but none provided", rhs)
+            raise ArgumentError.new("named argument `#{kwarg}' is required, but none provided", nloc(rhs))
           end
         end
         kw.each do |kwarg, kwval|
           if !function.mandatory_named_args.include?(kwarg) &&
              !function.optional_named_args.include?(kwarg)
-            raise ArgumentError.new("named argument `#{kwarg}' is not accepted, but is provided", kwval)
+            raise ArgumentError.new("named argument `#{kwarg}' is not accepted, but is provided", nloc(kwval))
           end
         end
       end
