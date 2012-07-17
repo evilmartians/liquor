@@ -157,7 +157,11 @@ dd strong, code {
         </ul>
       </li>
       <li><a href="#runtime-behavior">5 Runtime Behavior</a></li>
-      <li><a href="#builtins">6 Builtins</a></li>
+      <li><a href="#builtins">6 Builtins</a>        <ul>
+          <li><a href="#tags-1">6.1 Tags</a></li>
+          <li><a href="#functions">6.2 Functions</a></li>
+        </ul>
+      </li>
     </ul>
   </li>
 </ul>
@@ -515,7 +519,7 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <h2 id="compile-time-behavior">4 Compile-time Behavior</h2>
 
-<p>Liquor compiling process consists of three distinct parts: <em>parsing</em>, <em>scope resolution</em> and <em>translation</em>. Each stage includes exhaustive error checking; additionally, scope resolution and translation are heavily dependent on the defined tags and their behavior.</p>
+<p>Liquor compiling process consists of three distinct parts: <em>parsing</em>, <em>scope resolution</em> and <em>translation</em>. Each stage includes exhaustive error checking; additionally, translation and scope resolution are heavily dependent on the defined tags and their behavior.</p>
 
 <h3 id="compile-time-errors">4.1 Errors</h3>
 
@@ -550,14 +554,27 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 <p>Name error will be raised upon encountering any of the following conditions:</p>
 
 <ol>
-  <li>Referencing an undefined variable (section <a href="#variable-access">Variable Access</a>)</li>
+  <li>Referencing an undefined variable (sections <a href="#variable-access">Variable Access</a>, <a href="#scope-resolution">Scope Resolution</a>)</li>
   <li>Referencing an undefined function (section <a href="#function-calls">Function Calls</a>)</li>
   <li>Encountering an undefined tag (section <a href="#tags">Tags</a>)</li>
+  <li>Trying to bind an already bound identifier (section <a href="#scope-resolution">Scope Resolution</a>)</li>
 </ol>
 
 <p>Name errors must include source location information and point to the exact token which caused the error.</p>
 
 <h3 id="scope-resolution">4.2 Scope Resolution</h3>
+
+<p><a href="#tags">Tags</a> control every aspect of scope construction and resolution.</p>
+
+<p>Basically, tags can perform three scope-related actions: <em>declare</em> a variable, <em>assign</em> a variable and create a <em>nested scope</em>.</p>
+
+<p>Declaring a variable binds the identifier to a value. To declare a variable, the identifier should not be bound in the current scope. If this is not the case, a compile-time error (<a href="#name-error">name error</a>) is raised. If the identifier is bound in an outer scope, it will be rebound in the current scope. Such a binding ceases to exist when the current scope is left.</p>
+
+<p>Assigning a variable, similarly to accessing, requires the variable to be declared in any of the scopes. Assigning a variable changes its value in the innermost scope.</p>
+
+<p>Creating a nested scope allows for shadowing of the variables. Tags must only execute contents of the passed blocks in a nested scope. Passed expressions are always executed in the tag’s scope. A tag must ensure that every scope it created will be left before the tag will finish executing.</p>
+
+<p>An implementation should have a way to inject variables into the outermost scope.</p>
 
 <h2 id="runtime-behavior">5 Runtime Behavior</h2>
 
@@ -565,6 +582,13 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <h2 id="builtins">6 Builtins</h2>
 
+<h3 id="tags-1">6.1 Tags</h3>
+
+<p>TODO</p>
+
+<h3 id="functions">6.2 Functions</h3>
+
+<p>TODO</p>
 
   </body>
 </html>

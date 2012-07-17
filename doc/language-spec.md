@@ -475,7 +475,7 @@ EndTag
 4 Compile-time Behavior
 -----------------------
 
-Liquor compiling process consists of three distinct parts: _parsing_, _scope resolution_ and _translation_. Each stage includes exhaustive error checking; additionally, scope resolution and translation are heavily dependent on the defined tags and their behavior.
+Liquor compiling process consists of three distinct parts: _parsing_, _scope resolution_ and _translation_. Each stage includes exhaustive error checking; additionally, translation and scope resolution are heavily dependent on the defined tags and their behavior.
 
 ### 4.1 Errors {#compile-time-errors}
 
@@ -505,15 +505,26 @@ Argument errors must include source location information and point either to the
 
 Name error will be raised upon encountering any of the following conditions:
 
-1. Referencing an undefined variable (section [Variable Access](#variable-access))
-1. Referencing an undefined function (section [Function Calls](#function-calls))
-1. Encountering an undefined tag (section [Tags](#tags))
+1. Referencing an undefined variable (sections [Variable Access](#variable-access), [Scope Resolution](#scope-resolution))
+2. Referencing an undefined function (section [Function Calls](#function-calls))
+3. Encountering an undefined tag (section [Tags](#tags))
+4. Trying to bind an already bound identifier (section [Scope Resolution](#scope-resolution))
 
 Name errors must include source location information and point to the exact token which caused the error.
 
 ### 4.2 Scope Resolution
 
+[Tags](#tags) control every aspect of scope construction and resolution.
 
+Basically, tags can perform three scope-related actions: _declare_ a variable, _assign_ a variable and create a _nested scope_.
+
+Declaring a variable binds the identifier to a value. To declare a variable, the identifier should not be bound in the current scope. If this is not the case, a compile-time error ([name error](#name-error)) is raised. If the identifier is bound in an outer scope, it will be rebound in the current scope. Such a binding ceases to exist when the current scope is left.
+
+Assigning a variable, similarly to accessing, requires the variable to be declared in any of the scopes. Assigning a variable changes its value in the innermost scope.
+
+Creating a nested scope allows for shadowing of the variables. Tags must only execute contents of the passed blocks in a nested scope. Passed expressions are always executed in the tag's scope. A tag must ensure that every scope it created will be left before the tag will finish executing.
+
+An implementation should have a way to inject variables into the outermost scope.
 
 5 Runtime Behavior
 ------------------
@@ -523,3 +534,10 @@ TODO
 6 Builtins
 ----------
 
+### 6.1 Tags
+
+TODO
+
+### 6.2 Functions
+
+TODO
