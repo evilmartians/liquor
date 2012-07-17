@@ -1,23 +1,42 @@
 module Liquor
   class Compiler
-    include ASTTools
-
     attr_reader :errors, :code
 
     def initialize
+      @tags      = {}
+      @functions = {}
+
       @parser = Parser.new
       @errors = []
       @code   = nil
     end
 
-    # External API
-
     def register_tag(tag)
-      # TODO
+      if @tags.include? tag.name
+        raise Exception, "attempt to register tag #{tag.name} twict"
+      end
+
+      @tags[tag.name] = tag
+
+      self
+    end
+
+    def has_tag?(name)
+      @tags.include? name
     end
 
     def register_function(function)
-      # TODO
+      if @functions.include? function.name
+        raise Exception, "attempt to register function #{function.name} twice"
+      end
+
+      @functions[function.name] = function
+
+      self
+    end
+
+    def has_function?(name)
+      @functions.include? name
     end
 
     def compile(source, externals=[])
@@ -27,10 +46,11 @@ module Liquor
 
       @parser.parse source
       if @parser.ast
-        context = Liquor::Context.new(externals)
-        code = compile_block(@parser.ast, context)
+        context = Liquor::Context.new(self, externals)
+        code = context.compile_toplevel(@parser.ast)
+
         if success?
-          @code = finalize(code, context)
+          @code = eval(code, nil, '(liquor)')
         else
           @code = nil
         end
@@ -58,47 +78,6 @@ module Liquor
 
     def parse_tree
       @parser.ast
-    end
-
-    # Internal API
-
-    def finalize(inside_code, context)
-      wrapper = [
-        %!lambda { |_env={}|\n!,
-        %|  _buf = ""\n|,
-        ([
-          %|  |,
-          context.externals.map do |extern|
-            context.access(extern)
-          end.join(", "),
-          %| = |,
-          context.externals.map do |extern|
-            %Q|_env[#{extern.inspect}]|
-          end.join(", "),
-        ] if context.externals.any?),
-        %|\n|,
-        inside_code,
-        %|}\n|
-      ].join
-
-      eval(wrapper, nil, '(liquor)')
-    end
-
-    def compile_block(block, context)
-      code = ""
-      block.each do |node|
-        case ntype(node)
-        when :plaintext
-          text, = nvalue(node)
-          code << %Q|_buf << #{text.inspect}\n|
-
-        else
-          raise "unknown block-level node #{ntype(node)}"
-        end
-      end
-
-      code.gsub! /(^|\n)/m, '\1' + ("  " * context.nesting)
-      code
     end
   end
 end

@@ -24,4 +24,14 @@ describe Liquor::Compiler do
   it "can compile plaintext" do
     exec('Hello World!').should == 'Hello World!'
   end
+
+  it "can compile interpolations" do
+    exec('Test: {{ "str" }}').should == 'Test: str'
+  end
+
+  it "correctly executes expressions" do
+    exec('{{ 1 + 2 * 5 + 2 }}').should == '13'
+    exec('{{ -6 - -6 }}').should == '0'
+    exec('{{ ([1,2,3])[1] }}').should == '2'
+  end
 end
