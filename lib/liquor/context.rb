@@ -55,8 +55,10 @@ module Liquor
     end
 
     def declare(name, loc=nil)
+      name = name.to_s
+
       if allocated?(name)
-        raise NameError.new("variable name `#{name}' is already occupied by #{type name}", loc)
+        raise NameError.new("identifier `#{name}' is already occupied by #{type name}", loc)
       end
 
       mapped, idx = name, 0
@@ -70,6 +72,8 @@ module Liquor
     end
 
     def access(name, loc=nil)
+      name = name.to_s
+
       if variable?(name)
         @mapping[name]
       else
@@ -95,6 +99,7 @@ module Liquor
         ] if @externals.any?),
         %|\n|,
         @emitter.flush!,
+        %|  _buf|,
         %|}\n|
       ].join
     end
@@ -113,6 +118,8 @@ module Liquor
           raise "unknown block-level node #{ntype(node)}"
         end
       end
+    rescue Liquor::Error => e
+      @compiler.add_error e
     end
   end
 end

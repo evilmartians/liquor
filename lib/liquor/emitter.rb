@@ -29,6 +29,8 @@ module Liquor
         @context.access name, nloc(node)
       when :function
         raise NameError.new("using function `#{name}' as a variable", nloc(node))
+      when :free
+        raise NameError.new("identifier `#{name}' is not bound", nloc(node))
       end
     end
 
@@ -72,6 +74,47 @@ module Liquor
       else
         raise "unknown node #{ntype node}"
       end
+    end
+
+    def call(node)
+      lhs, rhs = nvalue(node)
+      name,    = nvalue(lhs)
+      arg, kw  = nvalue(rhs)
+
+      if !@context.function? name
+        raise NameError.new("undefined function `#{name}'", lhs)
+      end
+
+      function = @context.compiler.function(name)
+      if function.unnamed_arg && arg.nil?
+        raise ArgumentError.new("unnamed argument is required, but none provided", rhs)
+      elsif !function.unnamed_arg && !arg.nil?
+        raise ArgumentError.new("unnamed argument is not accepted, but is provided", arg)
+      else
+        function.mandatory_named_args.each do |kwarg|
+          unless kw.include? kwarg
+            raise ArgumentError.new("named argument `#{kwarg}' is required, but none provided", rhs)
+          end
+        end
+        kw.each do |kwarg, kwval|
+          if !function.mandatory_named_args.include?(kwarg) &&
+             !function.optional_named_args.include?(kwarg)
+            raise ArgumentError.new("named argument `#{kwarg}' is not accepted, but is provided", kwval)
+          end
+        end
+      end
+
+      if arg.nil?
+        args = [ "nil" ]
+      else
+        args = [ expr(arg) ]
+      end
+
+      kw.each do |kwarg, kwval|
+        args << "#{kwarg.inspect} => #{expr(kwval)}"
+      end
+
+      "@functions[#{name.inspect}].call(#{args.join(', ')})"
     end
 
     def index(node)

@@ -99,14 +99,18 @@ rule
 
   function_keywords:
       keyword expr function_keywords
-      { # voodoo. well, it could be worse with (cdadr val) and stuff.
-        if val[2][2].include? val[0][2]
+      { name = val[0][2].to_sym
+        tail = val[2][2]
+
+        if tail.include? name
           @errors << SyntaxError.new("duplicate keyword argument `#{val[0][2]}'",
-              val[2][2][val[0][2]][1])
+              tail[name][1])
         end
+
         hash = {
-          val[0][2] => [ val[1][0], retag([ val[0], val[1] ]), *val[1][2..-1] ]
-        }.merge(val[2][2])
+          name => [ val[1][0], retag([ val[0], val[1] ]), *val[1][2..-1] ]
+        }.merge(tail)
+
         result = [ :keywords, retag([ val[0], val[2] ]), hash ]
       }
     | /* empty */

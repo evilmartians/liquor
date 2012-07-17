@@ -25,6 +25,10 @@ module Liquor
       @tags.include? name
     end
 
+    def tag(name)
+      @tags[name]
+    end
+
     def register_function(function)
       if @functions.include? function.name
         raise Exception, "attempt to register function #{function.name} twice"
@@ -37,6 +41,10 @@ module Liquor
 
     def has_function?(name)
       @functions.include? name
+    end
+
+    def function(name)
+      @functions[name]
     end
 
     def compile(source, externals=[])
@@ -70,6 +78,10 @@ module Liquor
 
     def errors
       @parser.errors + @errors
+    end
+
+    def add_error(error)
+      @errors << error
     end
 
     def success?

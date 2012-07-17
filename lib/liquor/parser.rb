@@ -8,7 +8,7 @@ require 'racc/parser.rb'
 module Liquor
   class Parser < Racc::Parser
 
-module_eval(<<'...end parser.racc/module_eval...', 'parser.racc', 178)
+module_eval(<<'...end parser.racc/module_eval...', 'parser.racc', 182)
   attr_reader :errors, :ast
 
   def initialize
@@ -714,28 +714,32 @@ module_eval(<<'.,.,', 'parser.racc', 97)
 
 module_eval(<<'.,.,', 'parser.racc', 101)
   def _reduce_37(val, _values, result)
-     # voodoo. well, it could be worse with (cdadr val) and stuff.
-        if val[2][2].include? val[0][2]
+     name = val[0][2].to_sym
+        tail = val[2][2]
+
+        if tail.include? name
           @errors << SyntaxError.new("duplicate keyword argument `#{val[0][2]}'",
-              val[2][2][val[0][2]][1])
+              tail[name][1])
         end
+
         hash = {
-          val[0][2] => [ val[1][0], retag([ val[0], val[1] ]), *val[1][2..-1] ]
-        }.merge(val[2][2])
+          name => [ val[1][0], retag([ val[0], val[1] ]), *val[1][2..-1] ]
+        }.merge(tail)
+
         result = [ :keywords, retag([ val[0], val[2] ]), hash ]
       
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 112)
+module_eval(<<'.,.,', 'parser.racc', 116)
   def _reduce_38(val, _values, result)
      result = [ :keywords, nil, {} ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 116)
+module_eval(<<'.,.,', 'parser.racc', 120)
   def _reduce_39(val, _values, result)
      result = [ val[0], *val[2] ].
             reduce { |tree, node| node[3][2] = tree; node }
@@ -744,21 +748,21 @@ module_eval(<<'.,.,', 'parser.racc', 116)
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 122)
+module_eval(<<'.,.,', 'parser.racc', 126)
   def _reduce_40(val, _values, result)
      result = [ val[0], *val[2] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 124)
+module_eval(<<'.,.,', 'parser.racc', 128)
   def _reduce_41(val, _values, result)
      result = [ val[0] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 128)
+module_eval(<<'.,.,', 'parser.racc', 132)
   def _reduce_42(val, _values, result)
      ident_loc = val[0][1]
         empty_args_loc = { line:  ident_loc[:line],
@@ -771,84 +775,84 @@ module_eval(<<'.,.,', 'parser.racc', 128)
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 138)
+module_eval(<<'.,.,', 'parser.racc', 142)
   def _reduce_43(val, _values, result)
      result = [ :tag, retag(val), val[1], val[2], *reduce_tag_args(val[3][2]) ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 140)
+module_eval(<<'.,.,', 'parser.racc', 144)
   def _reduce_44(val, _values, result)
      result = [ :tag, retag(val), val[1], nil,    *reduce_tag_args(val[2][2]) ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 148)
+module_eval(<<'.,.,', 'parser.racc', 152)
   def _reduce_45(val, _values, result)
      result = [ :cont,  retag(val), [] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 150)
+module_eval(<<'.,.,', 'parser.racc', 154)
   def _reduce_46(val, _values, result)
      result = [ :cont,  retag(val), [ val[0], *val[1][2] ] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 154)
+module_eval(<<'.,.,', 'parser.racc', 158)
   def _reduce_47(val, _values, result)
      result = [ :cont2, val[0][1],  [ [:block, val[0][1], val[1] ], *val[3] ] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 156)
+module_eval(<<'.,.,', 'parser.racc', 160)
   def _reduce_48(val, _values, result)
      result = [ :cont2, retag(val), [ val[0], *val[1][2] ] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 160)
+module_eval(<<'.,.,', 'parser.racc', 164)
   def _reduce_49(val, _values, result)
      result = [] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 162)
+module_eval(<<'.,.,', 'parser.racc', 166)
   def _reduce_50(val, _values, result)
      result = [ val[0], *val[1] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 166)
+module_eval(<<'.,.,', 'parser.racc', 170)
   def _reduce_51(val, _values, result)
      result = [ [:block, val[0][1], val[1] ], *val[3] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 168)
+module_eval(<<'.,.,', 'parser.racc', 172)
   def _reduce_52(val, _values, result)
      result = [ val[0], val[1], *val[2] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 172)
+module_eval(<<'.,.,', 'parser.racc', 176)
   def _reduce_53(val, _values, result)
      result = [ [:block, val[0][1], val[1] ], *val[3] ] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.racc', 174)
+module_eval(<<'.,.,', 'parser.racc', 178)
   def _reduce_54(val, _values, result)
      result = [ val[0], *val[1] ] 
     result

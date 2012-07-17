@@ -121,15 +121,15 @@ describe Liquor::Parser do
         [:call,
           [:ident, "a"],
           [:args, [:string, "str"],
-                  {"from" => [:integer, 1]}]]]
+                  {:from => [:integer, 1]}]]]
     )
     parse('{{ a(from: 1 to: 2) }}').should have_node_structure(
       [:interp,
         [:call,
           [:ident, "a"],
           [:args, nil,
-                  {"from" => [:integer, 1],
-                   "to"   => [:integer, 2]}]]]
+                  {:from => [:integer, 1],
+                   :to   => [:integer, 2]}]]]
     )
   end
 
@@ -163,10 +163,10 @@ describe Liquor::Parser do
                   [:ident, "a"],
                   [:args,
                     nil,
-                    { "x" => [:integer, 1] }]],
-                { "y" => [:integer, 2],
-                  "z" => [:integer, 3] }]],
-            { "p" => [:integer, 4] }]]]
+                    { :x => [:integer, 1] }]],
+                { :y => [:integer, 2],
+                  :z => [:integer, 3] }]],
+            { :p => [:integer, 4] }]]]
     )
   end
 

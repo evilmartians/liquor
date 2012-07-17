@@ -1,5 +1,8 @@
 module Liquor
-  class SourceMappedError < StandardError
+  class Error < StandardError
+  end
+
+  class SourceMappedError < Error
     def initialize(message, location=nil)
       location_info = ""
       if location
