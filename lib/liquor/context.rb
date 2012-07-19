@@ -18,7 +18,7 @@ module Liquor
       @var_stack = []
       @mapping   = {}
 
-      @nesting = 1
+      @nesting   = 1
 
       @externals.each do |external|
         declare external
@@ -83,10 +83,12 @@ module Liquor
     def nest
       @var_stack.push @variables
       @variables = @variables.dup
+      @nesting  += 1
 
       yield
     ensure
       @variables = @var_stack.pop
+      @nesting  -= 1
     end
   end
 end
