@@ -48,24 +48,18 @@ describe Liquor::Compiler do
   it "verifies function arguments" do
     compiler = Liquor::Compiler.new
 
-    a = Liquor::Function.new("substr") do
-      unnamed_arg true
-      optional_named_args :from, :to
-
-      body do |arg, kw|
-        from, to = kw[:from] || 0, kw[:to] || -1
-        arg[from..to]
-      end
+    a = Liquor::Function.new("substr",
+          unnamed_arg: true,
+          optional_named_args: [:from, :to]) do |arg, kw|
+      from, to = kw[:from] || 0, kw[:to] || -1
+      arg[from..to]
     end
     compiler.register_function a
 
-    b = Liquor::Function.new("yield") do
-      mandatory_named_args :buffer
-      optional_named_args  :strip
-
-      body do |arg, kw|
-        # nothing
-      end
+    b = Liquor::Function.new("yield",
+          mandatory_named_args: [:buffer],
+          optional_named_args:  [:strip]) do |arg, kw|
+      # nothing
     end
     compiler.register_function b
 
@@ -101,31 +95,22 @@ describe Liquor::Compiler do
   it "works with filter expressions" do
     compiler = Liquor::Compiler.new
 
-    a = Liquor::Function.new("capitalize") do
-      unnamed_arg true
-
-      body do |arg, kw|
-        arg.capitalize
-      end
+    a = Liquor::Function.new("capitalize",
+          unnamed_arg: true) do |arg, kw|
+      arg.capitalize
     end
     compiler.register_function a
 
-    b = Liquor::Function.new("reverse") do
-      unnamed_arg true
-
-      body do |arg, kw|
-        arg.reverse
-      end
+    b = Liquor::Function.new("reverse",
+          unnamed_arg: true) do |arg, kw|
+      arg.reverse
     end
     compiler.register_function b
 
-    c = Liquor::Function.new("trim") do
-      unnamed_arg true
-      mandatory_named_args :length
-
-      body do |arg, kw|
-        arg[0...kw[:length]]
-      end
+    c = Liquor::Function.new("trim",
+          unnamed_arg: true,
+          mandatory_named_args: [:length]) do |arg, kw|
+      arg[0...kw[:length]]
     end
     compiler.register_function c
 

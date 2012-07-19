@@ -13,5 +13,6 @@ module Liquor
 
   require "liquor/tag"
   require "liquor/function"
+  require "liquor/library"
   require "liquor/compiler"
 end
