@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Liquor::Library do
-  it "allows to define a function and export them to a compiler" do
+  it "allows to define a function and export it to a compiler" do
     lib = Module.new do
       include Liquor::Library
 

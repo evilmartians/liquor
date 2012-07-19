@@ -2,9 +2,12 @@ module Liquor
   class Emitter
     include ASTTools
 
+    attr_reader :compiler, :context
+
     def initialize(context)
-      @context = context
-      @buffer  = ""
+      @context  = context
+      @compiler = context.compiler
+      @buffer   = ""
     end
 
     def env
@@ -184,6 +187,57 @@ module Liquor
 
     def check_external(node)
       "Runtime.external!(#{expr(node)})"
+    end
+
+    def compile_toplevel(block)
+      compile_block(block)
+
+      [
+        %!lambda { |_env={}|\n!,
+        %|  _buf = ""\n|,
+        ([
+          %|  |,
+          @context.externals.map do |extern|
+            @context.access(extern)
+          end.join(", "),
+          %| = |,
+          @context.externals.map do |extern|
+            %Q|_env[#{extern.inspect}]|
+          end.join(", "),
+        ] if @context.externals.any?),
+        %|\n|,
+        flush!,
+        %|  _buf|,
+        %|}\n|
+      ].join
+    end
+
+    def compile_block(block)
+      block.each do |node|
+        case ntype(node)
+        when :plaintext
+          cat! string(node)
+
+        when :interp
+          expr, = nvalue(node)
+          cat! check_string(expr)
+
+        when :tag
+          ident, args = nvalue(node)
+          name, = nvalue(ident)
+
+          unless @compiler.has_tag? name
+            raise NameError.new("undefined tag `#{name}'", nloc(ident))
+          end
+
+          @compiler.tag(name).compile(self, node)
+
+        else
+          raise "unknown block-level node #{ntype(node)}"
+        end
+      end
+    rescue Liquor::Error => e
+      @compiler.add_error e
     end
 
     def cat!(string)

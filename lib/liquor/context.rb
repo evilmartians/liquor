@@ -2,8 +2,6 @@ require 'set'
 
 module Liquor
   class Context
-    include ASTTools
-
     attr_reader :compiler,  :emitter
     attr_reader :externals, :variables
     attr_reader :nesting
@@ -79,47 +77,6 @@ module Liquor
       else
         raise NameError.new("variable `#{name}' is undefined", loc)
       end
-    end
-
-    def compile_toplevel(block)
-      compile_block(block)
-
-      [
-        %!lambda { |_env={}|\n!,
-        %|  _buf = ""\n|,
-        ([
-          %|  |,
-          @externals.map do |extern|
-            access(extern)
-          end.join(", "),
-          %| = |,
-          @externals.map do |extern|
-            %Q|_env[#{extern.inspect}]|
-          end.join(", "),
-        ] if @externals.any?),
-        %|\n|,
-        @emitter.flush!,
-        %|  _buf|,
-        %|}\n|
-      ].join
-    end
-
-    def compile_block(block)
-      block.each do |node|
-        case ntype(node)
-        when :plaintext
-          @emitter.cat! @emitter.string(node)
-
-        when :interp
-          expr, = nvalue(node)
-          @emitter.cat! @emitter.check_string(expr)
-
-        else
-          raise "unknown block-level node #{ntype(node)}"
-        end
-      end
-    rescue Liquor::Error => e
-      @compiler.add_error e
     end
   end
 end

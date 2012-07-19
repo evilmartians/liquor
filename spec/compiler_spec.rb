@@ -114,7 +114,19 @@ describe Liquor::Compiler do
     end
     compiler.register_function c
 
-    compiler.compile '{{ "hello world" | reverse | trim length: 3 | capitalize }}'
+    compiler.compile! '{{ "hello world" | reverse | trim length: 3 | capitalize }}'
     compiler.code.call.should == 'Dlr'
+  end
+
+  it "allows to define simple tags" do
+    compiler = Liquor::Compiler.new
+
+    a = Liquor::Tag.new("test") do |emit, context, args|
+      emit.cat! %{"hello world"}
+    end
+    compiler.register_tag a
+
+    compiler.compile! '{% test %}'
+    compiler.code.call.should == 'hello world'
   end
 end

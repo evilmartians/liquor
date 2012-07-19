@@ -55,7 +55,7 @@ module Liquor
       @parser.parse source
       if @parser.ast
         context = Liquor::Context.new(self, externals)
-        code = context.compile_toplevel(@parser.ast)
+        code = context.emitter.compile_toplevel(@parser.ast)
 
         if success?
           @code = eval(code, nil, '(liquor)')
