@@ -429,6 +429,7 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
   <dd><em>Symbol</em> ( <em>Symbol</em> | <em>Digit</em> )* lookahead ( <em>Any</em> except <strong>:</strong> )</dd>
   <dt>Keyword</dt>
   <dd><em>Symbol</em> ( <em>Symbol</em> | <em>Digit</em> )* <strong>:</strong></dd>
+  <dd><strong>=</strong></dd>
   <dt>IntegerLiteral</dt>
   <dd><em>Digit</em>+ lookahead ( <em>Any</em> except <em>Symbol</em> )</dd>
   <dt>StringLiteral</dt>
@@ -498,7 +499,10 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
   <dd><em>Plaintext</em> <em>Block</em></dd>
   <dd><em>Interpolation</em> <em>Block</em></dd>
   <dd><em>Tag</em> <em>Block</em></dd>
+  <dd><em>Comment</em> <em>Block</em></dd>
   <dd>empty</dd>
+  <dt>Comment</dt>
+  <dd><strong>{!</strong> ( <em>Comment</em> | <em>Any</em>* )+  <strong>!}</strong></dd>
   <dt>Plaintext</dt>
   <dd>( <em>Any</em> except <strong>{</strong> | <strong>{</strong> <em>Any</em> except ( <strong>{</strong> | <strong>%</strong> ) )+</dd>
   <dt>Interpolation</dt>

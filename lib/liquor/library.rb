@@ -5,6 +5,7 @@ module Liquor
         extend ModuleMethods
 
         @functions = []
+        @tags      = []
       }
     end
 
@@ -13,10 +14,18 @@ module Liquor
         @functions.each do |function|
           compiler.register_function function
         end
+
+        @tags.each do |tag|
+          compiler.register_tag tag
+        end
       end
 
       def function(name, options={}, &block)
         @functions << Function.new(name, options, &block)
+      end
+
+      def tag(name, &block)
+        @tags << Tag.new(name, &block)
       end
     end
   end

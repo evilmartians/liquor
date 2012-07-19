@@ -65,6 +65,9 @@ module_eval(<<'...end parser.racc/module_eval...', 'parser.racc', 183)
     :op_leq   => '<=',
     :op_gt    => '>',
     :op_geq   => '>=',
+    :keyword  => 'keyword argument name',
+    :kwarg    => 'keyword argument',
+    :ident    => 'identifier',
   }
 
   def on_error(error_token_id, error_token, value_stack)

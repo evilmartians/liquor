@@ -141,4 +141,10 @@ describe Liquor::Lexer do
       [:lblock2], [:endtag], [:rblock],
     )
   end
+
+  it "understands syntactic sugar for =" do
+    lex('{% assign x = 1 %}').should have_token_structure(
+      [:lblock], [:ident, "assign"], [:ident, "x"], [:keyword, "="], [:integer, 1], [:rblock]
+    )
+  end
 end

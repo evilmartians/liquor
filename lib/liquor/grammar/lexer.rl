@@ -118,6 +118,9 @@ code := |*
     identifier ':' =>
       { tok.(:keyword, data[ts...te-1]) };
 
+    '=' =>
+      { tok.(:keyword, '=') };
+
     ','  => { tok.(:comma) };
     '.'  => { tok.(:dot)   };
 

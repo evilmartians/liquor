@@ -373,6 +373,7 @@ Identifier
 
 Keyword
 : _Symbol_ ( _Symbol_ \| _Digit_ )* **:**
+: **=**
 
 IntegerLiteral
 : _Digit_+ lookahead ( _Any_ except _Symbol_ )
@@ -447,7 +448,11 @@ Block
 : _Plaintext_ _Block_
 : _Interpolation_ _Block_
 : _Tag_ _Block_
+: _Comment_ _Block_
 : empty
+
+Comment
+: **{!** ( _Comment_ \| _Any_* )+  **!}**
 
 Plaintext
 : ( _Any_ except **{** \| **{** _Any_ except ( **{** \| **%** ) )+

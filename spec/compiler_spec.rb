@@ -46,7 +46,7 @@ describe Liquor::Compiler do
   end
 
   it "verifies function arguments" do
-    compiler = Liquor::Compiler.new
+    compiler = Liquor::Compiler.new(import_builtins: false)
 
     a = Liquor::Function.new("substr",
           unnamed_arg: true,
@@ -93,7 +93,7 @@ describe Liquor::Compiler do
   end
 
   it "works with filter expressions" do
-    compiler = Liquor::Compiler.new
+    compiler = Liquor::Compiler.new(import_builtins: false)
 
     a = Liquor::Function.new("capitalize",
           unnamed_arg: true) do |arg, kw|
@@ -119,7 +119,7 @@ describe Liquor::Compiler do
   end
 
   it "allows to define simple tags" do
-    compiler = Liquor::Compiler.new
+    compiler = Liquor::Compiler.new(import_builtins: false)
 
     a = Liquor::Tag.new("test") do |emit, context, args|
       emit.cat! %{"hello world"}

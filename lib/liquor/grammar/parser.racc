@@ -236,6 +236,9 @@ rule
     :op_leq   => '<=',
     :op_gt    => '>',
     :op_geq   => '>=',
+    :keyword  => 'keyword argument name',
+    :kwarg    => 'keyword argument',
+    :ident    => 'identifier',
   }
 
   def on_error(error_token_id, error_token, value_stack)

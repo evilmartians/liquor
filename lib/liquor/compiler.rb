@@ -2,13 +2,22 @@ module Liquor
   class Compiler
     attr_reader :errors, :code
 
-    def initialize
+    def initialize(options={})
       @tags      = {}
       @functions = {}
 
       @parser = Parser.new
       @errors = []
       @code   = nil
+
+      import_builtins = options.delete(:import_builtins) || true
+      if options.any?
+        raise "Unknown compiler options #{options.keys.join ", "}"
+      end
+
+      if import_builtins
+        Builtins.export self
+      end
     end
 
     def register_tag(tag)
