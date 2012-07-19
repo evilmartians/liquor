@@ -13,6 +13,9 @@ rblock  = '%}';
 linterp = '{{';
 rinterp = '}}';
 
+lcomment = '{!';
+rcomment = '!}';
+
 action string_append {
   string << data[p]
 }
@@ -32,6 +35,12 @@ action error {
     end:   p - line_starts.last)
   raise error
 }
+
+comment := |*
+    lcomment => { fcall comment; };
+    rcomment => { fret; };
+    any;
+*|;
 
 dqstring := |*
     '\\"'  => { string << '"' };
@@ -148,7 +157,7 @@ code := |*
 *|;
 
 plaintext := |*
-    ( '\\{' [%{]? | '{' [^%{] | any_newline - '{' )* =>
+    ( '\\{' [%{!]? | '{' [^%{!] | any_newline - '{' )* =>
       { tok.(:plaintext, data[ts...te]); };
 
     '{{' =>
@@ -156,6 +165,9 @@ plaintext := |*
 
     '{%' =>
       { tok.(:lblock);  fgoto tag_start; };
+
+    '{!' =>
+      { fcall comment; };
 
     any_newline =>
       { fhold; fgoto code; };
@@ -171,6 +183,7 @@ module Liquor
       eof    = data.length
       ts     = nil # token start
       te     = nil # token end
+      stack  = []
 
       # Strings
       string    = ""

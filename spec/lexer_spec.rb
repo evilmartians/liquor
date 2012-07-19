@@ -14,6 +14,25 @@ describe Liquor::Lexer do
     lex('abc \{{\{% def').should have_token_structure( [:plaintext] )
   end
 
+  it "parses comments" do
+    lex('abc {! def !} test').should have_token_structure(
+      [:plaintext, 'abc '],
+      [:plaintext, ' test']
+    )
+    lex('abc {! {% test %} !} test').should have_token_structure(
+      [:plaintext, 'abc '],
+      [:plaintext, ' test']
+    )
+    lex('abc {! {{ def }} !} test').should have_token_structure(
+      [:plaintext, 'abc '],
+      [:plaintext, ' test']
+    )
+    lex('abc {! test {! a !} b !} def').should have_token_structure(
+      [:plaintext, 'abc '],
+      [:plaintext, ' def'],
+    )
+  end
+
   it "parses blocks and interpolations" do
     lex('abc {{ def }}').should have_token_structure(
       [:plaintext],
