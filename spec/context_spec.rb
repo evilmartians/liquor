@@ -23,4 +23,11 @@ describe Liquor::Context do
     @context.declare '_env'
     @context.access('_env').should_not == '_env'
   end
+
+  it "supports nesting" do
+    @context.nest do
+      @context.declare 'test'
+    end
+    expect { @context.access 'test' }.to raise_error(Liquor::NameError)
+  end
 end

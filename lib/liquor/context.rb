@@ -15,6 +15,7 @@ module Liquor
       @emitter   = Emitter.new(self)
 
       @variables = Set[]
+      @var_stack = []
       @mapping   = {}
 
       @nesting = 1
@@ -77,6 +78,15 @@ module Liquor
       else
         raise NameError.new("variable `#{name}' is undefined", loc)
       end
+    end
+
+    def nest
+      @var_stack.push @variables
+      @variables = @variables.dup
+
+      yield
+    ensure
+      @variables = @var_stack.pop
     end
   end
 end
