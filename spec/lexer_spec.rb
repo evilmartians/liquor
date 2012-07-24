@@ -77,7 +77,7 @@ describe Liquor::Lexer do
   end
 
   it "parses blocks with embedded blocks" do
-    lex('{% for x in: [ 1, 2, q ] do: %} value: {{ x }} {% endfor %}').should have_token_structure(
+    lex('{% for x in: [ 1, 2, q ] do: %} value: {{ x }} {% end for %}').should have_token_structure(
       [:lblock],
       [:ident, "for"], [:ident, "x"],
       [:keyword, "in"],
@@ -116,7 +116,7 @@ describe Liquor::Lexer do
   end
 
   it "parses nested tags correctly" do
-    lex('{% a do: %} 1 {% b %} 2 {% c do: %} 3 {% endc %} 4 {% enda %} 5 {% ender %}').
+    lex('{% a do: %} 1 {% b %} 2 {% c do: %} 3 {% end c %} 4 {% end a %} 5 {% ender %}').
             should have_token_structure(
       [:lblock], [:ident, "a"], [:keyword, "do"], [:rblock],
       [:plaintext, " 1 "],
@@ -130,7 +130,7 @@ describe Liquor::Lexer do
       [:plaintext, " 5 "],
       [:lblock], [:ident, "ender"], [:rblock],
     )
-    lex('{% capture do: %}{% if a then: %} 1 {% elsif: b then: %} 2 {% endif %}{% endcapture %}').
+    lex('{% capture do: %}{% if a then: %} 1 {% elsif: b then: %} 2 {% end if %}{% end capture %}').
             should have_token_structure(
       [:lblock], [:ident, "capture"], [:keyword, "do"], [:rblock],
       [:lblock], [:ident, "if"], [:ident, "a"], [:keyword, "then"], [:rblock],

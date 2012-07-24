@@ -204,7 +204,7 @@ describe Liquor::Parser do
         [:kwarg, [:keyword, "to" ],   [:integer, 2]],
         [:kwarg, [:keyword, "from" ], [:integer, 3]]]
     )
-    parse('{% capture do: %} 1 {% endcapture %}').
+    parse('{% capture do: %} 1 {% end capture %}').
               should have_node_structure(
       [:tag,
         [:ident, "capture"],
@@ -214,7 +214,7 @@ describe Liquor::Parser do
             [:plaintext, " 1 "]
           ]]]
     )
-    parse('{% capture "test" do: %} 1 {% endcapture %}').
+    parse('{% capture "test" do: %} 1 {% end capture %}').
               should have_node_structure(
       [:tag,
         [:ident, "capture"],
@@ -224,7 +224,7 @@ describe Liquor::Parser do
             [:plaintext, " 1 "]
           ]]]
     )
-    parse('{% capture as: "test" do: %} 1 {% endcapture %}').
+    parse('{% capture as: "test" do: %} 1 {% end capture %}').
               should have_node_structure(
       [:tag,
         [:ident, "capture"],
@@ -235,7 +235,7 @@ describe Liquor::Parser do
             [:plaintext, " 1 "]
           ]]]
     )
-    parse('{% if a1 then: %} 1 {% elsif: a2 then: %} 2 {% else: %} 3 {% endif %}').
+    parse('{% if a1 then: %} 1 {% elsif: a2 then: %} 2 {% else: %} 3 {% end if %}').
               should have_node_structure(
       [:tag,
         [:ident, "if"],

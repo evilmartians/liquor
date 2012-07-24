@@ -69,8 +69,8 @@ integer := |*
 tag_start := |*
     whitespace;
 
-    'end' identifier =>
-      { tag = data[ts + 3...te]
+    'end ' identifier =>
+      { tag = data[ts + 4...te]
         if tag_stack.last == tag
           fixtok.(:lblock2)
           tok.(:endtag)

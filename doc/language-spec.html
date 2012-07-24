@@ -158,7 +158,13 @@ dd strong, code {
       </li>
       <li><a href="#runtime-behavior">5 Runtime Behavior</a></li>
       <li><a href="#builtins">6 Builtins</a>        <ul>
-          <li><a href="#tags-1">6.1 Tags</a></li>
+          <li><a href="#builtin-tags">6.1 Tags</a>            <ul>
+              <li><a href="#assign">6.1.1 assign</a></li>
+              <li><a href="#for">6.1.2 for</a></li>
+              <li><a href="#if">6.1.2 if</a></li>
+              <li><a href="#unless">6.1.3 unless</a></li>
+            </ul>
+          </li>
           <li><a href="#functions">6.2 Functions</a></li>
         </ul>
       </li>
@@ -586,9 +592,58 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <h2 id="builtins">6 Builtins</h2>
 
-<h3 id="tags-1">6.1 Tags</h3>
+<p>Implementations should implement every builtin tag and function mentioned in this section.</p>
 
-<p>TODO</p>
+<h3 id="builtin-tags">6.1 Tags</h3>
+
+<h4 id="assign">6.1.1 assign</h4>
+
+<p>Tag <em>assign</em> has one valid syntactic form:</p>
+
+<pre><code>{% assign <em>var</em> = <em>expr</em> %}</code></pre>
+
+<p><em>Assign</em> binds the name <em>var</em> to the result of executing <em>expr</em> in the current scope. If <em>var</em> is already bound, then <em>assign</em> mutates the binding.</p>
+
+<h4 id="for">6.1.2 for</h4>
+
+<p>Tag <em>for</em> has two valid syntactic forms:</p>
+
+<pre><code>{% for <em>var</em> in: <em>list</em> do: %}
+  <em>code</em>
+{% endfor %}</code></pre>
+
+<pre><code>{% for <em>var</em> from: <em>lower-limit</em> to: <em>upper-limit</em> do: %}
+  <em>code</em>
+{% endfor %}</code></pre>
+
+<p>In the <em>for..in</em> form, this tag invokes <em>code</em> with <em>var</em> bound to each element of <em>list</em> sequentally. If <em>list</em> is not a <em>Tuple</em>, a runtime error condition is signaled.</p>
+
+<p>In the <em>for..from..to</em> form, this tag invokes <em>code</em> with <em>var</em> bound to each integer between <em>lower-limit</em> and <em>upper-limit</em>, inclusive. If <em>lower-limit</em> or <em>upper-limit</em> is not an <em>Integer</em>, a [runtime error condition] is signaled.</p>
+
+<h4 id="if">6.1.2 if</h4>
+
+<p>Tag <em>if</em> has one valid syntactic form:</p>
+
+<pre><code>{% if <em>cond-1</em> then: %}
+  <em>code-1</em>
+<em>[</em>{% elsif: <em>cond-2</em> then: %}
+  <em>code-2</em><em>] ...</em>
+<em>[</em>{% else: %}
+  <em>code-else</em><em>]</em>
+{% endif %}
+</code></pre>
+
+<p>This tag can optionally have any amount of <em>elsif</em> clauses and only one <em>else</em> clause.</p>
+
+<p>The <em>if</em> tag sequentally evaluates each passed condition <em>cond-1</em>, <em>cond-2</em>, … until a <a href="#boolean-operators">truthful</a> value is computed. Then, it executes the corresponding code. If none of the conditions evaluate to a truthful value, the tag executes <em>code-else</em> if it exists.</p>
+
+<h4 id="unless">6.1.3 unless</h4>
+
+<p>Tag <em>unless</em> has one valid syntactic form:</p>
+
+<pre><code>{% unless <em>cond</em> then: %}
+  <em>code</em>
+{% endunless %}</code></pre>
 
 <h3 id="functions">6.2 Functions</h3>
 

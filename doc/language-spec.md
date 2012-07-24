@@ -305,13 +305,13 @@ This program would evaluate to a string `The sum of two and three is: 5`.
 
 ### 2.7 Tags
 
-A tag is a syntactic construct of form `{% tag expr kw: arg do: %} ... {% endtag %}`. A tag has a syntax similar to a function call, but it can receive blocks of code as argument values and lazily evaluate passed expressions and blocks of code.
+A tag is a syntactic construct of form `{% tag expr kw: arg do: %} ... {% end  tag %}`. A tag has a syntax similar to a function call, but it can receive blocks of code as argument values and lazily evaluate passed expressions and blocks of code.
 
 Tags have full control upon parameter evaluation. Tags can require arguments to be of a certain lexical form, e.g. a `for` tag could require its unnamed formal parameter to be a lexical identifier.
 
 To pass a block of code to a tag, the closing tag delimiter should immediately follow a parameter name. Everything from the closing tag delimiter to the matching opening tag delimiter should be parsed as a block and passed as a value of the corresponding parameter. After the matching opening tag delimiter, the parameter list is continued.
 
-If a tag <code><em>t</em></code> does not include any embedded blocks, it ends after a first matching closing tag delimiter. Otherwise, the tag ends after a first matching construct of the form <code>{% end<em>t</em> %}</code>.
+If a tag <code><em>t</em></code> does not include any embedded blocks, it ends after a first matching closing tag delimiter. Otherwise, the tag ends after a first matching construct of the form <code>{% end <em>t</em> %}</code>.
 
 Unlike functions, tags can receive multiple named parameters with the same name. Tag named parameters are a syntactic tool and should be thoroughly verified by the tag implementation. Specifying incorrect names or order of named parameters may result in a compile-time error ([syntax error](#syntax-error)).
 
@@ -321,11 +321,11 @@ All of the following are examples of syntactically valid tags:
 
     {% if var > 10 do: %}
       Var is greater than 10.
-    {% endif %}
+    {% end if %}
 
     {% for i in: [ 1, 2, 3 ] do: %}
       Value: {{ i }}
-    {% endfor %}
+    {% end for %}
 
     {% if length(params.test) == 1 then: %}
       Test has length 1.
@@ -333,11 +333,11 @@ All of the following are examples of syntactically valid tags:
       Test has length 2.
     {% else: %}
       Test has unidentified length.
-    {% endif %}
+    {% end if %}
 
     {% capture "buffer" do: %}
       This text will be printed twice.
-    {% endcapture %}
+    {% end capture %}
     {% yield from: "buffer" %}
     {% yield from: "buffer" %}
 
@@ -475,7 +475,7 @@ TagBlock
 : _Keyword_ **%}** _Block_ **{%**
 
 EndTag
-: **end** _Identifier_ at the top of tag stack
+: **end** **U+0020** _Identifier_ at the top of tag stack
 
 4 Compile-time Behavior
 -----------------------
@@ -539,9 +539,60 @@ TODO
 6 Builtins
 ----------
 
-### 6.1 Tags
+Implementations should implement every builtin tag and function mentioned in this section.
 
-TODO
+### 6.1 Tags {#builtin-tags}
+
+#### 6.1.1 assign
+
+Tag _assign_ has one valid syntactic form:
+
+<pre><code>{% assign <em>var</em> = <em>expr</em> %}</code></pre>
+
+_Assign_ binds the name _var_ to the result of executing _expr_ in the current scope. If _var_ is already bound, then _assign_ mutates the binding.
+
+#### 6.1.2 for
+
+Tag _for_ has two valid syntactic forms:
+
+<pre><code>{% for <em>var</em> in: <em>list</em> do: %}
+  <em>code</em>
+{% end for %}</code></pre>
+
+<pre><code>{% for <em>var</em> from: <em>lower-limit</em> to: <em>upper-limit</em> do: %}
+  <em>code</em>
+{% end for %}</code></pre>
+
+In the _for..in_ form, this tag invokes _code_ with _var_ bound to each element of _list_ sequentally. If _list_ is not a *Tuple*, a runtime error condition is signaled.
+
+In the _for..from..to_ form, this tag invokes _code_ with _var_ bound to each integer between _lower-limit_ and _upper-limit_, inclusive. If _lower-limit_ or _upper-limit_ is not an *Integer*, a [runtime error condition] is signaled.
+
+#### 6.1.2 if
+
+Tag _if_ has one valid syntactic form:
+
+<pre><code>{% if <em>cond-1</em> then: %}
+  <em>code-1</em>
+<em>[</em>{% elsif: <em>cond-2</em> then: %}
+  <em>code-2</em><em>] ...</em>
+<em>[</em>{% else: %}
+  <em>code-else</em><em>]</em>
+{% end if %}
+</code></pre>
+
+This tag can optionally have any amount of _elsif_ clauses and only one _else_ clause.
+
+The _if_ tag sequentally evaluates each passed condition _cond-1_, _cond-2_, ... until a [truthful](#boolean-operators) value is computed. Then, it executes the corresponding code. If none of the conditions evaluate to a truthful value, the tag executes _code-else_ if it exists.
+
+#### 6.1.3 unless
+
+Tag _unless_ has one valid syntactic form:
+
+<pre><code>{% unless <em>cond</em> then: %}
+  <em>code</em>
+{% end unless %}</code></pre>
+
+
 
 ### 6.2 Functions
 
