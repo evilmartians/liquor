@@ -593,7 +593,7 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <h2 id="builtins">6 Builtins</h2>
 
-<p>Implementations should implement every builtin tag and function mentioned in this section.</p>
+<p>Implementations must implement every builtin tag and function mentioned in this section. Implementations may implement any additional tags, but must not alter behavior of the described ones.</p>
 
 <h3 id="builtin-tags">6.1 Tags</h3>
 
@@ -664,7 +664,7 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
   <em>code</em>
 {% end capture %}</code></pre>
 
-<p>The <em>capture</em> tag evaluates <em>code</em> and binds the name <em>var</em> to the result. If <em>var</em> is already bound, <em>assign</em> mutates the binding.</p>
+<p>The <em>capture</em> tag evaluates <em>code</em> and binds the name <em>var</em> to the result. If <em>var</em> is already bound, <em>capture</em> mutates the binding.</p>
 
 <h3 id="functions">6.2 Functions</h3>
 

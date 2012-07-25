@@ -147,4 +147,9 @@ describe Liquor::Lexer do
       [:lblock], [:ident, "assign"], [:ident, "x"], [:keyword, "="], [:integer, 1], [:rblock]
     )
   end
+
+  it "fails unmatched end tag" do
+    expect { lex('{% end tag %}') }.to raise_error(Liquor::SyntaxError)
+    expect { lex('{% unless x then: %} {% end for %}') }.to raise_error(Liquor::SyntaxError)
+  end
 end

@@ -1,6 +1,6 @@
 module Liquor
   class Compiler
-    attr_reader :errors, :code
+    attr_reader :errors, :source, :code
 
     def initialize(options={})
       @tags      = {}
@@ -64,11 +64,13 @@ module Liquor
       @parser.parse source
       if @parser.ast
         context = Liquor::Context.new(self, externals)
-        code = context.emitter.compile_toplevel(@parser.ast)
+        source  = context.emitter.compile_toplevel(@parser.ast)
 
         if success?
-          @code = eval(code, nil, '(liquor)')
+          @source = source
+          @code = eval(source, nil, '(liquor)')
         else
+          @source = nil
           @code = nil
         end
       end
@@ -76,8 +78,8 @@ module Liquor
       success?
     end
 
-    def compile!(source)
-      compile source
+    def compile!(source, externals=[])
+      compile source, externals
       if success?
         @code
       else

@@ -539,7 +539,7 @@ TODO
 6 Builtins
 ----------
 
-Implementations should implement every builtin tag and function mentioned in this section.
+Implementations must implement every builtin tag and function mentioned in this section. Implementations may implement any additional tags, but must not alter behavior of the described ones.
 
 ### 6.1 Tags {#builtin-tags}
 
@@ -610,7 +610,7 @@ Tag _capture_ has one valid syntactic form:
   <em>code</em>
 {% end capture %}</code></pre>
 
-The _capture_ tag evaluates _code_ and binds the name _var_ to the result. If _var_ is already bound, _assign_ mutates the binding.
+The _capture_ tag evaluates _code_ and binds the name _var_ to the result. If _var_ is already bound, _capture_ mutates the binding.
 
 ### 6.2 Functions
 

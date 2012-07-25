@@ -34,7 +34,7 @@ module Liquor
           raise SyntaxError.new("unexpected `#{kwname(kwarg)}', expecting `#{name}'", nloc(kwarg))
         end
 
-        check_arg_type(kwvalue(kwarg), type)
+        check_arg_type(kwarg, type)
 
         kwarg_hash[name] = kwvalue(kwarg)
       end
@@ -43,8 +43,14 @@ module Liquor
     end
 
     def check_arg_type(node, type)
-      actual   = ntype(node)
       expected = nil
+
+      case ntype(node)
+      when :kwarg
+        actual = ntype(kwvalue(node))
+      when :blockarg
+        actual = :block
+      end
 
       case type
       when :ident

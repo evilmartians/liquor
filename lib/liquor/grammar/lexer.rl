@@ -76,7 +76,13 @@ tag_start := |*
           tok.(:endtag)
           tag_stack.pop
         else
-          tok.(:ident, data[ts...te])
+          (sl, sc), (el, ec) = loc.(ts), loc.(te)
+          info = { line: sl, start: sc, end: ec }
+          if tag_stack.any?
+            raise SyntaxError.new("unmatching end tag for `#{tag}', expected `end #{tag_stack.last}'", info)
+          else
+            raise SyntaxError.new("unexpected end tag for `#{tag}'", info)
+          end
         end
         fgoto code;
       };
@@ -117,6 +123,17 @@ code := |*
 
     identifier ':' =>
       { tok.(:keyword, data[ts...te-1]) };
+
+    '=' whitespace* rblock =>
+      {
+        tok.(:keyword, '=', te: ts + 1)
+        tok.(:rblock,  nil, ts: te - 2)
+        if last_tag
+          tag_stack.push last_tag
+          last_tag = nil
+        end
+        fgoto plaintext;
+      };
 
     '=' =>
       { tok.(:keyword, '=') };

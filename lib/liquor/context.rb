@@ -16,7 +16,9 @@ module Liquor
 
       @variables = Set[]
       @var_stack = []
+
       @mapping   = {}
+      @map_stack = []
 
       @nesting   = 1
 
@@ -54,20 +56,24 @@ module Liquor
     end
 
     def declare(name, loc=nil)
-      name = name.to_s
+      name   = name.to_s
 
-      if allocated?(name)
+      if builtin?(name) || function?(name)
         raise NameError.new("identifier `#{name}' is already occupied by #{type name}", loc)
       end
 
-      mapped, idx = name, 0
-      while RESERVED_NAMES.include?(mapped) ||
-            @mapping.include?(mapped)
-        mapped = "#{name}_m#{idx}" # `m' stands for `mangled'
-      end
+      shadow = @var_stack.count > 0 && @var_stack[-1].include?(name)
 
-      @variables.add name
-      @mapping[mapped] = name
+      if !@variables.include?(name) || shadow
+        mapped, idx = name, 0
+        while RESERVED_NAMES.include?(mapped) ||
+              @mapping.values.include?(mapped)
+          mapped = "#{name}_m#{idx}" # `m' stands for `mangled'
+        end
+
+        @variables.add name
+        @mapping[name] = mapped
+      end
     end
 
     def access(name, loc=nil)
@@ -83,11 +89,17 @@ module Liquor
     def nest
       @var_stack.push @variables
       @variables = @variables.dup
+
+      @map_stack.push @mapping
+      @mapping = @mapping.dup
+
       @nesting  += 1
 
       yield
     ensure
       @variables = @var_stack.pop
+      @mapping   = @map_stack.pop
+
       @nesting  -= 1
     end
   end

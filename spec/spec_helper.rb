@@ -23,13 +23,20 @@ module LiquorSpecHelpers
     end
   end
 
-  def compile(string)
+  def compile(string, externals=[])
     compiler = Liquor::Compiler.new
-    compiler.compile! string
+    compiler.compile! string, externals
   end
 
   def exec(string, env={})
-    compile(string).call(env)
+    compile(string, env.keys).call(env)
+  end
+
+  def check_exec(string, env={})
+    compiler = Liquor::Compiler.new
+    compiler.compile! string, env.keys
+    $stderr.puts compiler.source
+    compiler.code.call(env)
   end
 end
 

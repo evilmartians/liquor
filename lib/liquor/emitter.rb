@@ -8,6 +8,7 @@ module Liquor
       @context  = context
       @compiler = context.compiler
       @buffer   = ""
+      @current_capture_var = ""
     end
 
     def env
@@ -15,7 +16,7 @@ module Liquor
     end
 
     def buf
-      '_buf'
+      "_buf#{@current_capture_var}"
     end
 
     def ident(node)
@@ -152,7 +153,7 @@ module Liquor
     end
 
     def convert_boolean(node)
-      "(!!#{expr(node)})"
+      "!!(#{expr(node)})"
     end
 
     def check_integer(node)
@@ -207,7 +208,7 @@ module Liquor
         ] if @context.externals.any?),
         %|\n|,
         flush!,
-        %|  _buf|,
+        %|  _buf\n|,
         %|}\n|
       ].join
     end
@@ -238,6 +239,18 @@ module Liquor
       end
     rescue Liquor::Error => e
       @compiler.add_error e
+    end
+
+    def capture
+      previous_capture_var = @current_capture_var
+      @current_capture_var = @buffer.lines.count.to_s # unique id
+      out! %Q{#{buf} = ""\n}
+
+      yield
+
+      buf
+    ensure
+      @current_capture_var = previous_capture_var
     end
 
     def cat!(string)

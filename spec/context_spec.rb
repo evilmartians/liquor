@@ -15,12 +15,13 @@ describe Liquor::Context do
   it "verifies variable names" do
     expect { @context.declare 'null' }.to raise_error(Liquor::NameError)
     expect { @context.declare 'a' }.not_to raise_error
-    expect { @context.declare 'a' }.to raise_error(Liquor::NameError)
-    expect { @context.declare 'ext' }.to raise_error(Liquor::NameError)
+    expect { @context.declare 'a' }.not_to raise_error(Liquor::NameError)
+    expect { @context.declare 'ext' }.not_to raise_error(Liquor::NameError)
   end
 
   it "mangles names" do
     @context.declare '_env'
+    @context.access('_env').should_not be_nil
     @context.access('_env').should_not == '_env'
   end
 
@@ -29,5 +30,20 @@ describe Liquor::Context do
       @context.declare 'test'
     end
     expect { @context.access 'test' }.to raise_error(Liquor::NameError)
+  end
+
+  it "shadows variables" do
+    @context.declare 'test'
+    var_a = @context.access 'test'
+
+    var_b = @context.nest do
+      @context.declare 'test'
+      @context.access 'test'
+    end
+
+    var_c = @context.access 'test'
+
+    var_a.should_not == var_b
+    var_a.should == var_c
   end
 end

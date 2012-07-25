@@ -1,7 +1,7 @@
 
 # line 1 "lib/liquor/grammar/lexer.rl"
 
-# line 179 "lib/liquor/grammar/lexer.rl"
+# line 196 "lib/liquor/grammar/lexer.rl"
 
 
 module Liquor
@@ -30,8 +30,8 @@ self._liquor_actions = [
 	57, 1, 58, 1, 59, 1, 60, 1, 
 	61, 1, 62, 1, 63, 1, 64, 1, 
 	65, 1, 66, 1, 67, 1, 68, 1, 
-	69, 1, 70, 2, 5, 0, 2, 5, 
-	2
+	69, 1, 70, 1, 71, 1, 72, 2, 
+	5, 0, 2, 5, 2
 ]
 
 class << self
@@ -39,11 +39,11 @@ class << self
 	private :_liquor_key_offsets, :_liquor_key_offsets=
 end
 self._liquor_key_offsets = [
-	0, 3, 8, 11, 12, 15, 18, 21, 
-	23, 26, 28, 29, 30, 33, 35, 38, 
-	40, 47, 49, 57, 59, 67, 76, 85, 
-	94, 101, 130, 132, 133, 134, 135, 136, 
-	137, 138, 146, 149, 150
+	0, 3, 8, 11, 12, 15, 16, 19, 
+	22, 25, 27, 30, 32, 33, 34, 37, 
+	39, 42, 44, 51, 53, 61, 63, 71, 
+	80, 89, 98, 105, 134, 136, 137, 138, 
+	139, 140, 144, 145, 153, 156, 157
 ]
 
 class << self
@@ -52,24 +52,25 @@ class << self
 end
 self._liquor_trans_keys = [
 	33, 37, 123, 95, 65, 90, 97, 122, 
-	9, 32, 37, 125, 10, 92, 123, 10, 
-	92, 123, 10, 92, 123, 10, 92, 33, 
-	37, 123, 33, 123, 125, 33, 10, 34, 
-	92, 34, 92, 10, 39, 92, 39, 92, 
-	95, 48, 57, 65, 90, 97, 122, 48, 
-	57, 9, 32, 95, 101, 65, 90, 97, 
-	122, 9, 32, 58, 95, 48, 57, 65, 
-	90, 97, 122, 58, 95, 110, 48, 57, 
-	65, 90, 97, 122, 58, 95, 100, 48, 
-	57, 65, 90, 97, 122, 32, 58, 95, 
-	48, 57, 65, 90, 97, 122, 95, 48, 
-	57, 65, 90, 97, 122, 9, 32, 33, 
-	34, 37, 38, 39, 40, 41, 42, 43, 
-	44, 45, 46, 47, 60, 61, 62, 91, 
-	93, 95, 124, 125, 48, 57, 65, 90, 
-	97, 122, 9, 32, 61, 125, 38, 61, 
-	61, 61, 58, 95, 48, 57, 65, 90, 
-	97, 122, 9, 32, 37, 124, 125, 0
+	9, 32, 37, 125, 9, 32, 37, 125, 
+	10, 92, 123, 10, 92, 123, 10, 92, 
+	123, 10, 92, 33, 37, 123, 33, 123, 
+	125, 33, 10, 34, 92, 34, 92, 10, 
+	39, 92, 39, 92, 95, 48, 57, 65, 
+	90, 97, 122, 48, 57, 9, 32, 95, 
+	101, 65, 90, 97, 122, 9, 32, 58, 
+	95, 48, 57, 65, 90, 97, 122, 58, 
+	95, 110, 48, 57, 65, 90, 97, 122, 
+	58, 95, 100, 48, 57, 65, 90, 97, 
+	122, 32, 58, 95, 48, 57, 65, 90, 
+	97, 122, 95, 48, 57, 65, 90, 97, 
+	122, 9, 32, 33, 34, 37, 38, 39, 
+	40, 41, 42, 43, 44, 45, 46, 47, 
+	60, 61, 62, 91, 93, 95, 124, 125, 
+	48, 57, 65, 90, 97, 122, 9, 32, 
+	61, 125, 38, 61, 9, 32, 37, 61, 
+	61, 58, 95, 48, 57, 65, 90, 97, 
+	122, 9, 32, 37, 124, 125, 0
 ]
 
 class << self
@@ -77,11 +78,11 @@ class << self
 	private :_liquor_single_lengths, :_liquor_single_lengths=
 end
 self._liquor_single_lengths = [
-	3, 1, 3, 1, 3, 3, 3, 2, 
-	3, 2, 1, 1, 3, 2, 3, 2, 
-	1, 0, 4, 2, 2, 3, 3, 3, 
-	1, 23, 2, 1, 1, 1, 1, 1, 
-	1, 2, 3, 1, 1
+	3, 1, 3, 1, 3, 1, 3, 3, 
+	3, 2, 3, 2, 1, 1, 3, 2, 
+	3, 2, 1, 0, 4, 2, 2, 3, 
+	3, 3, 1, 23, 2, 1, 1, 1, 
+	1, 4, 1, 2, 3, 1, 1
 ]
 
 class << self
@@ -91,9 +92,9 @@ end
 self._liquor_range_lengths = [
 	0, 2, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	3, 1, 2, 0, 3, 3, 3, 3, 
-	3, 3, 0, 0, 0, 0, 0, 0, 
-	0, 3, 0, 0, 0
+	0, 0, 3, 1, 2, 0, 3, 3, 
+	3, 3, 3, 3, 0, 0, 0, 0, 
+	0, 0, 0, 3, 0, 0, 0
 ]
 
 class << self
@@ -101,11 +102,11 @@ class << self
 	private :_liquor_index_offsets, :_liquor_index_offsets=
 end
 self._liquor_index_offsets = [
-	0, 4, 8, 12, 14, 18, 22, 26, 
-	29, 33, 36, 38, 40, 44, 47, 51, 
-	54, 59, 61, 68, 71, 77, 84, 91, 
-	98, 103, 130, 133, 135, 137, 139, 141, 
-	143, 145, 151, 155, 157
+	0, 4, 8, 12, 14, 18, 20, 24, 
+	28, 32, 35, 39, 42, 44, 46, 50, 
+	53, 57, 60, 65, 67, 74, 77, 83, 
+	90, 97, 104, 109, 136, 139, 141, 143, 
+	145, 147, 152, 154, 160, 164, 166
 ]
 
 class << self
@@ -114,25 +115,27 @@ class << self
 end
 self._liquor_indicies = [
 	0, 0, 0, 1, 3, 3, 3, 2, 
-	5, 5, 6, 4, 7, 4, 8, 9, 
-	10, 1, 8, 9, 12, 1, 8, 9, 
-	13, 1, 8, 9, 1, 15, 16, 17, 
-	1, 19, 20, 18, 22, 21, 23, 21, 
-	25, 26, 27, 24, 29, 30, 28, 32, 
-	33, 34, 31, 36, 37, 35, 40, 39, 
-	40, 40, 38, 39, 41, 43, 43, 44, 
-	45, 44, 44, 42, 43, 43, 46, 48, 
-	44, 44, 44, 44, 47, 48, 44, 49, 
-	44, 44, 44, 47, 48, 44, 50, 44, 
-	44, 44, 47, 51, 48, 44, 44, 44, 
-	44, 47, 3, 3, 3, 3, 52, 54, 
-	54, 55, 56, 57, 58, 59, 60, 61, 
-	62, 63, 64, 65, 66, 67, 69, 70, 
-	71, 73, 74, 72, 75, 76, 68, 72, 
-	72, 53, 54, 54, 77, 79, 78, 81, 
-	80, 83, 82, 85, 84, 87, 86, 89, 
-	88, 91, 72, 72, 72, 72, 90, 5, 
-	5, 6, 92, 94, 93, 95, 82, 0
+	5, 5, 6, 4, 7, 4, 9, 9, 
+	10, 8, 11, 8, 12, 13, 14, 1, 
+	12, 13, 16, 1, 12, 13, 17, 1, 
+	12, 13, 1, 19, 20, 21, 1, 23, 
+	24, 22, 26, 25, 27, 25, 29, 30, 
+	31, 28, 33, 34, 32, 36, 37, 38, 
+	35, 40, 41, 39, 44, 43, 44, 44, 
+	42, 43, 45, 47, 47, 48, 49, 48, 
+	48, 46, 47, 47, 50, 52, 48, 48, 
+	48, 48, 51, 52, 48, 53, 48, 48, 
+	48, 51, 52, 48, 54, 48, 48, 48, 
+	51, 55, 52, 48, 48, 48, 48, 51, 
+	3, 3, 3, 3, 56, 58, 58, 59, 
+	60, 61, 62, 63, 64, 65, 66, 67, 
+	68, 69, 70, 71, 73, 74, 75, 77, 
+	78, 76, 79, 80, 72, 76, 76, 57, 
+	58, 58, 81, 83, 82, 85, 84, 87, 
+	86, 89, 88, 5, 5, 6, 91, 90, 
+	93, 92, 95, 76, 76, 76, 76, 94, 
+	9, 9, 10, 96, 98, 97, 99, 86, 
+	0
 ]
 
 class << self
@@ -140,18 +143,19 @@ class << self
 	private :_liquor_trans_targs, :_liquor_trans_targs=
 end
 self._liquor_trans_targs = [
-	4, 5, 18, 24, 25, 2, 3, 25, 
-	5, 6, 8, 4, 0, 7, 4, 4, 
-	4, 4, 9, 10, 11, 9, 9, 9, 
-	12, 12, 12, 13, 12, 12, 12, 14, 
-	14, 14, 15, 14, 14, 14, 16, 17, 
-	16, 16, 18, 19, 20, 21, 18, 18, 
-	18, 22, 23, 1, 18, 25, 26, 27, 
-	25, 28, 29, 25, 25, 25, 25, 25, 
-	25, 25, 25, 25, 25, 30, 31, 32, 
-	33, 25, 25, 35, 36, 25, 25, 25, 
-	25, 25, 25, 25, 25, 25, 25, 25, 
-	25, 25, 25, 34, 25, 25, 25, 25
+	6, 7, 20, 26, 27, 2, 3, 27, 
+	27, 4, 5, 27, 7, 8, 10, 6, 
+	0, 9, 6, 6, 6, 6, 11, 12, 
+	13, 11, 11, 11, 14, 14, 14, 15, 
+	14, 14, 14, 16, 16, 16, 17, 16, 
+	16, 16, 18, 19, 18, 18, 20, 21, 
+	22, 23, 20, 20, 20, 24, 25, 1, 
+	20, 27, 28, 29, 27, 30, 31, 27, 
+	27, 27, 27, 27, 27, 27, 27, 27, 
+	27, 32, 33, 34, 35, 27, 27, 37, 
+	38, 27, 27, 27, 27, 27, 27, 27, 
+	27, 27, 27, 27, 27, 27, 27, 36, 
+	27, 27, 27, 27
 ]
 
 class << self
@@ -159,18 +163,19 @@ class << self
 	private :_liquor_trans_actions, :_liquor_trans_actions=
 end
 self._liquor_trans_actions = [
-	137, 7, 57, 0, 125, 0, 0, 61, 
-	139, 0, 0, 133, 0, 0, 135, 131, 
-	129, 127, 13, 0, 0, 15, 11, 9, 
-	23, 25, 21, 0, 27, 17, 19, 35, 
-	37, 33, 0, 39, 29, 31, 43, 0, 
-	41, 45, 49, 0, 0, 0, 51, 55, 
-	47, 0, 7, 0, 53, 103, 0, 0, 
-	95, 0, 0, 97, 71, 73, 79, 75, 
-	63, 77, 65, 81, 59, 0, 0, 0, 
-	0, 67, 69, 0, 0, 105, 121, 85, 
-	115, 101, 123, 91, 119, 89, 111, 83, 
-	117, 87, 107, 142, 109, 113, 93, 99
+	141, 7, 57, 0, 129, 0, 0, 63, 
+	127, 0, 0, 61, 143, 0, 0, 137, 
+	0, 0, 139, 135, 133, 131, 13, 0, 
+	0, 15, 11, 9, 23, 25, 21, 0, 
+	27, 17, 19, 35, 37, 33, 0, 39, 
+	29, 31, 43, 0, 41, 45, 49, 0, 
+	0, 0, 51, 55, 47, 0, 7, 0, 
+	53, 105, 0, 0, 97, 0, 0, 99, 
+	73, 75, 81, 77, 65, 79, 67, 83, 
+	59, 0, 7, 0, 0, 69, 71, 0, 
+	0, 107, 123, 87, 117, 103, 125, 93, 
+	121, 91, 113, 85, 119, 89, 109, 146, 
+	111, 115, 95, 101
 ]
 
 class << self
@@ -178,11 +183,11 @@ class << self
 	private :_liquor_to_state_actions, :_liquor_to_state_actions=
 end
 self._liquor_to_state_actions = [
-	0, 0, 0, 0, 3, 0, 0, 0, 
-	0, 3, 0, 0, 3, 0, 3, 0, 
-	3, 0, 3, 0, 0, 0, 0, 0, 
-	0, 3, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0
+	0, 0, 0, 0, 0, 0, 3, 0, 
+	0, 0, 0, 3, 0, 0, 3, 0, 
+	3, 0, 3, 0, 3, 0, 0, 0, 
+	0, 0, 0, 3, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0
 ]
 
 class << self
@@ -190,11 +195,11 @@ class << self
 	private :_liquor_from_state_actions, :_liquor_from_state_actions=
 end
 self._liquor_from_state_actions = [
-	0, 0, 0, 0, 5, 0, 0, 0, 
-	0, 5, 0, 0, 5, 0, 5, 0, 
-	5, 0, 5, 0, 0, 0, 0, 0, 
-	0, 5, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0
+	0, 0, 0, 0, 0, 0, 5, 0, 
+	0, 0, 0, 5, 0, 0, 5, 0, 
+	5, 0, 5, 0, 5, 0, 0, 0, 
+	0, 0, 0, 5, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0
 ]
 
 class << self
@@ -203,10 +208,10 @@ class << self
 end
 self._liquor_eof_actions = [
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 1, 0, 1, 0, 
+	0, 0, 0, 0, 0, 0, 1, 0, 
+	1, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0
+	0, 0, 0, 0, 0, 0, 0
 ]
 
 class << self
@@ -214,21 +219,21 @@ class << self
 	private :_liquor_eof_trans, :_liquor_eof_trans=
 end
 self._liquor_eof_trans = [
-	1, 3, 5, 5, 0, 12, 12, 12, 
-	15, 0, 22, 22, 0, 29, 0, 36, 
-	0, 42, 0, 47, 48, 48, 48, 48, 
-	53, 0, 78, 79, 81, 83, 85, 87, 
-	89, 91, 93, 94, 83
+	1, 3, 5, 5, 9, 9, 0, 16, 
+	16, 16, 19, 0, 26, 26, 0, 33, 
+	0, 40, 0, 46, 0, 51, 52, 52, 
+	52, 52, 57, 0, 82, 83, 85, 87, 
+	89, 91, 93, 95, 97, 98, 87
 ]
 
 class << self
 	attr_accessor :liquor_start
 end
-self.liquor_start = 4;
+self.liquor_start = 6;
 class << self
 	attr_accessor :liquor_first_final
 end
-self.liquor_first_final = 4;
+self.liquor_first_final = 6;
 class << self
 	attr_accessor :liquor_error
 end
@@ -237,34 +242,34 @@ self.liquor_error = -1;
 class << self
 	attr_accessor :liquor_en_comment
 end
-self.liquor_en_comment = 9;
+self.liquor_en_comment = 11;
 class << self
 	attr_accessor :liquor_en_dqstring
 end
-self.liquor_en_dqstring = 12;
+self.liquor_en_dqstring = 14;
 class << self
 	attr_accessor :liquor_en_sqstring
 end
-self.liquor_en_sqstring = 14;
+self.liquor_en_sqstring = 16;
 class << self
 	attr_accessor :liquor_en_integer
 end
-self.liquor_en_integer = 16;
+self.liquor_en_integer = 18;
 class << self
 	attr_accessor :liquor_en_tag_start
 end
-self.liquor_en_tag_start = 18;
+self.liquor_en_tag_start = 20;
 class << self
 	attr_accessor :liquor_en_code
 end
-self.liquor_en_code = 25;
+self.liquor_en_code = 27;
 class << self
 	attr_accessor :liquor_en_plaintext
 end
-self.liquor_en_plaintext = 4;
+self.liquor_en_plaintext = 6;
 
 
-# line 184 "lib/liquor/grammar/lexer.rl"
+# line 201 "lib/liquor/grammar/lexer.rl"
 
     def self.lex(data)
       eof    = data.length
@@ -307,7 +312,7 @@ self.liquor_en_plaintext = 4;
       }
 
       
-# line 311 "lib/liquor/lexer.rb"
+# line 316 "lib/liquor/lexer.rb"
 begin
 	p ||= 0
 	pe ||= data.length
@@ -318,9 +323,9 @@ begin
 	act = 0
 end
 
-# line 226 "lib/liquor/grammar/lexer.rl"
+# line 243 "lib/liquor/grammar/lexer.rl"
       
-# line 324 "lib/liquor/lexer.rb"
+# line 329 "lib/liquor/lexer.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -350,7 +355,7 @@ begin
 		begin
 ts = p
 		end
-# line 354 "lib/liquor/lexer.rb"
+# line 359 "lib/liquor/lexer.rb"
 		end # from state action switch
 	end
 	if _trigger_goto
@@ -422,7 +427,7 @@ when 0 then
 		begin
  line_starts.push(p + 1) 		end
 when 2 then
-# line 108 "lib/liquor/grammar/lexer.rl"
+# line 114 "lib/liquor/grammar/lexer.rl"
 		begin
  kw_stop = p 		end
 when 5 then
@@ -437,7 +442,7 @@ te = p+1
  begin  	begin
 		stack[top] = cs
 		top+= 1
-		cs = 9
+		cs = 11
 		_trigger_goto = true
 		_goto_level = _again
 		break
@@ -485,7 +490,7 @@ when 12 then
 te = p+1
  begin 
   tok.(:string, string, ts: str_start); 	begin
-		cs = 25
+		cs = 27
 		_trigger_goto = true
 		_goto_level = _again
 		break
@@ -535,7 +540,7 @@ when 18 then
 te = p+1
  begin 
   tok.(:string, string, ts: str_start); 	begin
-		cs = 25
+		cs = 27
 		_trigger_goto = true
 		_goto_level = _again
 		break
@@ -584,7 +589,7 @@ when 23 then
 		begin
 te = p+1
  begin  p = p - 1; 	begin
-		cs = 25
+		cs = 27
 		_trigger_goto = true
 		_goto_level = _again
 		break
@@ -598,13 +603,13 @@ te = p
 p = p - 1; begin  tok.(:integer, data[ts...te].to_i)  end
 		end
 when 25 then
-# line 92 "lib/liquor/grammar/lexer.rl"
+# line 98 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  fixtok.(:lblock2)
         tok.(:keyword, data[ts...te - 1])
         	begin
-		cs = 25
+		cs = 27
 		_trigger_goto = true
 		_goto_level = _again
 		break
@@ -613,11 +618,11 @@ te = p+1
        end
 		end
 when 26 then
-# line 98 "lib/liquor/grammar/lexer.rl"
+# line 104 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  p = p - 1; 	begin
-		cs = 25
+		cs = 27
 		_trigger_goto = true
 		_goto_level = _again
 		break
@@ -639,10 +644,16 @@ p = p - 1; begin  tag = data[ts + 4...te]
           tok.(:endtag)
           tag_stack.pop
         else
-          tok.(:ident, data[ts...te])
+          (sl, sc), (el, ec) = loc.(ts), loc.(te)
+          info = { line: sl, start: sc, end: ec }
+          if tag_stack.any?
+            raise SyntaxError.new("unmatching end tag for `#{tag}', expected `end #{tag_stack.last}'", info)
+          else
+            raise SyntaxError.new("unexpected end tag for `#{tag}'", info)
+          end
         end
         	begin
-		cs = 25
+		cs = 27
 		_trigger_goto = true
 		_goto_level = _again
 		break
@@ -651,14 +662,14 @@ p = p - 1; begin  tag = data[ts + 4...te]
        end
 		end
 when 29 then
-# line 85 "lib/liquor/grammar/lexer.rl"
+# line 91 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1; begin  tag = data[ts...te]
         tok.(:ident, tag)
         last_tag = tag
         	begin
-		cs = 25
+		cs = 27
 		_trigger_goto = true
 		_goto_level = _again
 		break
@@ -667,14 +678,14 @@ p = p - 1; begin  tag = data[ts...te]
        end
 		end
 when 30 then
-# line 85 "lib/liquor/grammar/lexer.rl"
+# line 91 "lib/liquor/grammar/lexer.rl"
 		begin
  begin p = ((te))-1; end
  begin  tag = data[ts...te]
         tok.(:ident, tag)
         last_tag = tag
         	begin
-		cs = 25
+		cs = 27
 		_trigger_goto = true
 		_goto_level = _again
 		break
@@ -683,11 +694,11 @@ when 30 then
        end
 		end
 when 31 then
-# line 106 "lib/liquor/grammar/lexer.rl"
+# line 112 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  p = p - 1; 	begin
-		cs = 16
+		cs = 18
 		_trigger_goto = true
 		_goto_level = _again
 		break
@@ -695,7 +706,7 @@ te = p+1
   end
 		end
 when 32 then
-# line 109 "lib/liquor/grammar/lexer.rl"
+# line 115 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:keyword, data[ts...kw_stop], te: kw_stop)
@@ -705,7 +716,7 @@ te = p+1
           last_tag = nil
         end
         	begin
-		cs = 4
+		cs = 6
 		_trigger_goto = true
 		_goto_level = _again
 		break
@@ -714,115 +725,123 @@ te = p+1
        end
 		end
 when 33 then
-# line 124 "lib/liquor/grammar/lexer.rl"
-		begin
-te = p+1
- begin  tok.(:comma)  end
-		end
-when 34 then
-# line 125 "lib/liquor/grammar/lexer.rl"
-		begin
-te = p+1
- begin  tok.(:dot)    end
-		end
-when 35 then
-# line 127 "lib/liquor/grammar/lexer.rl"
-		begin
-te = p+1
- begin  tok.(:lbracket)  end
-		end
-when 36 then
 # line 128 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
- begin  tok.(:rbracket)  end
-		end
-when 37 then
-# line 130 "lib/liquor/grammar/lexer.rl"
-		begin
-te = p+1
- begin  tok.(:lparen)  end
-		end
-when 38 then
-# line 131 "lib/liquor/grammar/lexer.rl"
-		begin
-te = p+1
- begin  tok.(:rparen)  end
-		end
-when 39 then
-# line 135 "lib/liquor/grammar/lexer.rl"
-		begin
-te = p+1
- begin  tok.(:op_plus)   end
-		end
-when 40 then
-# line 136 "lib/liquor/grammar/lexer.rl"
-		begin
-te = p+1
- begin  tok.(:op_minus)  end
-		end
-when 41 then
-# line 137 "lib/liquor/grammar/lexer.rl"
-		begin
-te = p+1
- begin  tok.(:op_mul)    end
-		end
-when 42 then
-# line 138 "lib/liquor/grammar/lexer.rl"
-		begin
-te = p+1
- begin  tok.(:op_div)    end
-		end
-when 43 then
-# line 141 "lib/liquor/grammar/lexer.rl"
-		begin
-te = p+1
- begin  tok.(:op_eq)   end
-		end
-when 44 then
-# line 142 "lib/liquor/grammar/lexer.rl"
-		begin
-te = p+1
- begin  tok.(:op_neq)  end
-		end
-when 45 then
-# line 144 "lib/liquor/grammar/lexer.rl"
-		begin
-te = p+1
- begin  tok.(:op_geq)  end
-		end
-when 46 then
-# line 146 "lib/liquor/grammar/lexer.rl"
-		begin
-te = p+1
- begin  tok.(:op_leq)  end
-		end
-when 47 then
-# line 150 "lib/liquor/grammar/lexer.rl"
-		begin
-te = p+1
- begin  tok.(:op_and)  end
-		end
-when 48 then
-# line 151 "lib/liquor/grammar/lexer.rl"
-		begin
-te = p+1
- begin  tok.(:op_or)  end
-		end
-when 49 then
-# line 153 "lib/liquor/grammar/lexer.rl"
-		begin
-te = p+1
- begin  str_start = p; 	begin
-		cs = 12
+ begin 
+        tok.(:keyword, '=', te: ts + 1)
+        tok.(:rblock,  nil, ts: te - 2)
+        if last_tag
+          tag_stack.push last_tag
+          last_tag = nil
+        end
+        	begin
+		cs = 6
 		_trigger_goto = true
 		_goto_level = _again
 		break
 	end
-  end
+
+       end
+		end
+when 34 then
+# line 141 "lib/liquor/grammar/lexer.rl"
+		begin
+te = p+1
+ begin  tok.(:comma)  end
+		end
+when 35 then
+# line 142 "lib/liquor/grammar/lexer.rl"
+		begin
+te = p+1
+ begin  tok.(:dot)    end
+		end
+when 36 then
+# line 144 "lib/liquor/grammar/lexer.rl"
+		begin
+te = p+1
+ begin  tok.(:lbracket)  end
+		end
+when 37 then
+# line 145 "lib/liquor/grammar/lexer.rl"
+		begin
+te = p+1
+ begin  tok.(:rbracket)  end
+		end
+when 38 then
+# line 147 "lib/liquor/grammar/lexer.rl"
+		begin
+te = p+1
+ begin  tok.(:lparen)  end
+		end
+when 39 then
+# line 148 "lib/liquor/grammar/lexer.rl"
+		begin
+te = p+1
+ begin  tok.(:rparen)  end
+		end
+when 40 then
+# line 152 "lib/liquor/grammar/lexer.rl"
+		begin
+te = p+1
+ begin  tok.(:op_plus)   end
+		end
+when 41 then
+# line 153 "lib/liquor/grammar/lexer.rl"
+		begin
+te = p+1
+ begin  tok.(:op_minus)  end
+		end
+when 42 then
+# line 154 "lib/liquor/grammar/lexer.rl"
+		begin
+te = p+1
+ begin  tok.(:op_mul)    end
+		end
+when 43 then
+# line 155 "lib/liquor/grammar/lexer.rl"
+		begin
+te = p+1
+ begin  tok.(:op_div)    end
+		end
+when 44 then
+# line 158 "lib/liquor/grammar/lexer.rl"
+		begin
+te = p+1
+ begin  tok.(:op_eq)   end
+		end
+when 45 then
+# line 159 "lib/liquor/grammar/lexer.rl"
+		begin
+te = p+1
+ begin  tok.(:op_neq)  end
+		end
+when 46 then
+# line 161 "lib/liquor/grammar/lexer.rl"
+		begin
+te = p+1
+ begin  tok.(:op_geq)  end
+		end
+when 47 then
+# line 163 "lib/liquor/grammar/lexer.rl"
+		begin
+te = p+1
+ begin  tok.(:op_leq)  end
+		end
+when 48 then
+# line 167 "lib/liquor/grammar/lexer.rl"
+		begin
+te = p+1
+ begin  tok.(:op_and)  end
+		end
+when 49 then
+# line 168 "lib/liquor/grammar/lexer.rl"
+		begin
+te = p+1
+ begin  tok.(:op_or)  end
 		end
 when 50 then
-# line 154 "lib/liquor/grammar/lexer.rl"
+# line 170 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  str_start = p; 	begin
@@ -834,11 +853,11 @@ te = p+1
   end
 		end
 when 51 then
-# line 156 "lib/liquor/grammar/lexer.rl"
+# line 171 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
- begin  tok.(:rinterp); 	begin
-		cs = 4
+ begin  str_start = p; 	begin
+		cs = 16
 		_trigger_goto = true
 		_goto_level = _again
 		break
@@ -846,11 +865,11 @@ te = p+1
   end
 		end
 when 52 then
-# line 157 "lib/liquor/grammar/lexer.rl"
+# line 173 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
- begin  tok.(:rblock);  	begin
-		cs = 4
+ begin  tok.(:rinterp); 	begin
+		cs = 6
 		_trigger_goto = true
 		_goto_level = _again
 		break
@@ -858,6 +877,18 @@ te = p+1
   end
 		end
 when 53 then
+# line 174 "lib/liquor/grammar/lexer.rl"
+		begin
+te = p+1
+ begin  tok.(:rblock);  	begin
+		cs = 6
+		_trigger_goto = true
+		_goto_level = _again
+		break
+	end
+  end
+		end
+when 54 then
 # line 31 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
@@ -869,60 +900,60 @@ te = p+1
   raise error
  end
 		end
-when 54 then
-# line 102 "lib/liquor/grammar/lexer.rl"
+when 55 then
+# line 108 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1;		end
-when 55 then
-# line 104 "lib/liquor/grammar/lexer.rl"
+when 56 then
+# line 110 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1; begin  tok.(:ident, data[ts...te])  end
 		end
-when 56 then
-# line 119 "lib/liquor/grammar/lexer.rl"
+when 57 then
+# line 125 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1; begin  tok.(:keyword, data[ts...te-1])  end
 		end
-when 57 then
-# line 122 "lib/liquor/grammar/lexer.rl"
+when 58 then
+# line 139 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1; begin  tok.(:keyword, '=')  end
 		end
-when 58 then
-# line 133 "lib/liquor/grammar/lexer.rl"
+when 59 then
+# line 150 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1; begin  tok.(:pipe)  end
 		end
-when 59 then
-# line 139 "lib/liquor/grammar/lexer.rl"
+when 60 then
+# line 156 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1; begin  tok.(:op_mod)    end
 		end
-when 60 then
-# line 143 "lib/liquor/grammar/lexer.rl"
+when 61 then
+# line 160 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1; begin  tok.(:op_gt)   end
 		end
-when 61 then
-# line 145 "lib/liquor/grammar/lexer.rl"
+when 62 then
+# line 162 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1; begin  tok.(:op_lt)   end
 		end
-when 62 then
-# line 148 "lib/liquor/grammar/lexer.rl"
+when 63 then
+# line 165 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1; begin  tok.(:op_not)  end
 		end
-when 63 then
+when 64 then
 # line 31 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
@@ -934,44 +965,24 @@ p = p - 1; begin
   raise error
  end
 		end
-when 64 then
-# line 119 "lib/liquor/grammar/lexer.rl"
+when 65 then
+# line 125 "lib/liquor/grammar/lexer.rl"
 		begin
  begin p = ((te))-1; end
  begin  tok.(:keyword, data[ts...te-1])  end
 		end
-when 65 then
-# line 167 "lib/liquor/grammar/lexer.rl"
+when 66 then
+# line 139 "lib/liquor/grammar/lexer.rl"
+		begin
+ begin p = ((te))-1; end
+ begin  tok.(:keyword, '=')  end
+		end
+when 67 then
+# line 184 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:linterp); 	begin
-		cs = 25
-		_trigger_goto = true
-		_goto_level = _again
-		break
-	end
-  end
-		end
-when 66 then
-# line 170 "lib/liquor/grammar/lexer.rl"
-		begin
-te = p+1
- begin  tok.(:lblock);  	begin
-		cs = 18
-		_trigger_goto = true
-		_goto_level = _again
-		break
-	end
-  end
-		end
-when 67 then
-# line 173 "lib/liquor/grammar/lexer.rl"
-		begin
-te = p+1
- begin  	begin
-		stack[top] = cs
-		top+= 1
-		cs = 9
+		cs = 27
 		_trigger_goto = true
 		_goto_level = _again
 		break
@@ -979,17 +990,25 @@ te = p+1
   end
 		end
 when 68 then
-# line 164 "lib/liquor/grammar/lexer.rl"
+# line 187 "lib/liquor/grammar/lexer.rl"
 		begin
-te = p
-p = p - 1; begin  tok.(:plaintext, data[ts...te]);  end
+te = p+1
+ begin  tok.(:lblock);  	begin
+		cs = 20
+		_trigger_goto = true
+		_goto_level = _again
+		break
+	end
+  end
 		end
 when 69 then
-# line 176 "lib/liquor/grammar/lexer.rl"
+# line 190 "lib/liquor/grammar/lexer.rl"
 		begin
-te = p
-p = p - 1; begin  p = p - 1; 	begin
-		cs = 25
+te = p+1
+ begin  	begin
+		stack[top] = cs
+		top+= 1
+		cs = 11
 		_trigger_goto = true
 		_goto_level = _again
 		break
@@ -997,12 +1016,30 @@ p = p - 1; begin  p = p - 1; 	begin
   end
 		end
 when 70 then
-# line 164 "lib/liquor/grammar/lexer.rl"
+# line 181 "lib/liquor/grammar/lexer.rl"
+		begin
+te = p
+p = p - 1; begin  tok.(:plaintext, data[ts...te]);  end
+		end
+when 71 then
+# line 193 "lib/liquor/grammar/lexer.rl"
+		begin
+te = p
+p = p - 1; begin  p = p - 1; 	begin
+		cs = 27
+		_trigger_goto = true
+		_goto_level = _again
+		break
+	end
+  end
+		end
+when 72 then
+# line 181 "lib/liquor/grammar/lexer.rl"
 		begin
  begin p = ((te))-1; end
  begin  tok.(:plaintext, data[ts...te]);  end
 		end
-# line 1006 "lib/liquor/lexer.rb"
+# line 1043 "lib/liquor/lexer.rb"
 			end # action switch
 		end
 	end
@@ -1022,7 +1059,7 @@ when 3 then
 # line 1 "NONE"
 		begin
 ts = nil;		end
-# line 1026 "lib/liquor/lexer.rb"
+# line 1063 "lib/liquor/lexer.rb"
 		end # to state action switch
 	end
 	if _trigger_goto
@@ -1054,7 +1091,7 @@ when 1 then
 
   runaway = true
 		end
-# line 1058 "lib/liquor/lexer.rb"
+# line 1095 "lib/liquor/lexer.rb"
 		end # eof action switch
 	end
 	if _trigger_goto
@@ -1068,7 +1105,7 @@ end
 	end
 	end
 
-# line 227 "lib/liquor/grammar/lexer.rl"
+# line 244 "lib/liquor/grammar/lexer.rl"
 
       if runaway
         line_start_index = find_line_start.(str_start)
