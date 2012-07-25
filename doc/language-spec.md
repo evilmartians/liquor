@@ -549,7 +549,9 @@ Tag _assign_ has one valid syntactic form:
 
 <pre><code>{% assign <em>var</em> = <em>expr</em> %}</code></pre>
 
-_Assign_ binds the name _var_ to the result of executing _expr_ in the current scope. If _var_ is already bound, then _assign_ mutates the binding.
+_Assign_ binds the name _var_ to the result of executing _expr_ in the current scope. If _var_ is already bound, _assign_ mutates the binding.
+
+The _assign_ tag itself evaluates to an empty string.
 
 #### 6.1.2 for
 
@@ -566,6 +568,8 @@ Tag _for_ has two valid syntactic forms:
 In the _for..in_ form, this tag invokes _code_ with _var_ bound to each element of _list_ sequentally. If _list_ is not a *Tuple*, a runtime error condition is signaled.
 
 In the _for..from..to_ form, this tag invokes _code_ with _var_ bound to each integer between _lower-limit_ and _upper-limit_, inclusive. If _lower-limit_ or _upper-limit_ is not an *Integer*, a [runtime error condition] is signaled.
+
+The _for_ tag itself evaluates to the concatenation of values its _code_ has evaluated to.
 
 #### 6.1.2 if
 
@@ -584,6 +588,8 @@ This tag can optionally have any amount of _elsif_ clauses and only one _else_ c
 
 The _if_ tag sequentally evaluates each passed condition _cond-1_, _cond-2_, ... until a [truthful](#boolean-operators) value is computed. Then, it executes the corresponding code. If none of the conditions evaluate to a truthful value, the tag executes _code-else_ if it exists.
 
+The _if_ tag itself evaluates to the result of evaluating the corresponding code block, or to an empty string if none of the blocks were executed.
+
 #### 6.1.3 unless
 
 Tag _unless_ has one valid syntactic form:
@@ -592,7 +598,19 @@ Tag _unless_ has one valid syntactic form:
   <em>code</em>
 {% end unless %}</code></pre>
 
+The _unless_ tag evaluates _cond_. Unless it yields a [truthful](#boolean-operators), _code_ is also evaluated.
 
+The _unless_ tag itself evaluates to the result of evaluating _code_, or to an empty string.
+
+#### 6.1.4 capture
+
+Tag _capture_ has one valid syntactic form:
+
+<pre><code>{% capture <em>var</em> = %}
+  <em>code</em>
+{% end capture %}</code></pre>
+
+The _capture_ tag evaluates _code_ and binds the name _var_ to the result. If _var_ is already bound, _assign_ mutates the binding.
 
 ### 6.2 Functions
 
