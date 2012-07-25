@@ -276,4 +276,15 @@ describe Liquor::Parser do
     parser.errors.count.should == 0
     parser.success?.should == true
   end
+
+  it "correctly handles empty blocks" do
+    parse('{% tag do: %}{% end tag %}').should have_node_structure(
+      [:tag,
+        [:ident, 'tag'],
+        nil,
+        [:blockarg,
+          [:keyword, 'do'],
+          []]]
+    )
+  end
 end

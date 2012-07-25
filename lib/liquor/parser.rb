@@ -95,9 +95,9 @@ module_eval(<<'...end parser.racc/module_eval...', 'parser.racc', 183)
   def reduce_tag_args(list)
     list.each_slice(2).reduce([]) { |args, (k, v)|
       if v[0] == :block
-        args << [ :blockarg, retag([ k, v ]), k, v[2] ]
+        args << [ :blockarg, retag([ k, v ]), k, v[2] || [] ]
       else
-        args << [ :kwarg,    retag([ k, v ]), k, v    ]
+        args << [ :kwarg,    retag([ k, v ]), k, v          ]
       end
     }
   end
