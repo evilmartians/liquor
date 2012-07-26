@@ -3,7 +3,7 @@ module Liquor
     attr_reader :compiler
 
     def initialize
-      @compiler  = Liquor::Compiler.new
+      @compiler  = Liquor::Compiler.new(manager: self)
       @templates = {}
     end
 

@@ -1,6 +1,7 @@
 module Liquor
   class Compiler
     attr_reader :errors, :source, :code
+    attr_reader :manager
 
     def initialize(options={})
       @tags      = {}
@@ -11,12 +12,15 @@ module Liquor
       @code   = nil
 
       import_builtins = options.delete(:import_builtins) || true
+      @manager        = options.delete(:manager)
+
       if options.any?
         raise "Unknown compiler options #{options.keys.join ", "}"
       end
 
       if import_builtins
         Builtins.export self
+        Partials.export self
       end
     end
 

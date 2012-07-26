@@ -53,7 +53,7 @@ module Liquor
     end
 
     tag "if" do |emit, context, node|
-      name, arg, *kwargs = nvalue(node)
+      tag_name, arg, *kwargs = nvalue(node)
 
       state = :begin
       while state

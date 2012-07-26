@@ -17,7 +17,7 @@ module Liquor
       instance_exec emit, emit.context, node, &@body
     end
 
-    def check_args(node, arg_type, kwarg_types)
+    def check_args(node, arg_type, kwarg_types={})
       name, arg, *kwargs = nvalue(node)
       if arg_type.nil? && !arg.nil?
         raise SyntaxError.new("extraneous argument", nloc(arg))

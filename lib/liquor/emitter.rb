@@ -19,6 +19,10 @@ module Liquor
       "_buf#{@current_capture_var}"
     end
 
+    def storage
+      "_storage"
+    end
+
     def ident(node)
       name, = nvalue(node)
 
@@ -194,7 +198,7 @@ module Liquor
       compile_block(block)
 
       [
-        %!lambda { |_env={}|\n!,
+        %!lambda { |_env={}, _storage={}|\n!,
         %|  _buf = ""\n|,
         ([
           %|  |,

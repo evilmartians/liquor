@@ -6,7 +6,11 @@ module Liquor
     attr_reader :externals, :variables
     attr_reader :nesting
 
-    RESERVED_NAMES = %w(_env _buf).freeze
+    RESERVED_NAMES = %w(_env _buf _storage
+      __LINE__ __FILE__ __ENCODING__ BEGIN END alias and begin
+      break case class def do else elsif end ensure false for in
+      module next nil not or redo rescue retry return self super
+      then true undef when yield if unless while until).freeze
 
     def initialize(compiler, externals)
       @compiler  = compiler
