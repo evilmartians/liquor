@@ -7,7 +7,7 @@ module Liquor
       @tags      = {}
       @functions = {}
 
-      @parser = Parser.new
+      @parser = Parser.new(@tags)
       @errors = []
       @code   = nil
 

@@ -129,4 +129,10 @@ describe Liquor::Compiler do
     compiler.compile! '{% test %}'
     compiler.code.call.should == 'hello world'
   end
+
+  it "allows to write tag continuations without colons" do
+    compiler = Liquor::Compiler.new
+    compiler.compile! '{% if a then: %} 1 {% elsif !a then: %} 2 {% end if %}', [:a]
+    compiler.code.call(a: false).strip.should == '2'
+  end
 end

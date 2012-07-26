@@ -24,8 +24,8 @@ module Liquor
         @functions << Function.new(name, options, &block)
       end
 
-      def tag(name, &block)
-        @tags << Tag.new(name, &block)
+      def tag(name, options={}, &block)
+        @tags << Tag.new(name, options, &block)
       end
     end
   end

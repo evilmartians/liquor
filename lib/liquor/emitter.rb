@@ -153,7 +153,7 @@ module Liquor
     def boolean_unop(node)
       expr, = nvalue(node)
       # converts by itself
-      "#{OPERATORS[ntype(node)]}#{(expr)}"
+      "#{OPERATORS[ntype(node)]}#{expr(expr)}"
     end
 
     def convert_boolean(node)

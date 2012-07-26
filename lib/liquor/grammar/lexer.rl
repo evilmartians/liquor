@@ -75,13 +75,16 @@ tag_start := |*
           fixtok.(:lblock2)
           tok.(:endtag)
           tag_stack.pop
+          if registered_tags.include?(tag_stack.last)
+            tag_conts = registered_tags[tag_stack.last].continuations
+          end
         else
           (sl, sc), (el, ec) = loc.(ts), loc.(te)
           info = { line: sl, start: sc, end: ec }
           if tag_stack.any?
-            raise SyntaxError.new("unmatching end tag for `#{tag}', expected `end #{tag_stack.last}'", info)
+            raise SyntaxError.new("unmatched `end #{tag}', expected `end #{tag_stack.last}'", info)
           else
-            raise SyntaxError.new("unexpected end tag for `#{tag}'", info)
+            raise SyntaxError.new("unexpected `end #{tag}'", info)
           end
         end
         fgoto code;
@@ -89,8 +92,18 @@ tag_start := |*
 
     identifier =>
       { tag = data[ts...te]
+
+        if tag_conts.include? tag
+          fixtok.(:lblock2)
+          tok.(:keyword, tag)
+          fgoto code;
+        elsif registered_tags.include?(tag)
+          tag_conts = registered_tags[tag].continuations
+        end
+
         tok.(:ident, tag)
         last_tag = tag
+
         fgoto code;
       };
 
@@ -199,7 +212,7 @@ module Liquor
   module Lexer
     %% write data;
 
-    def self.lex(data)
+    def self.lex(data, registered_tags={})
       eof    = data.length
       ts     = nil # token start
       te     = nil # token end
@@ -211,9 +224,10 @@ module Liquor
       runaway   = false
 
       # Tags
-      tag_stack = []
-      last_tag  = nil
-      kw_stop   = nil
+      tag_stack  = []
+      tag_conts  = []
+      last_tag   = nil
+      kw_stop    = nil
 
       line_starts = [0]
 

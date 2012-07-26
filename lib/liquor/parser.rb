@@ -11,11 +11,12 @@ module Liquor
 module_eval(<<'...end parser.racc/module_eval...', 'parser.racc', 183)
   attr_reader :errors, :ast
 
-  def initialize
-    super
+  def initialize(tags={})
+    super()
 
     @errors = []
-    @ast = nil
+    @ast    = nil
+    @tags   = tags
   end
 
   def success?
@@ -27,7 +28,7 @@ module_eval(<<'...end parser.racc/module_eval...', 'parser.racc', 183)
     @ast = nil
 
     begin
-      @stream = Lexer.lex(string)
+      @stream = Lexer.lex(string, @tags)
       @ast = do_parse
     rescue Liquor::SyntaxError => e
       @errors << e

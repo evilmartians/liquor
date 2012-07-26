@@ -3,13 +3,18 @@ module Liquor
     include ASTTools
 
     attr_reader :name
+    attr_reader :continuations
 
-    def initialize(name, &block)
+    def initialize(name, options={}, &block)
       @name = name.to_s
       @body = block
 
+      @continuations = (options.delete(:continuations) || []).map(&:to_s)
+
       if @body.nil?
         raise "Cannot define a tag without body"
+      elsif options.any?
+        raise "Unknown tag options: #{options.keys.join ", "}"
       end
     end
 

@@ -182,11 +182,12 @@ rule
 ---- inner
   attr_reader :errors, :ast
 
-  def initialize
-    super
+  def initialize(tags={})
+    super()
 
     @errors = []
-    @ast = nil
+    @ast    = nil
+    @tags   = tags
   end
 
   def success?
@@ -198,7 +199,7 @@ rule
     @ast = nil
 
     begin
-      @stream = Lexer.lex(string)
+      @stream = Lexer.lex(string, @tags)
       @ast = do_parse
     rescue Liquor::SyntaxError => e
       @errors << e

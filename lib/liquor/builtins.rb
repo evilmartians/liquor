@@ -52,7 +52,7 @@ module Liquor
       end
     end
 
-    tag "if" do |emit, context, node|
+    tag "if", continuations: %w(elsif) do |emit, context, node|
       tag_name, arg, *kwargs = nvalue(node)
 
       state = :begin
