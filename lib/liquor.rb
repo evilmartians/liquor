@@ -15,7 +15,10 @@ module Liquor
   require "liquor/function"
 
   require "liquor/library"
+
   require "liquor/builtins"
+  require "liquor/partials"
 
   require "liquor/compiler"
+  require "liquor/manager"
 end
