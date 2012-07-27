@@ -11,14 +11,14 @@ module Liquor
       @errors = []
       @code   = nil
 
-      import_builtins = options.delete(:import_builtins) || true
+      import_builtins = options.delete(:import_builtins)
       @manager        = options.delete(:manager)
 
       if options.any?
         raise "Unknown compiler options #{options.keys.join ", "}"
       end
 
-      if import_builtins
+      if import_builtins || import_builtins.nil?
         Builtins.export self
         Partials.export self
       end

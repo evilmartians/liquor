@@ -28,10 +28,10 @@ module Liquor
 
       case @context.type name
       when :builtin
-        case value
-        when 'null';  nil
-        when 'true';  true
-        when 'false'; false
+        case name
+        when 'null';  'nil'
+        when 'true';  'true'
+        when 'false'; 'false'
         end
       when :variable
         @context.access name, nloc(node)

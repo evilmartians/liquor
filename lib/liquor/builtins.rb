@@ -1,3 +1,5 @@
+require 'time'
+
 module Liquor
   module Builtins
     include Library
@@ -143,6 +145,193 @@ module Liquor
 
         emit.out! %Q|#{access_var_name} = #{capture_var_name}\n|
       end
+    end
+
+    function "size", unnamed_arg: [:string, :tuple] do |arg,|
+      arg.size
+    end
+
+    function "downcase", unnamed_arg: :string do |arg,|
+      arg.downcase
+    end
+
+    function "upcase", unnamed_arg: :string do |arg,|
+      arg.upcase
+    end
+
+    function "capitalize", unnamed_arg: :string do |arg,|
+      arg.capitalize
+    end
+
+    function "escape", unnamed_arg: :string do |arg,|
+      URI.encode_www_form_component(arg)
+    end
+    function_alias "url_escape", "escape"
+
+    if defined?(ActionView::Helpers::TagHelper)
+      function "escape_once", unnamed_arg: :string do |arg,|
+        ActionView::Helpers::TagHelper.escape_once(input)
+      end
+      function_alias "h", "escape_once"
+    end
+
+    function "truncate",
+              unnamed_arg: :string,
+              optional_named_args: {
+                length:   :integer,
+                omission: :string
+              } do |arg, kw|
+      length   = kw[:length]   || 50
+      omission = kw[:omission] || '...'
+
+      truncate_at = length - kw[:omission].length
+      truncate_at = 0 if length < 0
+
+      if arg.length > length
+        arg[0...truncate_at] + omission
+      else
+        arg
+      end
+    end
+
+    function "truncate_words",
+              unnamed_arg: :string,
+              optional_named_args: {
+                words:    :integer,
+                omission: :string
+              } do |arg, kw|
+      words    = arg.split
+      length   = kw[:words]    || 15
+      omission = kw[:omission] || '...'
+
+      if words.length > length
+        words[0...length].join(" ") + omission
+      else
+        words.join(" ")
+      end
+    end
+
+    if defined?(ActionView::Helpers::SanitizeHelper)
+      function "strip_html", unnamed_arg: :string do |arg,|
+        ActionView::Helpers::SanitizeHelper.strip_tags(arg)
+      end
+    end
+
+    function "strip_newlines", unnamed_arg: :string do |arg,|
+      arg.gsub("\n", "")
+    end
+
+    function "join", unnamed_arg: :tuple,
+                     optional_named_args: { glue: :string } do |arg, kw|
+      arg.flatten.join(kw[:glue] || ' ')
+    end
+
+    function "split", unnamed_arg: :string,
+                      optional_named_args: { delimiter: :string } do |arg, kw|
+      arg.split(kw[:delimiter] || ' ')
+    end
+
+    function "replace",
+              unnamed_arg: :string,
+              mandatory_named_args: {
+                pattern: :string,
+                replacement: :string
+              } do |arg, kw|
+      arg.gsub kw[:pattern], kw[:replacement]
+    end
+
+    function "replace_first",
+              unnamed_arg: :string,
+              mandatory_named_args: {
+                pattern: :string,
+                replacement: :string
+              } do |arg, kw|
+      arg.sub kw[:pattern], kw[:replacement]
+    end
+
+    function "remove",
+              unnamed_arg: :string,
+              mandatory_named_args: {
+                pattern: :string,
+              } do |arg, kw|
+      arg.gsub kw[:pattern], ''
+    end
+
+    function "remove_first",
+              unnamed_arg: :string,
+              mandatory_named_args: {
+                pattern: :string,
+              } do |arg, kw|
+      arg.sub kw[:pattern], ''
+    end
+
+    function "newline_to_br", unnamed_arg: :string do |arg,|
+      arg.gsub(/\n/, "<br>\n")
+    end
+
+    function "date",
+              unnamed_arg: :string,
+              mandatory_named_args: { format: :string } do |arg, kw|
+      begin
+        time = Time.parse(arg)
+        time.strftime(kw[:format])
+      rescue Exception => e
+        raise e
+        arg
+      end
+    end
+
+    function "to_number", unnamed_arg: [:integer, :string] do |arg,|
+      if arg.is_a? Integer
+        arg
+      else
+        arg.to_i
+      end
+    end
+    function_alias "to_i", "to_number"
+
+    if [].respond_to? :in_groups_of
+      function "in_groups_of",
+                unnamed_arg: :tuple,
+                mandatory_named_args: { number: :integer },
+                optional_named_args:  { fill_with: :string } do |arg, kw|
+        arg.in_groups_of(kw[:size], kw[:fill_with])
+      end
+
+      function "in_groups",
+                unnamed_arg: :tuple,
+                mandatory_named_args: { number: :integer },
+                optional_named_args:  { fill_with: :string } do |arg, kw|
+        arg.in_groups(kw[:size], kw[:fill_with])
+      end
+    end
+
+    function "include",
+              unnamed_arg: :tuple,
+              mandatory_named_args: { element: :any } do |arg, kw|
+      arg.include?(kw[:element])
+    end
+
+    function "reverse", unnamed_arg: :tuple do |arg,|
+      arg.reverse
+    end
+
+    if defined?(HTMLEntities)
+      function "decode_html_entities", unnamed_arg: :string do |arg,|
+        HTMLEntities.new.decode(arg)
+      end
+    end
+
+    function "compact", unnamed_arg: :tuple do |arg,|
+      arg.compact
+    end
+
+    function "even", unnamed_arg: :integer do |arg,|
+      (arg % 2) == 0
+    end
+
+    function "odd", unnamed_arg: :integer do |arg,|
+      (arg % 2) == 1
     end
   end
 end

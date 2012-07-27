@@ -24,6 +24,15 @@ module Liquor
         @functions << Function.new(name, options, &block)
       end
 
+      def function_alias(name, other)
+        function = @functions.find { |f| f.name == other }
+        if function.nil?
+          raise "Cannot alias to function `#{other}', as it does not exist"
+        end
+
+        @functions << function.alias(name)
+      end
+
       def tag(name, options={}, &block)
         @tags << Tag.new(name, options, &block)
       end

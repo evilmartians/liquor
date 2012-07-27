@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Liquor::Compiler do
   it "correctly handles error workflow" do
-    compiler = Liquor::Compiler.new
+    compiler = Liquor::Compiler.new(import_builtins: false)
     compiler.errors.should be_empty
 
     compiler.compile '{{ $ }}'

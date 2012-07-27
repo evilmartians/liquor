@@ -20,6 +20,14 @@ module Liquor
       end
     end
 
+    def alias(new_name)
+      self.class.new(new_name, {
+        unnamed_arg: @unnamed_arg,
+        mandatory_named_args: @mandatory_named_args,
+        optional_named_args: @optional_named_args,
+      }, &@body)
+    end
+
     def detect_type(arg)
       case arg
       when nil
