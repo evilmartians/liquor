@@ -35,11 +35,16 @@ describe Liquor::Compiler do
     exec('{{ ([1,2,3])[1] }}').should == '2'
   end
 
+  it "correctly handles plus operator" do
+    exec('{% if [ 1, 2 ] == [ 1 ] + [ 2 ] then: %}yes{% end if %}').should == 'yes'
+    exec('{% if "ab" == "a" + "b" then: %}yes{% end if %}').should == 'yes'
+  end
+
   it "handles unbound identifiers" do
     expect { compile('{{ i }}') }.to raise_error(Liquor::NameError, %r|is not bound|)
   end
 
-  it "handles externals" do
+  it "handles external variables" do
     compiler = Liquor::Compiler.new
     compiler.compile '{{ i }}', [:i]
     compiler.code.call(i: 10).should == '10'

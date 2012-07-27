@@ -62,7 +62,9 @@ module Liquor
         string(node)
       when :tuple
         tuple(node)
-      when :mul, :div, :mod, :plus, :minus,
+      when :plus
+        plus(node)
+      when :mul, :div, :mod, :minus,
            :lt, :lte, :gt, :gte
         integer_binop(node)
       when :uminus
@@ -128,6 +130,11 @@ module Liquor
     def index(node)
       lhs, rhs = nvalue(node)
       "#{check_tuple(lhs)}[#{check_integer(rhs)}]"
+    end
+
+    def plus(node)
+      lhs, rhs = nvalue(node)
+      "Runtime.add!(#{expr(lhs)}, #{expr(rhs)})"
     end
 
     def integer_binop(node)
