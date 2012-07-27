@@ -21,7 +21,9 @@ action string_append {
 }
 
 action string_end {
-  tok.(:string, string, ts: str_start); fgoto code;
+  tok.(:string, string.dup, ts: str_start)
+  string.clear
+  fgoto code;
 }
 
 action runaway {

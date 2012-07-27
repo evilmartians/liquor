@@ -97,6 +97,14 @@ describe Liquor::Lexer do
   end
 
   it "parses complex string literals" do
+    lex('{{ "abc" + "def" }}').should have_token_structure(
+      [:linterp],
+      [:string, "abc"],
+      [:op_plus],
+      [:string, "def"],
+      [:rinterp]
+    )
+
     expect { lex(%|{{ "test }}|) }.to raise_error(Liquor::SyntaxError, %r|literal not terminated|)
     expect { lex(%|{{ "test\\" }}|) }.to raise_error(Liquor::SyntaxError, %r|literal not terminated|)
     expect { lex(%|{{ "test\\\\" }}|) }.not_to raise_error
