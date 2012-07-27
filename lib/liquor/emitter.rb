@@ -99,7 +99,7 @@ module Liquor
       elsif !function.unnamed_arg && !arg.nil?
         raise ArgumentError.new("unnamed argument is not accepted, but is provided", nloc(arg))
       else
-        function.mandatory_named_args.each do |kwarg|
+        function.mandatory_named_args.each do |kwarg,|
           unless kw.include? kwarg
             raise ArgumentError.new("named argument `#{kwarg}' is required, but none provided", nloc(rhs))
           end

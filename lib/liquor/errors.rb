@@ -3,6 +3,8 @@ module Liquor
   end
 
   class SourceMappedError < Error
+    attr_reader :location
+
     def initialize(message, location=nil)
       location_info = ""
       if location
@@ -40,5 +42,36 @@ module Liquor
   end
 
   class NameError < SourceMappedError
+  end
+
+  class TypeError < SourceMappedError
+  end
+
+  class ArgumentTypeError < Error
+    attr_reader :location
+
+    def initialize(message, location=nil)
+      location_info = ""
+      if location
+        if location.include? :function
+          location_info << "function `#{location[:function]}'"
+          if location.include? :argument
+            if location[:argument].nil?
+              location_info << ", unnamed argument"
+            else
+              location_info << ", argument `#{location[:argument]}'"
+            end
+          end
+        end
+      end
+
+      @location = location
+
+      if location_info.empty?
+        super(message)
+      else
+        super("#{message} at #{location_info}")
+      end
+    end
   end
 end

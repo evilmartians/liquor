@@ -49,16 +49,16 @@ describe Liquor::Compiler do
     compiler = Liquor::Compiler.new(import_builtins: false)
 
     a = Liquor::Function.new("substr",
-          unnamed_arg: true,
-          optional_named_args: [:from, :to]) do |arg, kw|
+          unnamed_arg: :string,
+          optional_named_args: { from: :integer, to: :integer }) do |arg, kw|
       from, to = kw[:from] || 0, kw[:to] || -1
       arg[from..to]
     end
     compiler.register_function a
 
     b = Liquor::Function.new("yield",
-          mandatory_named_args: [:buffer],
-          optional_named_args:  [:strip]) do |arg, kw|
+          mandatory_named_args: { buffer: :string },
+          optional_named_args:  { strip: :boolean }) do |arg, kw|
       # nothing
     end
     compiler.register_function b
@@ -96,20 +96,20 @@ describe Liquor::Compiler do
     compiler = Liquor::Compiler.new(import_builtins: false)
 
     a = Liquor::Function.new("capitalize",
-          unnamed_arg: true) do |arg, kw|
+          unnamed_arg: :string) do |arg, kw|
       arg.capitalize
     end
     compiler.register_function a
 
     b = Liquor::Function.new("reverse",
-          unnamed_arg: true) do |arg, kw|
+          unnamed_arg: :string) do |arg, kw|
       arg.reverse
     end
     compiler.register_function b
 
     c = Liquor::Function.new("trim",
-          unnamed_arg: true,
-          mandatory_named_args: [:length]) do |arg, kw|
+          unnamed_arg: :string,
+          mandatory_named_args: { length: :integer }) do |arg, kw|
       arg[0...kw[:length]]
     end
     compiler.register_function c

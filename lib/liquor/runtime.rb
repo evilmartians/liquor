@@ -1,10 +1,13 @@
 module Liquor
   module Runtime
+    def self.add!(left, right)
+    end
+
     def self.integer!(value)
       if value.is_a? Integer
         value
       else
-        raise "not integer"
+        raise TypeError.new("not integer")
       end
     end
 
@@ -14,7 +17,7 @@ module Liquor
       elsif value.is_a? Integer
         value.to_s
       else
-        raise "not string"
+        raise TypeError.new("string expected")
       end
     end
 
@@ -22,7 +25,7 @@ module Liquor
       if value.is_a? Array
         value
       else
-        raise "not tuple"
+        raise TypeError.new("tuple expected")
       end
     end
   end
