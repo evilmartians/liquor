@@ -77,13 +77,36 @@ module Liquor
         boolean_unop(node)
       when :index
         index(node)
-      when :access
-        access(node)
+      when :external
+        external(node)
       when :call
         call(node)
       else
         raise "unknown node #{ntype node}"
       end
+    end
+
+    def external(node)
+      target, method, args = nvalue(node)
+      name, = nvalue(method)
+
+      if args
+        arg, kw = nvalue(args)
+
+        if arg.nil?
+          out_args = [ "nil" ]
+        else
+          out_args = [ expr(arg) ]
+        end
+
+        kw.each do |kwarg, kwval|
+          args << "#{kwarg.inspect} => #{expr(kwval)}"
+        end
+      else
+        out_args = []
+      end
+
+      "#{check_external(target)}.liquor_send(#{name.inspect}, #{out_args.join(", ")})"
     end
 
     def call(node)

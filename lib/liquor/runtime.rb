@@ -33,5 +33,10 @@ module Liquor
       raise TypeError.new("tuple expected") unless value.is_a? Array
       value
     end
+
+    def self.external!(value)
+      raise TypeError.new("external expected") unless value.is_a? External
+      value
+    end
   end
 end

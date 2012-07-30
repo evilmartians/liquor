@@ -330,4 +330,8 @@ describe Liquor::Parser do
           nil]]
     )
   end
+
+  it "does not allow duplicate kwargs for external calls" do
+    expect { parse('{{ ext.call(kw: 1 kw: 2) }}') }.to raise_error(Liquor::SyntaxError, %r|duplicate keyword argument|)
+  end
 end
