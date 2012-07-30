@@ -187,7 +187,7 @@ Liquor supports unary and binary infix operators in expressions. All operators a
 
 Liquor operators are listed in order of precedence, from highest to lowest, by the following table:
 
-1. `[]`, `.`
+1. `[]`, `.`, `()`, `.()`
 2. unary `-`, `!`
 3. `*`, `/`, `%`
 4. `+`, binary `-`
@@ -198,7 +198,7 @@ Liquor operators are listed in order of precedence, from highest to lowest, by t
 The following operators are infix and binary: `*`, `/`, `%`, `+`, `-`, `==`, `!=`, `<`, `<=`, `>`, `>=`, `&&`, `||`.
 The following operators are infix and unary: `-`, `!`.
 
-The indexing operator `[]` is binary but not infix. The access operator `.` is binary but only interprets its right-hand side argument lexically (i.e. does not evaluate it).
+The operators `[]`, `.`, `()`, `.()` are not infix and are provided in this table only to define precedence rules.
 
 ##### 2.4.2.1 Arithmetic Operators
 
@@ -237,16 +237,6 @@ Indexing operator of form <code><em>t</em>[<em>n</em>]</code> evaluates to _n_-t
 
 If the requested element does not exist in the tuple, the indexing operator evaluates to _null_.
 
-##### 2.4.2.5 Access Operator
-
-Access operator is `.`.
-
-Access operator requires its left-hand side argument to be of type **External**, and right-hand side argument to be a lexical identifier. If this is not the case, a runtime error condition is signaled.
-
-Access operator of form <code><em>e</em>.<em>f</em></code> evaluates to the value of field _f_ of external object _e_. This evaluation is done in an implementation-defined way. Access operator can evaluate to any type.
-
-If the requested field does not exist in the external object, a runtime error condition is signaled.
-
 #### 2.4.3 Function Calls
 
 Identifiers can be bound to functions prior to compilation. Identifiers _null_, _true_ and _false_ cannot be bound to a function.
@@ -259,7 +249,21 @@ If a function call includes two named parameters with the same name, a compile-t
 
 If a hypothetical function _substr_ has one unnamed formal parameter and two optional named formal parameters _from_ and _length_, then all of the following expressions are syntactically valid and will not result in a compile-time error: `substr("foobar")`, `substr("foobar" from: 1)`, `substr("foobar" from: 1 length:(5 - 2))`. The following expression, however, is syntactically valid but will result in a compile-time error: `substr(from: 1)`.
 
-#### 2.4.4 Variable Access
+#### 2.4.4 Access Operators
+
+Access operators are `.` and `.()`.
+
+The `.` form is syntactic sugar for `.()` form without any arguments. That is, <code><em>e</em>.<em>f</em></code> is completely equivalent to <code><em>e</em>.<em>f</em>()</code>.
+
+Access operator requires its left-hand side argument to be of type **External**. If this is not the case, a runtime error condition is signaled.
+
+Access operator of form <code><em>e</em>.<em>f</em>(<em>arg</em> <em>kw:</em> <em>value</em>)</code> evaluates to the result of calling method _f_ of external object _e_ with the corresponding arguments. Argument syntax is the same as for [function calls](#function-calls).
+
+This evaluation is done in an implementation-defined way. Access operator can evaluate to any type.
+
+If the requested method does not exist in the external object or cannot successfully evaluate, a runtime error condition is signaled. Errors in the called method must not interrupt execution of the calling Liquor program.
+
+#### 2.4.5 Variable Access
 
 Every identifier except _null_, _true_ and _false_ which is not bound to a function name is available to be bound as a variable name. Such identifier would evaluate to a value of the variable.
 
@@ -267,7 +271,7 @@ Variable definition and scoping will be further discussed in section [Tags](#tag
 
 Referencing an undefined variable will result in a compile-time error ([name error](#name-error)).
 
-#### 2.4.5 Filter Expressions
+#### 2.4.6 Filter Expressions
 
 Filter expressions are a syntactic sugar for method composition and currying. Filter expressions are only available directly in an [interpolation](#interpolations) context.
 
@@ -402,9 +406,9 @@ Expression
 : _IntegerLiteral_
 : _StringLiteral_
 : _TupleLiteral_
-: _Identifier_ **(** _Expression_? _KeywordArguments_ **)**
+: _Identifier_ _FunctionArguments_
 : _PrimaryExpression_ **[** _Expression_ **]**
-: _PrimaryExpression_ **.** _Identifier_
+: _Expression_ **.** _Identifier_  _FunctionArguments_?
 : **-** _Expression_
 : **!** _Expression_
 : _Expression_ **\*** _Expression_
@@ -423,6 +427,9 @@ Expression
 
 KeywordArguments
 : ( _Keyword_ _Expression_ )*
+
+FunctionArguments
+: **(** _Expression_? _KeywordArguments_ **)**
 
 FilterChain
 : _Expression_ **\|** _FilterChainContinuation_

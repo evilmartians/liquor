@@ -6,6 +6,7 @@ class Liquor::Parser
 
   prechigh
     nonassoc op_uminus op_neg
+    left dot
     left op_mul op_div op_mod
     left op_plus op_minus
     left op_eq op_neq op_lt op_leq op_gt op_geq
@@ -13,7 +14,7 @@ class Liquor::Parser
     left op_or
   preclow
 
-  expect 13
+  expect 14
 
   start block
 
@@ -41,12 +42,14 @@ rule
       integer
     | string
     | tuple
-    | ident lparen function_args rparen
-      { result = [ :call,   retag(val), val[0], val[2] ] }
+    | ident function_args
+      { result = [ :call,   retag(val), val[0], val[1] ] }
     | primary_expr lbracket expr rbracket
       { result = [ :index,  retag(val), val[0], val[2] ] }
-    | primary_expr dot ident
-      { result = [ :access, retag(val), val[0], val[2] ] }
+    | expr dot ident function_args
+      { result = [ :external, retag(val), val[0], val[2], val[3] ] }
+    | expr dot ident
+      { result = [ :external, retag(val), val[0], val[2], nil ] }
     | op_minus expr =op_uminus
       { result = [ :uminus, retag(val), val[1] ] }
     | op_not expr
@@ -92,10 +95,14 @@ rule
       { result = [ ] }
 
   function_args:
+      lparen function_args_inside rparen
+      { result = [ :args, retag(val), *val[1] ] }
+
+  function_args_inside:
       expr function_keywords
-      { result = [ :args, retag(val), val[0], val[1][2] ] }
+      { result = [ val[0], val[1][2] ] }
     | function_keywords
-      { result = [ :args, retag(val), nil, val[0][2] ] }
+      { result = [ nil,    val[0][2] ] }
 
   function_keywords:
       keyword expr function_keywords

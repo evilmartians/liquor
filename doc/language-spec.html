@@ -127,12 +127,12 @@ dd strong, code {
                   <li><a href="#boolean-operators">2.4.2.2 Boolean Operators</a></li>
                   <li><a href="#comparison-operators">2.4.2.3 Comparison Operators</a></li>
                   <li><a href="#indexing-operator">2.4.2.4 Indexing Operator</a></li>
-                  <li><a href="#access-operator">2.4.2.5 Access Operator</a></li>
                 </ul>
               </li>
               <li><a href="#function-calls">2.4.3 Function Calls</a></li>
-              <li><a href="#variable-access">2.4.4 Variable Access</a></li>
-              <li><a href="#filter-expressions">2.4.5 Filter Expressions</a></li>
+              <li><a href="#access-operators">2.4.4 Access Operators</a></li>
+              <li><a href="#variable-access">2.4.5 Variable Access</a></li>
+              <li><a href="#filter-expressions">2.4.6 Filter Expressions</a></li>
             </ul>
           </li>
           <li><a href="#blocks">2.5 Blocks</a></li>
@@ -251,7 +251,7 @@ dd strong, code {
 <p>Liquor operators are listed in order of precedence, from highest to lowest, by the following table:</p>
 
 <ol>
-  <li><code>[]</code>, <code>.</code></li>
+  <li><code>[]</code>, <code>.</code>, <code>()</code>, <code>.()</code></li>
   <li>unary <code>-</code>, <code>!</code></li>
   <li><code>*</code>, <code>/</code>, <code>%</code></li>
   <li><code>+</code>, binary <code>-</code></li>
@@ -263,7 +263,7 @@ dd strong, code {
 <p>The following operators are infix and binary: <code>*</code>, <code>/</code>, <code>%</code>, <code>+</code>, <code>-</code>, <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>&amp;&amp;</code>, <code>||</code>.
 The following operators are infix and unary: <code>-</code>, <code>!</code>.</p>
 
-<p>The indexing operator <code>[]</code> is binary but not infix. The access operator <code>.</code> is binary but only interprets its right-hand side argument lexically (i.e. does not evaluate it).</p>
+<p>The operators <code>[]</code>, <code>.</code>, <code>()</code>, <code>.()</code> are not infix and are provided in this table only to define precedence rules.</p>
 
 <h5 id="arithmetic-operators">2.4.2.1 Arithmetic Operators</h5>
 
@@ -304,16 +304,6 @@ The following operators are infix and unary: <code>-</code>, <code>!</code>.</p>
 
 <p>If the requested element does not exist in the tuple, the indexing operator evaluates to <em>null</em>.</p>
 
-<h5 id="access-operator">2.4.2.5 Access Operator</h5>
-
-<p>Access operator is <code>.</code>.</p>
-
-<p>Access operator requires its left-hand side argument to be of type <strong>External</strong>, and right-hand side argument to be a lexical identifier. If this is not the case, a runtime error condition is signaled.</p>
-
-<p>Access operator of form <code><em>e</em>.<em>f</em></code> evaluates to the value of field <em>f</em> of external object <em>e</em>. This evaluation is done in an implementation-defined way. Access operator can evaluate to any type.</p>
-
-<p>If the requested field does not exist in the external object, a runtime error condition is signaled.</p>
-
 <h4 id="function-calls">2.4.3 Function Calls</h4>
 
 <p>Identifiers can be bound to functions prior to compilation. Identifiers <em>null</em>, <em>true</em> and <em>false</em> cannot be bound to a function.</p>
@@ -326,7 +316,21 @@ The following operators are infix and unary: <code>-</code>, <code>!</code>.</p>
 
 <p>If a hypothetical function <em>substr</em> has one unnamed formal parameter and two optional named formal parameters <em>from</em> and <em>length</em>, then all of the following expressions are syntactically valid and will not result in a compile-time error: <code>substr("foobar")</code>, <code>substr("foobar" from: 1)</code>, <code>substr("foobar" from: 1 length:(5 - 2))</code>. The following expression, however, is syntactically valid but will result in a compile-time error: <code>substr(from: 1)</code>.</p>
 
-<h4 id="variable-access">2.4.4 Variable Access</h4>
+<h4 id="access-operators">2.4.4 Access Operators</h4>
+
+<p>Access operators are <code>.</code> and <code>.()</code>.</p>
+
+<p>The <code>.</code> form is syntactic sugar for <code>.()</code> form without any arguments. That is, <code><em>e</em>.<em>f</em></code> is completely equivalent to <code><em>e</em>.<em>f</em>()</code>.</p>
+
+<p>Access operator requires its left-hand side argument to be of type <strong>External</strong>. If this is not the case, a runtime error condition is signaled.</p>
+
+<p>Access operator of form <code><em>e</em>.<em>f</em>(<em>arg</em> <em>kw:</em> <em>value</em>)</code> evaluates to the result of calling method <em>f</em> of external object <em>e</em> with the corresponding arguments. Argument syntax is the same as for <a href="#function-calls">function calls</a>.</p>
+
+<p>This evaluation is done in an implementation-defined way. Access operator can evaluate to any type.</p>
+
+<p>If the requested method does not exist in the external object or cannot successfully evaluate, a runtime error condition is signaled. Errors in the called method must not interrupt execution of the calling Liquor program.</p>
+
+<h4 id="variable-access">2.4.5 Variable Access</h4>
 
 <p>Every identifier except <em>null</em>, <em>true</em> and <em>false</em> which is not bound to a function name is available to be bound as a variable name. Such identifier would evaluate to a value of the variable.</p>
 
@@ -334,7 +338,7 @@ The following operators are infix and unary: <code>-</code>, <code>!</code>.</p>
 
 <p>Referencing an undefined variable will result in a compile-time error (<a href="#name-error">name error</a>).</p>
 
-<h4 id="filter-expressions">2.4.5 Filter Expressions</h4>
+<h4 id="filter-expressions">2.4.6 Filter Expressions</h4>
 
 <p>Filter expressions are a syntactic sugar for method composition and currying. Filter expressions are only available directly in an <a href="#interpolations">interpolation</a> context.</p>
 
@@ -462,9 +466,9 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
   <dd><em>IntegerLiteral</em></dd>
   <dd><em>StringLiteral</em></dd>
   <dd><em>TupleLiteral</em></dd>
-  <dd><em>Identifier</em> <strong>(</strong> <em>Expression</em>? <em>KeywordArguments</em> <strong>)</strong></dd>
+  <dd><em>Identifier</em> <em>FunctionArguments</em></dd>
   <dd><em>PrimaryExpression</em> <strong>[</strong> <em>Expression</em> <strong>]</strong></dd>
-  <dd><em>PrimaryExpression</em> <strong>.</strong> <em>Identifier</em></dd>
+  <dd><em>Expression</em> <strong>.</strong> <em>Identifier</em>  <em>FunctionArguments</em>?</dd>
   <dd><strong>-</strong> <em>Expression</em></dd>
   <dd><strong>!</strong> <em>Expression</em></dd>
   <dd><em>Expression</em> <strong>*</strong> <em>Expression</em></dd>
@@ -482,6 +486,8 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
   <dd><em>Expression</em> <strong>||</strong> <em>Expression</em></dd>
   <dt>KeywordArguments</dt>
   <dd>( <em>Keyword</em> <em>Expression</em> )*</dd>
+  <dt>FunctionArguments</dt>
+  <dd><strong>(</strong> <em>Expression</em>? <em>KeywordArguments</em> <strong>)</strong></dd>
   <dt>FilterChain</dt>
   <dd><em>Expression</em> <strong>|</strong> <em>FilterChainContinuation</em></dd>
   <dt>FilterChainContinuation</dt>

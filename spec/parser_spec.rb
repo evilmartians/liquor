@@ -287,4 +287,47 @@ describe Liquor::Parser do
           []]]
     )
   end
+
+  it "understands various constructs for externals" do
+    parse('{{ ext.test }}').should have_node_structure(
+      [:interp,
+        [:external,
+          [:ident, "ext"],
+          [:ident, "test"],
+          nil]]
+    )
+    parse('{{ ext.test() }}').should have_node_structure(
+      [:interp,
+        [:external,
+          [:ident, "ext"],
+          [:ident, "test"],
+          [:args,
+            nil,
+            {}]]]
+    )
+    parse('{{ a.b.c }}').should have_node_structure(
+      [:interp,
+        [:external,
+          [:external,
+            [:ident, "a"],
+            [:ident, "b"],
+            nil
+          ],
+          [:ident, "c"],
+          nil]]
+    )
+    parse('{{ a.b().c }}').should have_node_structure(
+      [:interp,
+        [:external,
+          [:external,
+            [:ident, "a"],
+            [:ident, "b"],
+            [:args,
+              nil,
+              {}]
+          ],
+          [:ident, "c"],
+          nil]]
+    )
+  end
 end

@@ -64,13 +64,14 @@ describe Liquor::Lexer do
   end
 
   it "parses complex expressions" do
-    lex('{{ 1 * 2 + substr("abc" from: 1 to: 10) }}').should have_token_structure(
+    lex('{{ 1 * 2 + substr("abc" from: 1 to: 10 via: an.external) }}').should have_token_structure(
       [:linterp],
       [:integer, 1], [:op_mul], [:integer, 2], [:op_plus],
       [:ident], [:lparen],
       [:string, "abc"],
       [:keyword, "from"], [:integer, 1],
       [:keyword, "to"],   [:integer, 10],
+      [:keyword, "via"],  [:ident, "an"], [:dot], [:ident, "external"],
       [:rparen],
       [:rinterp],
     )
