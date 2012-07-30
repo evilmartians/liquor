@@ -168,13 +168,6 @@ module Liquor
     end
     function_alias "url_escape", "escape"
 
-    if defined?(ActionView::Helpers::TagHelper)
-      function "escape_once", unnamed_arg: :string do |arg,|
-        ActionView::Helpers::TagHelper.escape_once(input)
-      end
-      function_alias "h", "escape_once"
-    end
-
     function "truncate",
               unnamed_arg: :string,
               optional_named_args: {
@@ -208,12 +201,6 @@ module Liquor
         words[0...length].join(" ") + omission
       else
         words.join(" ")
-      end
-    end
-
-    if defined?(ActionView::Helpers::SanitizeHelper)
-      function "strip_html", unnamed_arg: :string do |arg,|
-        ActionView::Helpers::SanitizeHelper.strip_tags(arg)
       end
     end
 
@@ -314,12 +301,6 @@ module Liquor
 
     function "reverse", unnamed_arg: :tuple do |arg,|
       arg.reverse
-    end
-
-    if defined?(HTMLEntities)
-      function "decode_html_entities", unnamed_arg: :string do |arg,|
-        HTMLEntities.new.decode(arg)
-      end
     end
 
     function "compact", unnamed_arg: :tuple do |arg,|
