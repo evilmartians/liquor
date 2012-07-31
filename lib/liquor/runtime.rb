@@ -30,7 +30,10 @@ module Liquor
     end
 
     def self.tuple!(value)
-      raise TypeError.new("tuple expected") unless value.is_a? Array
+      unless value.is_a?(Array) ||
+             value.is_a?(External) && value.class.liquor_exports.include?(:[])
+        raise TypeError.new("tuple or indexable external expected")
+      end
       value
     end
 

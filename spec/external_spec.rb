@@ -74,4 +74,19 @@ describe Liquor::External do
     exec(%Q|{{ ext.dynamic() }}|, ext: instance).should == ' world'
     exec(%Q|{{ ext.dynamic('bye') }}|, ext: instance).should == 'bye world'
   end
+
+  it "should support indexing" do
+    klass = Class.new do
+      include Liquor::External
+
+      def [](index)
+        "element #{index}"
+      end
+      export :[]
+    end
+
+    instance = klass.new
+
+    exec(%Q|{{ ext[10] }}|, ext: instance).should == 'element 10'
+  end
 end
