@@ -114,7 +114,7 @@ describe Liquor do
     exec(%!{{ "abc" | upcase }}!).should == 'ABC'
     exec(%!{{ "Abc" | downcase }}!).should == 'abc'
     exec(%!{{ "abc def" | capitalize }}!).should == 'Abc def'
-    exec(%!{{ "'" | escape }}!).should == '%27'
+    exec(%!{{ "'" | url_escape }}!).should == '%27'
     exec(%!{% capture test = %}\na\nb{% end capture %}{{ test | strip_newlines }}!).should == 'ab'
     exec(%!{{ [ 1, 2, "a" ] | join }}!).should == '1 2 a'
     exec(%!{{ "abc abc" | replace pattern: 'abc' replacement: 'def' }}!).should == 'def def'
@@ -122,7 +122,7 @@ describe Liquor do
     exec(%!{{ "abc abc" | remove pattern: 'abc' }}!).should == ' '
     exec(%!{{ "abc abc" | remove_first pattern: 'abc' }}!).should == ' abc'
     exec(%!{% capture test = %}a\nb{% end capture %}{{ test | newline_to_br }}!).should == "a<br>\nb"
-    exec(%!{{ '12 Jun' | date format: '%d' }}!).should == "12"
+    exec(%!{{ '12 Jun' | strftime format: '%d' }}!).should == "12"
     exec(%!{{ to_number("12") + 10 }}!).should == "22"
     exec(%!{% if include([ 1, 2, 3 ] element: 2) then: %}yes{% end if %}!).should == "yes"
     exec(%!{{ [ 1, 2, 3 ] | reverse | join }}!).should == "3 2 1"

@@ -163,10 +163,9 @@ module Liquor
       arg.capitalize
     end
 
-    function "escape", unnamed_arg: :string do |arg,|
+    function "url_escape", unnamed_arg: :string do |arg,|
       URI.encode_www_form_component(arg)
     end
-    function_alias "url_escape", "escape"
 
     function "truncate",
               unnamed_arg: :string,
@@ -256,7 +255,7 @@ module Liquor
       arg.gsub(/\n/, "<br>\n")
     end
 
-    function "date",
+    function "strftime",
               unnamed_arg: :string,
               mandatory_named_args: { format: :string } do |arg, kw|
       begin

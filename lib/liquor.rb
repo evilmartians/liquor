@@ -23,10 +23,8 @@ module Liquor
   require "liquor/compiler"
   require "liquor/manager"
 
-  require "liquor/drop"
-
   if defined?(ActiveRecord)
-    require "liquor/extensions/active_record"
+    require "liquor/drop"
   end
 
   if defined?(Rails)
