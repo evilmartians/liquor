@@ -298,7 +298,9 @@ The following operators are infix and unary: <code>-</code>, <code>!</code>.</p>
 
 <p>Indexing operator is <code>[]</code>.</p>
 
-<p>Indexing operator requires its left-hand side argument to be of type <strong>Tuple</strong>, and right-hand side argument to be of type <strong>Integer</strong>. If this is not the case, a runtime error condition is signaled.</p>
+<p>Indexing operator requires its left-hand side argument to be of type <strong>Tuple</strong> or <strong>External</strong>, and right-hand side argument to be of type <strong>Integer</strong>. If this is not the case, a runtime error condition is signaled.</p>
+
+<p>If the left-hand side argument is of type <strong>External</strong>, the behavior is implementation-defined. A runtime error condition can be signaled if the particular external value does not support indexing.</p>
 
 <p>Indexing operator of form <code><em>t</em>[<em>n</em>]</code> evaluates to <em>n</em>-th value from tuple <em>t</em> with zero-based indexing. If <code>n</code> is negative, then <em>n</em>+1-th element from the end of tuple is returned. For example, <code><em>t</em>[-1]</code> will evaluate to the last element of the tuple <em>t</em>.</p>
 

@@ -231,7 +231,9 @@ Operators `<`, `<=`, `>` and `>=` require both arguments to be of type **Integer
 
 Indexing operator is `[]`.
 
-Indexing operator requires its left-hand side argument to be of type **Tuple**, and right-hand side argument to be of type **Integer**. If this is not the case, a runtime error condition is signaled.
+Indexing operator requires its left-hand side argument to be of type **Tuple** or **External**, and right-hand side argument to be of type **Integer**. If this is not the case, a runtime error condition is signaled.
+
+If the left-hand side argument is of type **External**, the behavior is implementation-defined. A runtime error condition can be signaled if the particular external value does not support indexing.
 
 Indexing operator of form <code><em>t</em>[<em>n</em>]</code> evaluates to _n_-th value from tuple _t_ with zero-based indexing. If `n` is negative, then _n_+1-th element from the end of tuple is returned. For example, <code><em>t</em>[-1]</code> will evaluate to the last element of the tuple _t_.
 
