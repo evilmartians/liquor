@@ -16,6 +16,7 @@ module Liquor
 
     def self.integer!(value)
       raise TypeError.new("integer expected") unless value.is_a? Integer
+
       value
     end
 
@@ -31,14 +32,18 @@ module Liquor
 
     def self.tuple!(value)
       unless value.is_a?(Array) ||
-             value.is_a?(External) && value.class.liquor_exports.include?(:[])
+             value.is_a?(External) &&
+                value.class.liquor_exports &&
+                value.class.liquor_exports.include?(:[])
         raise TypeError.new("tuple or indexable external expected")
       end
+
       value
     end
 
     def self.external!(value)
       raise TypeError.new("external expected") unless value.is_a? External
+
       value
     end
   end

@@ -48,19 +48,16 @@ me.articles.create name: 'hello world', published: true
 
 class UserDrop < Liquor::Drop
   attributes :login
+  scopes :with_login
 
   has_many :articles, scope: [ :published ]
 end
 
-class CategoryDrop < Liquor::Drop
-  attributes :visible
-end
-
 class ArticleDrop < Liquor::Drop
   attributes :name, :published
+  scopes :published
 
   belongs_to :user
-  belongs_to :category, :if => :visible
 end
 
 describe Liquor::Drop do
@@ -84,5 +81,13 @@ describe Liquor::Drop do
 
   it "should walk relations and stuff" do
     exec('{{ user.login }}', user: @dhh.to_drop).should == 'dhh'
+    exec(%|
+      {% for article in: user.articles do: %}
+        {{ article.name }}
+      {% end for %}
+    |, user: @dhh.to_drop).strip.should == 'rails rules'
+    exec(%|{{ articles.count }}|, articles: Article.to_drop).should == '3'
+    exec(%|{{ articles.published.count }}|, articles: Article.to_drop).should == '2'
+    exec(%|{{ users.with_login('dhh').count }}|, users: User.to_drop).should == '1'
   end
 end

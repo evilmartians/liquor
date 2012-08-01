@@ -1,44 +1,15 @@
 require 'active_record'
 
 module Liquor
-  module DropDelegationHelpers
-    # aka module_method for every method.
-    extend self
-
-    def wrap_scope(scope)
-      drop_klass = "#{scope.name}Drop::Scope".constantize
-      drop_klass.new(scope)
-    end
-
-    def wrap_element(element)
-      drop_klass = "#{element.class.name}Drop".constantize
-      drop_klass.new(element)
-    end
-  end
-
-  module Droppable
-    module ClassMethods
-      def to_drop
-        DropDelegationHelpers.wrap_scope(self)
-      end
-    end
-
-    def self.included(klass)
-      klass.extend ClassMethods
-    end
-
-    def to_drop
-      DropDelegationHelpers.wrap_element(self)
-    end
-  end
-
   class Drop
     include Liquor::External
-    extend DropDelegationHelpers
 
     def self.inherited(klass)
       klass.instance_exec do
         const_set :Scope, Class.new(::Liquor::Drop::Scope)
+        const_get(:Scope).instance_exec do
+          export # refresh liquor_exports
+        end
       end
     end
 
@@ -59,8 +30,9 @@ module Liquor
       const_get(:Scope).instance_exec do
         scopes.each do |scope|
           define_method(scope) { |*args|
-            @source.send(attr, *args)
+            DropDelegation.wrap_scope @source.send(scope, *args)
           }
+          export scope
         end
       end
     end
@@ -79,7 +51,7 @@ module Liquor
         value = @source.send(name)
 
         if self.class.check_singular_condition(value, options)
-          wrap_element(value)
+          DropDelegation.wrap_element(value)
         end
       }
 
@@ -130,37 +102,14 @@ module Liquor
           value = options[:scope].to_ary.reduce(value, &:send)
         end
 
-        value
+        DropDelegation.wrap_scope(value, value.klass)
       }
 
       export name
     end
   end
-
-  class Drop::Scope
-    include Liquor::External
-    extend DropDelegationHelpers
-
-    def initialize(source)
-      @source = source
-    end
-
-    def first
-      self.class.wrap_element @source.first
-    end
-
-    def last
-      self.class.wrap_element @source.last
-    end
-
-    def [](index)
-      self.class.wrap_element @source[index]
-    end
-
-    def count
-      @source.count
-    end
-
-    export :first, :last, :[], :count
-  end
 end
+
+require 'liquor/drop_delegation'
+require 'liquor/drop_scope'
+require 'liquor/droppable'
