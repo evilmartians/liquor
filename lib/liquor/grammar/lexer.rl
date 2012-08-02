@@ -32,6 +32,7 @@ action runaway {
 
 action error {
   error = SyntaxError.new("unexpected `#{data[p].inspect[1..-2]}'",
+    file:  name,
     line:  line_starts.count - 1,
     start: p - line_starts.last,
     end:   p - line_starts.last)
@@ -82,7 +83,7 @@ tag_start := |*
           end
         else
           (sl, sc), (el, ec) = loc.(ts), loc.(te)
-          info = { line: sl, start: sc, end: ec }
+          info = { file: name, line: sl, start: sc, end: ec }
           if tag_stack.any?
             raise SyntaxError.new("unmatched `end #{tag}', expected `end #{tag_stack.last}'", info)
           else

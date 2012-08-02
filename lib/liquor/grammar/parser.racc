@@ -265,6 +265,7 @@ rule
     return first if last.nil?
 
     {
+      file:  first[:file],
       line:  first[:line],
       start: first[:start],
       end:    last[:end],

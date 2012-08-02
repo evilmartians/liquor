@@ -87,6 +87,7 @@ module_eval(<<'...end parser.racc/module_eval...', 'parser.racc', 190)
     return first if last.nil?
 
     {
+      file:  first[:file],
       line:  first[:line],
       start: first[:start],
       end:    last[:end],
