@@ -23,12 +23,12 @@ module_eval(<<'...end parser.racc/module_eval...', 'parser.racc', 190)
     @errors.empty?
   end
 
-  def parse(string)
+  def parse(string, name='(code)')
     @errors.clear
     @ast = nil
 
     begin
-      @stream = Lexer.lex(string, @tags)
+      @stream = Lexer.lex(string, name, @tags)
       @ast = do_parse
     rescue Liquor::SyntaxError => e
       @errors << e

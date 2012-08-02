@@ -12,8 +12,13 @@ module LiquorSpecHelpers
     Liquor::Lexer.lex(string)
   end
 
-  def parse(string)
-    parser = Liquor::Parser.new
+  def parse(string, compiler=nil)
+    if compiler
+      parser = Liquor::Parser.new(compiler.tags)
+    else
+      parser = Liquor::Parser.new
+    end
+
     if parser.parse string
       parser.ast
     elsif parser.errors.count == 1
@@ -25,7 +30,7 @@ module LiquorSpecHelpers
 
   def compile(string, externals=[])
     compiler = Liquor::Compiler.new
-    compiler.compile! string, externals
+    compiler.compile! parse(string), externals
   end
 
   def exec(string, env={})
@@ -42,6 +47,8 @@ end
 
 RSpec.configure do |config|
   config.include LiquorSpecHelpers
+  config.filter_run focus: true
+  config.run_all_when_everything_filtered = true
 end
 
 RSpec::Matchers.define :have_token_structure do |*expected|

@@ -1,13 +1,13 @@
 module Liquor
   class Compiler
-    attr_reader :errors, :source, :code
     attr_reader :manager
+    attr_reader :errors, :source, :code
+    attr_reader :tags, :functions
 
     def initialize(options={})
       @tags      = {}
       @functions = {}
 
-      @parser = Parser.new(@tags)
       @errors = []
       @code   = nil
 
@@ -60,39 +60,33 @@ module Liquor
       @functions[name]
     end
 
-    def compile(source, externals=[])
+    def compile(ast, externals=[])
       @errors.clear
 
       externals = externals.map(&:to_sym)
 
-      @parser.parse source
-      if @parser.ast
-        context = Liquor::Context.new(self, externals)
-        source  = context.emitter.compile_toplevel(@parser.ast)
+      context = Liquor::Context.new(self, externals)
+      source  = context.emitter.compile_toplevel(ast)
 
-        if success?
-          @source = source
-          @code = eval(source, nil, '(liquor)')
-        else
-          @source = nil
-          @code = nil
-        end
+      if success?
+        @source = source
+        @code = eval(source, nil, '(liquor)')
+      else
+        @source = nil
+        @code = nil
       end
 
       success?
     end
 
-    def compile!(source, externals=[])
-      compile source, externals
+    def compile!(ast, externals=[])
+      compile ast, externals
+
       if success?
         @code
       else
         raise errors.first
       end
-    end
-
-    def errors
-      @parser.errors + @errors
     end
 
     def add_error(error)
@@ -101,10 +95,6 @@ module Liquor
 
     def success?
       errors.empty?
-    end
-
-    def parse_tree
-      @parser.ast
     end
   end
 end

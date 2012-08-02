@@ -30,6 +30,10 @@ module Liquor
         raise SyntaxError.new("missing unnamed argument", nloc(node))
       end
 
+      if !arg_type.nil?
+        check_arg_type arg, arg_type
+      end
+
       kwarg_hash = {}
 
       kwarg_types.zip(kwargs).each do |(name, type), kwarg|
@@ -55,11 +59,13 @@ module Liquor
         actual = ntype(kwvalue(node))
       when :blockarg
         actual = :block
+      else
+        actual = ntype(node)
       end
 
       case type
-      when :ident
-        expected = :ident
+      when :ident, :string
+        expected = type
         failed = (actual != expected)
 
       when :expr

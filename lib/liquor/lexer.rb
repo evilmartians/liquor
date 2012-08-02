@@ -271,7 +271,7 @@ self.liquor_en_plaintext = 6;
 
 # line 216 "lib/liquor/grammar/lexer.rl"
 
-    def self.lex(data, registered_tags={})
+    def self.lex(data, name='(code)', registered_tags={})
       eof    = data.length
       ts     = nil # token start
       te     = nil # token end
@@ -309,7 +309,7 @@ self.liquor_en_plaintext = 6;
       tok = ->(type, data=nil, options={}) {
         sl, sc, el, ec = *loc.(options[:ts] || ts),
                          *loc.(options[:te] || te - 1)
-        tokens << [type, { line: sl, start: sc, end: ec }, *data]
+        tokens << [type, { file: name, line: sl, start: sc, end: ec }, *data]
       }
 
       
@@ -1152,6 +1152,7 @@ end
         line_start = line_starts[line_start_index]
 
         error = SyntaxError.new("literal not terminated",
+          file:  name,
           line:  line_start_index,
           start: str_start - line_start,
           end:   str_start - line_start)

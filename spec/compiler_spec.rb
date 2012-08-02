@@ -1,26 +1,6 @@
 require 'spec_helper'
 
 describe Liquor::Compiler do
-  it "correctly handles error workflow" do
-    compiler = Liquor::Compiler.new(import_builtins: false)
-    compiler.errors.should be_empty
-
-    compiler.compile '{{ $ }}'
-    compiler.errors.should be_any
-    compiler.code.should be_nil
-    compiler.parse_tree.should be_nil
-
-    compiler.compile '{{ a(t: 1 t: 1) }}'
-    compiler.errors.should be_any
-    compiler.code.should be_nil
-    compiler.parse_tree.should_not be_nil
-
-    compiler.compile '{{ "1" }}'
-    compiler.errors.should be_empty
-    compiler.code.should respond_to(:call)
-    compiler.parse_tree.should_not be_nil
-  end
-
   it "can compile plaintext" do
     exec('Hello World!').should == 'Hello World!'
   end
@@ -46,7 +26,7 @@ describe Liquor::Compiler do
 
   it "handles external variables" do
     compiler = Liquor::Compiler.new
-    compiler.compile '{{ i }}', [:i]
+    compiler.compile parse('{{ i }}'), [:i]
     compiler.code.call(i: 10).should == '10'
   end
 
@@ -68,32 +48,32 @@ describe Liquor::Compiler do
     end
     compiler.register_function b
 
-    compiler.compile! '{{ substr("hello world") }}'
+    compiler.compile! parse('{{ substr("hello world") }}')
     compiler.code.call.should == 'hello world'
 
-    compiler.compile! '{{ substr("hello world" from: 6) }}'
+    compiler.compile! parse('{{ substr("hello world" from: 6) }}')
     compiler.code.call.should == 'world'
 
-    compiler.compile! '{{ substr("hello world" to: 4) }}'
+    compiler.compile! parse('{{ substr("hello world" to: 4) }}')
     compiler.code.call.should == 'hello'
 
-    compiler.compile! '{{ substr("hello world" from: 1 to: 3) }}'
+    compiler.compile! parse('{{ substr("hello world" from: 1 to: 3) }}')
     compiler.code.call.should == 'ell'
 
     expect {
-      compiler.compile! '{{ substr() }}'
+      compiler.compile! parse('{{ substr() }}')
     }.to raise_error(Liquor::ArgumentError, %r|unnamed argument is required|)
 
     expect {
-      compiler.compile! '{{ substr("a" test: 1) }}'
+      compiler.compile! parse('{{ substr("a" test: 1) }}')
     }.to raise_error(Liquor::ArgumentError, %r|named argument `test' is not accepted|)
 
     expect {
-      compiler.compile! '{{ yield() }}'
+      compiler.compile! parse('{{ yield() }}')
     }.to raise_error(Liquor::ArgumentError, %r|named argument `buffer' is required|)
 
     expect {
-      compiler.compile! '{{ yield("a" buffer: "test") }}'
+      compiler.compile! parse('{{ yield("a" buffer: "test") }}')
     }.to raise_error(Liquor::ArgumentError, %r|unnamed argument is not accepted|)
   end
 
@@ -119,7 +99,7 @@ describe Liquor::Compiler do
     end
     compiler.register_function c
 
-    compiler.compile! '{{ "hello world" | reverse | trim length: 3 | capitalize }}'
+    compiler.compile! parse('{{ "hello world" | reverse | trim length: 3 | capitalize }}')
     compiler.code.call.should == 'Dlr'
   end
 
@@ -131,13 +111,13 @@ describe Liquor::Compiler do
     end
     compiler.register_tag a
 
-    compiler.compile! '{% test %}'
+    compiler.compile! parse('{% test %}')
     compiler.code.call.should == 'hello world'
   end
 
   it "allows to write tag continuations without colons" do
     compiler = Liquor::Compiler.new
-    compiler.compile! '{% if a then: %} 1 {% elsif !a then: %} 2 {% end if %}', [:a]
+    compiler.compile! parse('{% if a then: %} 1 {% elsif !a then: %} 2 {% end if %}', compiler), [:a]
     compiler.code.call(a: false).strip.should == '2'
   end
 end

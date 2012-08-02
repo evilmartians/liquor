@@ -12,7 +12,7 @@ describe Liquor::Library do
 
     compiler = Liquor::Compiler.new
     lib.export compiler
-    compiler.compile '{{ hello() }}'
+    compiler.compile parse('{{ hello() }}')
     compiler.code.call.should == 'hello world'
   end
 end

@@ -3,17 +3,26 @@ module Liquor
     include Library
 
     tag "yield" do |emit, context, node|
-      arg, kw = check_args node,
-          :ident
+      tag, arg, * = nvalue(node)
 
-      name, = nvalue(arg)
+      if arg.nil? # {% yield %}
+        check_args node,
+            nil
 
-      emit.cat! %Q|#{emit.storage}[#{name.inspect}].to_s|
+        emit.cat! context.access('_inner_template')
+      else # {% yield "name" %}
+        arg, kw = check_args node,
+            :string
+
+        name, = nvalue(arg)
+
+        emit.cat! %Q|#{emit.storage}[#{name.inspect}].to_s|
+      end
     end
 
     tag "content_for" do |emit, context, node|
       arg, kw = check_args node,
-          :ident,
+          :string,
           :"capture" => :block
 
       name, = nvalue(arg)
@@ -29,25 +38,21 @@ module Liquor
     end
 
     tag "include" do |emit, context, node|
-      tag_name, partial, *kwargs = nvalue(node)
+      arg, kw = check_args node,
+          :string
 
-      check_arg_type partial, :expr
+      name, = nvalue(arg)
 
-      kwarg_exprs = {}
-      kwargs.each do |kwarg|
-        if kwarg_exprs.include? kwname(kwarg)
-          raise SyntaxError.new("duplicate keyword argument `#{kwname(kwarg)}'", nloc(kwarg))
+      context.nest do
+        manager = context.compiler.manager
+
+        source = manager.fetch_partial "_#{name}"
+        if source.nil?
+          raise ArgumentError.new("partial `#{name}' does not exist", nloc(arg))
         end
 
-        check_arg_type(kwarg, :expr)
-
-        kwarg_exprs[kwname(kwarg)] = kwvalue(kwarg)
+        emit.compile_block source
       end
-
-      arguments = kwarg_exprs.map do |name, value|
-        %Q|:"#{name}" => #{emit.expr(value)}|
-      end.join(", ")
-      emit.cat! %Q|@manager.fetch(#{emit.check_string(partial)}).call(#{arguments})|
     end
   end
 end

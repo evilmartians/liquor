@@ -8,6 +8,10 @@ module Liquor
     def initialize(message, location=nil)
       location_info = ""
       if location
+        if location.include? :file
+          location_info << "`#{location[:file]}': "
+        end
+
         if location.include? :line
           location_info << "line #{location[:line] + 1}"
           if location.include? :start
