@@ -1,50 +1,66 @@
 module Liquor
   module Runtime
-    def self.add!(left, right)
+    def self.add!(left, left_loc, right, right_loc)
       if left.is_a? Integer
-        integer! right
+        integer! right, right_loc
       elsif left.is_a? String
-        string! right
+        string! right, right_loc
       elsif left.is_a? Array
-        tuple! right
+        tuple! right, right_loc
       else
-        raise TypeError.new("integer, string or tuple expected")
+        raise TypeError.new("Integer, String or Tuple value expected, #{type(left)} found", left_loc)
       end
 
       left + right
     end
 
-    def self.integer!(value)
-      raise TypeError.new("integer expected") unless value.is_a? Integer
+    def self.integer!(value, loc)
+      unless value.is_a? Integer
+        raise TypeError.new("Integer value expected, #{type(value)} found", loc)
+      end
 
       value
     end
 
-    def self.string!(value)
+    def self.string!(value, loc)
       if value.is_a? String
         value
       elsif value.is_a? Integer
         value.to_s
       else
-        raise TypeError.new("string expected")
+        raise TypeError.new("String value expected, #{type(value)} found", loc)
       end
     end
 
-    def self.tuple!(value)
+    def self.tuple!(value, loc)
       unless value.is_a?(Array) ||
              value.is_a?(External) &&
                 value.class.liquor_exports &&
                 value.class.liquor_exports.include?(:[])
-        raise TypeError.new("tuple or indexable external expected")
+        raise TypeError.new("Tuple or indexable External value expected, #{type(value)} found", loc)
       end
 
       value
     end
 
-    def self.external!(value)
-      raise TypeError.new("external expected") unless value.is_a? External
+    def self.external!(value, loc)
+      unless value.is_a? External
+        raise TypeError.new("External value expected, #{type(value)} found", loc)
+      end
 
       value
+    end
+
+    def self.type(value)
+      case value
+      when nil;         "Null"
+      when true, false; "Boolean"
+      when Integer;     "Integer"
+      when String;      "String"
+      when Array;       "Tuple"
+      when External;    "External"
+      else              "_Foreign<#{value.class}>"
+      end
     end
   end
 end

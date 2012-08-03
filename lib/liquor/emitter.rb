@@ -157,7 +157,8 @@ module Liquor
 
     def plus(node)
       lhs, rhs = nvalue(node)
-      "Runtime.add!(#{expr(lhs)}, #{expr(rhs)})"
+      "Runtime.add!(#{expr(lhs)}, #{nloc(lhs).inspect}," +
+        " #{expr(rhs)}, #{nloc(rhs).inspect})"
     end
 
     def integer_binop(node)
@@ -191,7 +192,7 @@ module Liquor
     end
 
     def check_integer(node)
-      "Runtime.integer!(#{expr(node)})"
+      "Runtime.integer!(#{expr(node)}, #{nloc(node).inspect})"
     end
 
     def integer(node)
@@ -200,7 +201,7 @@ module Liquor
     end
 
     def check_string(node)
-      "Runtime.string!(#{expr(node)})"
+      "Runtime.string!(#{expr(node)}, #{nloc(node).inspect})"
     end
 
     def string(node)
@@ -209,7 +210,7 @@ module Liquor
     end
 
     def check_tuple(node)
-      "Runtime.tuple!(#{expr(node)})"
+      "Runtime.tuple!(#{expr(node)}, #{nloc(node).inspect})"
     end
 
     def tuple(node)
@@ -221,7 +222,7 @@ module Liquor
     end
 
     def check_external(node)
-      "Runtime.external!(#{expr(node)})"
+      "Runtime.external!(#{expr(node)}, #{nloc(node).inspect})"
     end
 
     def compile_toplevel(block)
