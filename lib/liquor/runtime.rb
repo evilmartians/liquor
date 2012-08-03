@@ -51,6 +51,16 @@ module Liquor
       value
     end
 
+    def self.interp!(value, loc)
+      unless value.is_a?(String) ||
+             value.is_a?(Integer) ||
+             value.nil?
+        raise TypeError.new("String or Null value expected, #{type(value)} found", loc)
+      end
+
+      value.to_s
+    end
+
     def self.type(value)
       case value
       when nil;         "Null"

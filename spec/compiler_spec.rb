@@ -13,6 +13,7 @@ describe Liquor::Compiler do
     exec('{{ 1 + 2 * 5 + 2 }}').should == '13'
     exec('{{ -6 - -6 }}').should == '0'
     exec('{{ ([1,2,3])[1] }}').should == '2'
+    exec('{{ null }}').should == ''
   end
 
   it "correctly handles plus operator" do

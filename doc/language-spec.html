@@ -342,7 +342,7 @@ The following operators are infix and unary: <code>-</code>, <code>!</code>.</p>
 
 <h4 id="filter-expressions">2.4.6 Filter Expressions</h4>
 
-<p>Filter expressions are a syntactic sugar for method composition and currying. Filter expressions are only available directly in an <a href="#interpolations">interpolation</a> context.</p>
+<p>Filter expressions are a syntactic sugar for method composition and currying.</p>
 
 <p>Filter expressions consist of a linear chain of function calls where <em>n</em>-th function’s return value is passed to <em>n+1</em>-th function’s unnamed parameter. Named parameters may be specified without parentheses within a corresponding chain element.</p>
 
@@ -367,9 +367,7 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <h3 id="interpolations">2.6 Interpolations</h3>
 
-<p>An interpolation is a syntactic construct of form <code>{{ expr }}</code> which can be embedded in a block. The expression <code>expr</code> should evaluate to a value of type <strong>String</strong>; an <a href="#type-conversion">implicit conversion</a> might take place. If this is not the case, a runtime error condition is signaled.</p>
-
-<p>Unlike any other context where an expression is expected, interpolations may include <a href="#filter-expressions">filter expressions</a>.</p>
+<p>An interpolation is a syntactic construct of form <code>{{ expr }}</code> which can be embedded in a block. The expression <code>expr</code> should evaluate to a value of type <strong>String</strong> or <strong>Null</strong>; an <a href="#type-conversion">implicit conversion</a> might take place. If this is not the case, a runtime error condition is signaled.</p>
 
 <p>An example of using an interpolation would be:</p>
 

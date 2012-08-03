@@ -275,7 +275,7 @@ Referencing an undefined variable will result in a compile-time error ([name err
 
 #### 2.4.6 Filter Expressions
 
-Filter expressions are a syntactic sugar for method composition and currying. Filter expressions are only available directly in an [interpolation](#interpolations) context.
+Filter expressions are a syntactic sugar for method composition and currying.
 
 Filter expressions consist of a linear chain of function calls where _n_-th function's return value is passed to _n+1_-th function's unnamed parameter. Named parameters may be specified without parentheses within a corresponding chain element.
 
@@ -299,9 +299,7 @@ A block can have other elements embedded into it. When such a block is executed,
 
 ### 2.6 Interpolations
 
-An interpolation is a syntactic construct of form `{{ expr }}` which can be embedded in a block. The expression `expr` should evaluate to a value of type **String**; an [implicit conversion](#type-conversion) might take place. If this is not the case, a runtime error condition is signaled.
-
-Unlike any other context where an expression is expected, interpolations may include [filter expressions](#filter-expressions).
+An interpolation is a syntactic construct of form `{{ expr }}` which can be embedded in a block. The expression `expr` should evaluate to a value of type **String** or **Null**; an [implicit conversion](#type-conversion) might take place. If this is not the case, a runtime error condition is signaled.
 
 An example of using an interpolation would be:
 

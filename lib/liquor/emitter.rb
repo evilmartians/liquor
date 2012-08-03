@@ -225,6 +225,10 @@ module Liquor
       "Runtime.external!(#{expr(node)}, #{nloc(node).inspect})"
     end
 
+    def check_interp(node)
+      "Runtime.interp!(#{expr(node)}, #{nloc(node).inspect})"
+    end
+
     def compile_toplevel(block)
       compile_block(block)
 
@@ -256,7 +260,7 @@ module Liquor
 
         when :interp
           expr, = nvalue(node)
-          cat! check_string(expr)
+          cat! check_interp(expr)
 
         when :tag
           ident, args = nvalue(node)
