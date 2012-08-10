@@ -113,6 +113,10 @@ module Liquor
     def ==(other)
       self.source == other.source
     end
+
+    def to_drop
+      self
+    end
   end
 end
 
