@@ -29,4 +29,20 @@ describe Liquor::Manager do
     @manager.render_with_layout('layout', {}, 'action', {}).
           scan(/\d+/).should == %w(2 1 3)
   end
+
+  it "exports libraries to compiler" do
+    lib = Module.new do
+      include Liquor::Library
+
+      function "hello" do |arg, kw|
+        "world"
+      end
+    end
+
+    manager = Liquor::Manager.new(import: [lib])
+    manager.register_template 'test', '{{ hello() }}'
+    manager.compile.should be_true
+
+    manager.render('test').should == 'world'
+  end
 end

@@ -11,6 +11,7 @@ module Liquor
       @errors = []
       @code   = nil
 
+      options = options.dup
       import_builtins = options.delete(:import_builtins)
       @manager        = options.delete(:manager)
 

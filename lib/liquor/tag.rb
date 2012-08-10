@@ -9,6 +9,7 @@ module Liquor
       @name = name.to_s
       @body = block
 
+      options = options.dup
       @continuations = (options.delete(:continuations) || []).map(&:to_s)
 
       if @body.nil?

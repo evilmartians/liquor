@@ -8,6 +8,7 @@ module Liquor
     def initialize(name, options={}, &block)
       @name = name.to_s
 
+      options = options.dup
       @unnamed_arg          = options.delete(:unnamed_arg)
       @mandatory_named_args = (options.delete(:mandatory_named_args) || {}).to_hash
       @optional_named_args  = (options.delete(:optional_named_args) || {}).to_hash

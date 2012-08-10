@@ -2,8 +2,17 @@ module Liquor
   class Manager
     attr_reader :errors
 
-    def initialize
+    def initialize(options={})
+      import = options.delete(:import).to_a || []
+      if options.any?
+        raise "Unknown function options: #{options.keys.join ", "}"
+      end
+
       @compiler  = Liquor::Compiler.new(manager: self)
+      import.each do |library|
+        library.export @compiler
+      end
+
       @parser    = Liquor::Parser.new(@compiler.tags)
 
       @templates = {}
