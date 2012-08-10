@@ -9,11 +9,11 @@ module Liquor
       location_info = ""
       if location
         if location.include? :file
-          location_info << "`#{location[:file]}': "
+          location_info << "`#{location[:file]}'"
         end
 
         if location.include? :line
-          location_info << "line #{location[:line] + 1}"
+          location_info << ": line #{location[:line] + 1}"
           if location.include? :start
             location_info << ", column #{location[:start] + 1}"
           end
@@ -30,12 +30,20 @@ module Liquor
     end
 
     def decorate(source)
-      if @location
+      if @location && @location.has_key?(:line)
         line = source.lines.drop(@location[:line]).first
-        pointer =  "~" * (@location[:start])
-        pointer += "^" * (@location[:end] - @location[:start] + 1)
-        [ line, pointer ]
+
+        if @location.has_key? :start
+          pointer =  "~" * (@location[:start])
+          if @location.has_key? :end
+            pointer += "^" * (@location[:end] - @location[:start] + 1)
+          else
+            pointer += "^"
+          end
+        end
       end
+
+      [ line, pointer ].compact
     end
   end
 
