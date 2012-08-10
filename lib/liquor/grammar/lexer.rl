@@ -31,7 +31,14 @@ action runaway {
 }
 
 action error {
-  error = SyntaxError.new("unexpected `#{data[p].inspect[1..-2]}'",
+  symbol = data[p]
+  if symbol == "\n"
+    symbol = "end of line"
+  else
+    symbol = "`#{symbol.inspect[1..-2]}'"
+  end
+
+  error = SyntaxError.new("unexpected #{symbol}",
     file:  name,
     line:  line_starts.count - 1,
     start: p - line_starts.last,
@@ -51,7 +58,7 @@ dqstring := |*
     '"'    => string_end;
     [^\n] @eof runaway
            => string_append;
-    "\n"   => runaway;
+    "\n"   => error;
 *|;
 
 sqstring := |*
@@ -60,7 +67,7 @@ sqstring := |*
     "'"    => string_end;
     [^\n] @eof runaway
            => string_append;
-    "\n"   => runaway;
+    "\n"   => error;
 *|;
 
 integer := |*

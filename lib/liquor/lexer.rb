@@ -1,7 +1,7 @@
 
 # line 1 "lib/liquor/grammar/lexer.rl"
 
-# line 212 "lib/liquor/grammar/lexer.rl"
+# line 219 "lib/liquor/grammar/lexer.rl"
 
 
 module Liquor
@@ -269,7 +269,7 @@ end
 self.liquor_en_plaintext = 6;
 
 
-# line 217 "lib/liquor/grammar/lexer.rl"
+# line 224 "lib/liquor/grammar/lexer.rl"
 
     def self.lex(data, name='(code)', registered_tags={})
       eof    = data.length
@@ -324,7 +324,7 @@ begin
 	act = 0
 end
 
-# line 260 "lib/liquor/grammar/lexer.rl"
+# line 267 "lib/liquor/grammar/lexer.rl"
       
 # line 330 "lib/liquor/lexer.rb"
 begin
@@ -428,7 +428,7 @@ when 0 then
 		begin
  line_starts.push(p + 1) 		end
 when 2 then
-# line 130 "lib/liquor/grammar/lexer.rl"
+# line 137 "lib/liquor/grammar/lexer.rl"
 		begin
  kw_stop = p 		end
 when 5 then
@@ -437,7 +437,7 @@ when 5 then
 te = p+1
 		end
 when 6 then
-# line 43 "lib/liquor/grammar/lexer.rl"
+# line 50 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  	begin
@@ -451,7 +451,7 @@ te = p+1
   end
 		end
 when 7 then
-# line 44 "lib/liquor/grammar/lexer.rl"
+# line 51 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  	begin
@@ -464,23 +464,23 @@ te = p+1
   end
 		end
 when 8 then
-# line 45 "lib/liquor/grammar/lexer.rl"
+# line 52 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
 		end
 when 9 then
-# line 45 "lib/liquor/grammar/lexer.rl"
+# line 52 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1;		end
 when 10 then
-# line 49 "lib/liquor/grammar/lexer.rl"
+# line 56 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  string << '"'  end
 		end
 when 11 then
-# line 50 "lib/liquor/grammar/lexer.rl"
+# line 57 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  string << '\\'  end
@@ -510,11 +510,23 @@ te = p+1
  end
 		end
 when 14 then
-# line 29 "lib/liquor/grammar/lexer.rl"
+# line 33 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin 
-  runaway = true
+  symbol = data[p]
+  if symbol == "\n"
+    symbol = "end of line"
+  else
+    symbol = "`#{symbol.inspect[1..-2]}'"
+  end
+
+  error = SyntaxError.new("unexpected #{symbol}",
+    file:  name,
+    line:  line_starts.count - 1,
+    start: p - line_starts.last,
+    end:   p - line_starts.last)
+  raise error
  end
 		end
 when 15 then
@@ -526,13 +538,13 @@ p = p - 1; begin
  end
 		end
 when 16 then
-# line 58 "lib/liquor/grammar/lexer.rl"
+# line 65 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  string << "'"  end
 		end
 when 17 then
-# line 59 "lib/liquor/grammar/lexer.rl"
+# line 66 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  string << '\\'  end
@@ -562,11 +574,23 @@ te = p+1
  end
 		end
 when 20 then
-# line 29 "lib/liquor/grammar/lexer.rl"
+# line 33 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin 
-  runaway = true
+  symbol = data[p]
+  if symbol == "\n"
+    symbol = "end of line"
+  else
+    symbol = "`#{symbol.inspect[1..-2]}'"
+  end
+
+  error = SyntaxError.new("unexpected #{symbol}",
+    file:  name,
+    line:  line_starts.count - 1,
+    start: p - line_starts.last,
+    end:   p - line_starts.last)
+  raise error
  end
 		end
 when 21 then
@@ -582,7 +606,14 @@ when 22 then
 		begin
 te = p+1
  begin 
-  error = SyntaxError.new("unexpected `#{data[p].inspect[1..-2]}'",
+  symbol = data[p]
+  if symbol == "\n"
+    symbol = "end of line"
+  else
+    symbol = "`#{symbol.inspect[1..-2]}'"
+  end
+
+  error = SyntaxError.new("unexpected #{symbol}",
     file:  name,
     line:  line_starts.count - 1,
     start: p - line_starts.last,
@@ -591,7 +622,7 @@ te = p+1
  end
 		end
 when 23 then
-# line 69 "lib/liquor/grammar/lexer.rl"
+# line 76 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  p = p - 1; 	begin
@@ -603,13 +634,13 @@ te = p+1
   end
 		end
 when 24 then
-# line 67 "lib/liquor/grammar/lexer.rl"
+# line 74 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1; begin  tok.(:integer, data[ts...te].to_i)  end
 		end
 when 25 then
-# line 114 "lib/liquor/grammar/lexer.rl"
+# line 121 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  fixtok.(:lblock2)
@@ -624,7 +655,7 @@ te = p+1
        end
 		end
 when 26 then
-# line 120 "lib/liquor/grammar/lexer.rl"
+# line 127 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  p = p - 1; 	begin
@@ -636,12 +667,12 @@ te = p+1
   end
 		end
 when 27 then
-# line 73 "lib/liquor/grammar/lexer.rl"
+# line 80 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1;		end
 when 28 then
-# line 76 "lib/liquor/grammar/lexer.rl"
+# line 83 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1; begin  tag = data[ts + 4...te]
@@ -671,7 +702,7 @@ p = p - 1; begin  tag = data[ts + 4...te]
        end
 		end
 when 29 then
-# line 97 "lib/liquor/grammar/lexer.rl"
+# line 104 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1; begin  tag = data[ts...te]
@@ -703,7 +734,7 @@ p = p - 1; begin  tag = data[ts...te]
        end
 		end
 when 30 then
-# line 97 "lib/liquor/grammar/lexer.rl"
+# line 104 "lib/liquor/grammar/lexer.rl"
 		begin
  begin p = ((te))-1; end
  begin  tag = data[ts...te]
@@ -735,7 +766,7 @@ when 30 then
        end
 		end
 when 31 then
-# line 128 "lib/liquor/grammar/lexer.rl"
+# line 135 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  p = p - 1; 	begin
@@ -747,7 +778,7 @@ te = p+1
   end
 		end
 when 32 then
-# line 131 "lib/liquor/grammar/lexer.rl"
+# line 138 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:keyword, data[ts...kw_stop], te: kw_stop)
@@ -766,7 +797,7 @@ te = p+1
        end
 		end
 when 33 then
-# line 144 "lib/liquor/grammar/lexer.rl"
+# line 151 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin 
@@ -786,103 +817,103 @@ te = p+1
        end
 		end
 when 34 then
-# line 157 "lib/liquor/grammar/lexer.rl"
+# line 164 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:comma)  end
 		end
 when 35 then
-# line 158 "lib/liquor/grammar/lexer.rl"
+# line 165 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:dot)    end
 		end
 when 36 then
-# line 160 "lib/liquor/grammar/lexer.rl"
+# line 167 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:lbracket)  end
 		end
 when 37 then
-# line 161 "lib/liquor/grammar/lexer.rl"
+# line 168 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:rbracket)  end
 		end
 when 38 then
-# line 163 "lib/liquor/grammar/lexer.rl"
+# line 170 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:lparen)  end
 		end
 when 39 then
-# line 164 "lib/liquor/grammar/lexer.rl"
+# line 171 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:rparen)  end
 		end
 when 40 then
-# line 168 "lib/liquor/grammar/lexer.rl"
+# line 175 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:op_plus)   end
 		end
 when 41 then
-# line 169 "lib/liquor/grammar/lexer.rl"
+# line 176 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:op_minus)  end
 		end
 when 42 then
-# line 170 "lib/liquor/grammar/lexer.rl"
+# line 177 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:op_mul)    end
 		end
 when 43 then
-# line 171 "lib/liquor/grammar/lexer.rl"
+# line 178 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:op_div)    end
 		end
 when 44 then
-# line 174 "lib/liquor/grammar/lexer.rl"
+# line 181 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:op_eq)   end
 		end
 when 45 then
-# line 175 "lib/liquor/grammar/lexer.rl"
+# line 182 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:op_neq)  end
 		end
 when 46 then
-# line 177 "lib/liquor/grammar/lexer.rl"
+# line 184 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:op_geq)  end
 		end
 when 47 then
-# line 179 "lib/liquor/grammar/lexer.rl"
+# line 186 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:op_leq)  end
 		end
 when 48 then
-# line 183 "lib/liquor/grammar/lexer.rl"
+# line 190 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:op_and)  end
 		end
 when 49 then
-# line 184 "lib/liquor/grammar/lexer.rl"
+# line 191 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:op_or)  end
 		end
 when 50 then
-# line 186 "lib/liquor/grammar/lexer.rl"
+# line 193 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  str_start = p; 	begin
@@ -894,7 +925,7 @@ te = p+1
   end
 		end
 when 51 then
-# line 187 "lib/liquor/grammar/lexer.rl"
+# line 194 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  str_start = p; 	begin
@@ -906,7 +937,7 @@ te = p+1
   end
 		end
 when 52 then
-# line 189 "lib/liquor/grammar/lexer.rl"
+# line 196 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:rinterp); 	begin
@@ -918,7 +949,7 @@ te = p+1
   end
 		end
 when 53 then
-# line 190 "lib/liquor/grammar/lexer.rl"
+# line 197 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:rblock);  	begin
@@ -934,7 +965,14 @@ when 54 then
 		begin
 te = p+1
  begin 
-  error = SyntaxError.new("unexpected `#{data[p].inspect[1..-2]}'",
+  symbol = data[p]
+  if symbol == "\n"
+    symbol = "end of line"
+  else
+    symbol = "`#{symbol.inspect[1..-2]}'"
+  end
+
+  error = SyntaxError.new("unexpected #{symbol}",
     file:  name,
     line:  line_starts.count - 1,
     start: p - line_starts.last,
@@ -943,54 +981,54 @@ te = p+1
  end
 		end
 when 55 then
-# line 124 "lib/liquor/grammar/lexer.rl"
+# line 131 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1;		end
 when 56 then
-# line 126 "lib/liquor/grammar/lexer.rl"
+# line 133 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1; begin  tok.(:ident, data[ts...te])  end
 		end
 when 57 then
-# line 141 "lib/liquor/grammar/lexer.rl"
+# line 148 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1; begin  tok.(:keyword, data[ts...te-1])  end
 		end
 when 58 then
-# line 155 "lib/liquor/grammar/lexer.rl"
+# line 162 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1; begin  tok.(:keyword, '=')  end
 		end
 when 59 then
-# line 166 "lib/liquor/grammar/lexer.rl"
+# line 173 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1; begin  tok.(:pipe)  end
 		end
 when 60 then
-# line 172 "lib/liquor/grammar/lexer.rl"
+# line 179 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1; begin  tok.(:op_mod)    end
 		end
 when 61 then
-# line 176 "lib/liquor/grammar/lexer.rl"
+# line 183 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1; begin  tok.(:op_gt)   end
 		end
 when 62 then
-# line 178 "lib/liquor/grammar/lexer.rl"
+# line 185 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1; begin  tok.(:op_lt)   end
 		end
 when 63 then
-# line 181 "lib/liquor/grammar/lexer.rl"
+# line 188 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1; begin  tok.(:op_not)  end
@@ -1000,7 +1038,14 @@ when 64 then
 		begin
 te = p
 p = p - 1; begin 
-  error = SyntaxError.new("unexpected `#{data[p].inspect[1..-2]}'",
+  symbol = data[p]
+  if symbol == "\n"
+    symbol = "end of line"
+  else
+    symbol = "`#{symbol.inspect[1..-2]}'"
+  end
+
+  error = SyntaxError.new("unexpected #{symbol}",
     file:  name,
     line:  line_starts.count - 1,
     start: p - line_starts.last,
@@ -1009,19 +1054,19 @@ p = p - 1; begin
  end
 		end
 when 65 then
-# line 141 "lib/liquor/grammar/lexer.rl"
+# line 148 "lib/liquor/grammar/lexer.rl"
 		begin
  begin p = ((te))-1; end
  begin  tok.(:keyword, data[ts...te-1])  end
 		end
 when 66 then
-# line 155 "lib/liquor/grammar/lexer.rl"
+# line 162 "lib/liquor/grammar/lexer.rl"
 		begin
  begin p = ((te))-1; end
  begin  tok.(:keyword, '=')  end
 		end
 when 67 then
-# line 200 "lib/liquor/grammar/lexer.rl"
+# line 207 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:linterp); 	begin
@@ -1033,7 +1078,7 @@ te = p+1
   end
 		end
 when 68 then
-# line 203 "lib/liquor/grammar/lexer.rl"
+# line 210 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  tok.(:lblock);  	begin
@@ -1045,7 +1090,7 @@ te = p+1
   end
 		end
 when 69 then
-# line 206 "lib/liquor/grammar/lexer.rl"
+# line 213 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p+1
  begin  	begin
@@ -1059,13 +1104,13 @@ te = p+1
   end
 		end
 when 70 then
-# line 197 "lib/liquor/grammar/lexer.rl"
+# line 204 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1; begin  tok.(:plaintext, data[ts...te]);  end
 		end
 when 71 then
-# line 209 "lib/liquor/grammar/lexer.rl"
+# line 216 "lib/liquor/grammar/lexer.rl"
 		begin
 te = p
 p = p - 1; begin  p = p - 1; 	begin
@@ -1077,12 +1122,12 @@ p = p - 1; begin  p = p - 1; 	begin
   end
 		end
 when 72 then
-# line 197 "lib/liquor/grammar/lexer.rl"
+# line 204 "lib/liquor/grammar/lexer.rl"
 		begin
  begin p = ((te))-1; end
  begin  tok.(:plaintext, data[ts...te]);  end
 		end
-# line 1086 "lib/liquor/lexer.rb"
+# line 1131 "lib/liquor/lexer.rb"
 			end # action switch
 		end
 	end
@@ -1102,7 +1147,7 @@ when 3 then
 # line 1 "NONE"
 		begin
 ts = nil;		end
-# line 1106 "lib/liquor/lexer.rb"
+# line 1151 "lib/liquor/lexer.rb"
 		end # to state action switch
 	end
 	if _trigger_goto
@@ -1134,7 +1179,7 @@ when 1 then
 
   runaway = true
 		end
-# line 1138 "lib/liquor/lexer.rb"
+# line 1183 "lib/liquor/lexer.rb"
 		end # eof action switch
 	end
 	if _trigger_goto
@@ -1148,7 +1193,7 @@ end
 	end
 	end
 
-# line 261 "lib/liquor/grammar/lexer.rl"
+# line 268 "lib/liquor/grammar/lexer.rl"
 
       if runaway
         line_start_index = find_line_start.(str_start)

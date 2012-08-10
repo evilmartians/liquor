@@ -93,8 +93,8 @@ describe Liquor::Lexer do
   end
 
   it "fails on multiline blocks and interpolations" do
-    expect { lex("{% \n %}") }.to raise_error(Liquor::SyntaxError, %r|unexpected `\\n'|)
-    expect { lex("{{ \n }}") }.to raise_error(Liquor::SyntaxError, %r|unexpected `\\n'|)
+    expect { lex("{{ \n }}") }.to raise_error(Liquor::SyntaxError, %r|unexpected end of line|)
+    expect { lex("{% \n %}") }.to raise_error(Liquor::SyntaxError, %r|unexpected end of line|)
   end
 
   it "parses complex string literals" do
@@ -121,7 +121,7 @@ describe Liquor::Lexer do
       [:linterp], [:string, %|test " '|], [:rinterp]
     )
 
-    expect { lex(%|{{ "test\n" }}|) }.to raise_error(Liquor::SyntaxError, %r|literal not terminated|)
+    expect { lex(%|{{ "test\n" }}|) }.to raise_error(Liquor::SyntaxError, %r|unexpected end of line|)
   end
 
   it "parses nested tags correctly" do
@@ -160,5 +160,14 @@ describe Liquor::Lexer do
   it "fails unmatched end tag" do
     expect { lex('{% end tag %}') }.to raise_error(Liquor::SyntaxError)
     expect { lex('{% unless x then: %} {% end for %}') }.to raise_error(Liquor::SyntaxError)
+  end
+
+  it "correctly fails on complex runaway strings" do
+    expect {
+      lex(%Q${% for artist in: list do: %}
+             {% end 'for %}
+             #{"      \n" * 800}
+             '220x$)
+    }.to raise_error(Liquor::SyntaxError, %r|unexpected end of line .+?: line 2, column 28|)
   end
 end
