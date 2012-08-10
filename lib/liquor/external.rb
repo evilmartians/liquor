@@ -25,7 +25,7 @@ module Liquor
       if self.class.liquor_exports.include?(method.to_sym)
         send method, *args
       else
-        raise ArgumentError.new("undefined external method #{method}", loc)
+        raise ArgumentError.new("undefined external method #{method} for #{self.class}", loc)
       end
     end
   end
