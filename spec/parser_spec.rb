@@ -251,7 +251,7 @@ describe Liquor::Parser do
   end
 
   it "reports EOF errors" do
-    expect { parse('{% if a1 then: %} 1 {% wat %}') }.to raise_error(Liquor::SyntaxError, %r|unexpected end of stream|)
+    expect { parse('{% if a1 then: %} 1 {% wat %}') }.to raise_error(Liquor::SyntaxError, %r|unexpected end of program|)
   end
 
   it "handles lexer errors" do

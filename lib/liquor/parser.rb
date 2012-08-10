@@ -25,10 +25,11 @@ module_eval(<<'...end parser.racc/module_eval...', 'parser.racc', 190)
 
   def parse(string, name='(code)')
     @errors.clear
-    @ast = nil
+    @name = name
+    @ast  = nil
 
     begin
-      @stream = Lexer.lex(string, name, @tags)
+      @stream = Lexer.lex(string, @name, @tags)
       @ast = do_parse
     rescue Liquor::SyntaxError => e
       @errors << e
@@ -73,10 +74,13 @@ module_eval(<<'...end parser.racc/module_eval...', 'parser.racc', 190)
 
   def on_error(error_token_id, error_token, value_stack)
     if token_to_str(error_token_id) == "$end"
-      raise Liquor::SyntaxError.new("unexpected end of stream")
+      raise Liquor::SyntaxError.new("unexpected end of program", {
+        file: @name
+      })
     else
       type, (loc, value) = error_token
       type = TOKEN_NAME_MAP[type] || type
+
       raise Liquor::SyntaxError.new("unexpected token `#{type}'", loc)
     end
   end
