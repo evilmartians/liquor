@@ -21,11 +21,11 @@ module Liquor
       end
     end
 
-    def liquor_send(method, *args)
+    def liquor_send(method, args, loc=nil)
       if self.class.liquor_exports.include?(method.to_sym)
         send method, *args
       else
-        raise "unexported external method #{method}"
+        raise ArgumentError.new("undefined external method #{method}", loc)
       end
     end
   end

@@ -4,6 +4,8 @@ module Liquor
   class Drop
     include Liquor::External
 
+    attr_reader :source
+
     def self.inherited(klass)
       klass.instance_exec do
         const_set :Scope, Class.new(::Liquor::Drop::Scope)
@@ -106,6 +108,10 @@ module Liquor
       }
 
       export name
+    end
+
+    def ==(other)
+      self.source == other.source
     end
   end
 end

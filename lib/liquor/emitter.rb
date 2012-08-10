@@ -106,7 +106,7 @@ module Liquor
         out_args = []
       end
 
-      "#{check_external(target)}.liquor_send(#{name.inspect}, #{out_args.join(", ")})"
+      "#{check_external(target)}.liquor_send(#{name.inspect}, [ #{out_args.join(", ")} ], #{nloc(method).inspect})"
     end
 
     def call(node)

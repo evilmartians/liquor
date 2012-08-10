@@ -90,4 +90,12 @@ describe Liquor::Drop do
     exec(%|{{ articles.published.count }}|, articles: Article.to_drop).should == '2'
     exec(%|{{ users.with_login('dhh').count }}|, users: User.to_drop).should == '1'
   end
+
+  it "should return intact source" do
+    @dhh.to_drop.source.should == @dhh
+  end
+
+  it "should support equality" do
+    (@dhh.to_drop == @dhh.to_drop).should == true
+  end
 end
