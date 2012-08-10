@@ -15,6 +15,7 @@ module Liquor
 
       @parser    = Liquor::Parser.new(@compiler.tags)
 
+      @sources   = {}
       @templates = {}
       @partials  = {}
       @compiled_templates = nil
@@ -31,6 +32,8 @@ module Liquor
         raise ::ArgumentError, "Template `#{name}' is a partial"
       end
 
+      @sources[name] = source.dup
+
       if @parser.parse(source, name)
         @templates[name.to_s] = [ @parser.ast, externals ]
       else
@@ -46,6 +49,8 @@ module Liquor
       unless partial? name
         raise ::ArgumentError, "Template `#{name}' is not a partial"
       end
+
+      @sources[name] = source.dup
 
       if @parser.parse(source, name)
         @partials[name.to_s] = @parser.ast
@@ -100,6 +105,15 @@ module Liquor
                             merge(_inner_template: template_result), storage)
 
       layout_result
+    end
+
+    def decorate(error)
+      if error.is_a? SourceMappedError
+        file = error.location[:file]
+        error.decorate @sources[file]
+      else
+        []
+      end
     end
   end
 end
