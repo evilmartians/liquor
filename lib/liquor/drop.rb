@@ -53,7 +53,11 @@ module Liquor
         value = @source.send(name)
 
         if self.class.check_singular_condition(value, options)
-          DropDelegation.wrap_element(value)
+          if value.nil?
+            nil
+          else
+            DropDelegation.wrap_element(value)
+          end
         end
       }
 

@@ -89,6 +89,7 @@ describe Liquor::Drop do
     exec(%|{{ articles.count }}|, articles: Article.to_drop).should == '3'
     exec(%|{{ articles.published.count }}|, articles: Article.to_drop).should == '2'
     exec(%|{{ users.with_login('dhh').count }}|, users: User.to_drop).should == '1'
+    exec(%|{% if article.user == null then: %}ok{% end if %}|, article: Article.new.to_drop).should == 'ok'
   end
 
   it "should return intact source" do
