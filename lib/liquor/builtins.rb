@@ -242,13 +242,13 @@ module Liquor
     end
 
     function "join", unnamed_arg: :tuple,
-                     optional_named_args: { glue: :string } do |arg, kw|
-      arg.flatten.join(kw[:glue] || ' ')
+                     optional_named_args: { with: :string } do |arg, kw|
+      arg.flatten.join(kw[:with] || ' ')
     end
 
     function "split", unnamed_arg: :string,
-                      optional_named_args: { delimiter: :string } do |arg, kw|
-      arg.split(kw[:delimiter] || ' ')
+                      optional_named_args: { by: :string } do |arg, kw|
+      arg.split(kw[:by] || ' ')
     end
 
     function "replace",
