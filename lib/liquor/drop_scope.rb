@@ -29,7 +29,18 @@ module Liquor
     def count
       @source.count
     end
+    alias size count
 
-    export :first, :last, :[], :count
+    export :first, :last, :[], :count, :size
+
+    def limit(count)
+      DropDelegation.wrap_scope @source.limit(count)
+    end
+
+    def offset(count)
+      DropDelegation.wrap_scope @source.offset(count)
+    end
+
+    export :limit, :offset
   end
 end
