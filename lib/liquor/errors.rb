@@ -86,9 +86,10 @@ module Liquor
   end
 
   class HostError < SourceMappedError
-    attr_reader :host_backtrace
+    attr_reader :original_error, :host_backtrace
 
-    def initialize(message, host_backtrace, location=nil)
+    def initialize(message, original_error, host_backtrace, location=nil)
+      @original_error = original_error
       @host_backtrace = host_backtrace
 
       super(message, location)

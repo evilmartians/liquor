@@ -33,7 +33,7 @@ module Liquor
           # be in the host exception backtrace. Second, remove that one.
           host_backtrace = (e.backtrace - caller)[0..-2]
 
-          raise HostError.new(e.message, host_backtrace, loc)
+          raise HostError.new(e.message, e, host_backtrace, loc)
         end
       else
         raise ArgumentError.new("undefined external method #{method} for #{self.class}", loc)
