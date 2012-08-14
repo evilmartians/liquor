@@ -23,7 +23,18 @@ module Liquor
 
     def liquor_send(method, args, loc=nil)
       if self.class.liquor_exports.include?(method.to_sym)
-        send method, *args
+        begin
+          send method, *args
+        rescue ::Liquor::Error => e
+          raise e
+        rescue ::Exception => e
+          # First, remove the caller backtrace at the following line.
+          # This will not include the line in liquor_send which will
+          # be in the host exception backtrace. Second, remove that one.
+          host_backtrace = (e.backtrace - caller)[0..-2]
+
+          raise HostError.new(e.message, host_backtrace, loc)
+        end
       else
         raise ArgumentError.new("undefined external method #{method} for #{self.class}", loc)
       end

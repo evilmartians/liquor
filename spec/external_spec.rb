@@ -89,4 +89,21 @@ describe Liquor::External do
 
     exec(%Q|{{ ext[10] }}|, ext: instance).should == 'element 10'
   end
+
+  it "should wrap host errors" do
+    klass = Class.new do
+      include Liquor::External
+
+      def fail
+        Time.parse("nothing")
+      end
+      export :fail
+    end
+
+    instance = klass.new
+
+    expect {
+      exec(%Q|{{ ext.fail }}|, ext: instance)
+    }.to raise_error(Liquor::HostError)
+  end
 end

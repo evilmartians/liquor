@@ -84,4 +84,14 @@ module Liquor
       end
     end
   end
+
+  class HostError < SourceMappedError
+    attr_reader :host_backtrace
+
+    def initialize(message, host_backtrace, location=nil)
+      @host_backtrace = host_backtrace
+
+      super(message, location)
+    end
+  end
 end
