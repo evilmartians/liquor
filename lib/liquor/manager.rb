@@ -108,16 +108,17 @@ module Liquor
     end
 
     def decorate(error)
+      decorated = []
+
       if error.is_a? SourceMappedError
         if error.location
-          file = error.location[:file]
-          error.decorate @sources[file]
-        else
-          []
+          if file = error.location[:file]
+            decorated = error.decorate @sources[file]
+          end
         end
-      else
-        []
       end
+
+      decorated
     end
   end
 end
