@@ -66,14 +66,14 @@ module Liquor
       end
 
       if check_failed
-        if Array === expected_type
-          expected = expected_type.map { |x| "`#{x}'" }.join(", ")
-        else
-          expected = "`#{expected_type}'"
-        end
+        expected = Array(expected_type).
+            map { |x| "`#{x.capitalize}'" }.
+            join(", ")
 
         if actual_type == :invalid
           actual_type = "_Foreign<#{arg.class}>"
+        else
+          actual_type = actual_type.capitalize
         end
 
         raise ArgumentTypeError.new("expected #{expected}, found `#{actual_type}'",
