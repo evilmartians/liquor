@@ -72,6 +72,10 @@ module Liquor
           expected = "`#{expected_type}'"
         end
 
+        if actual_type == :invalid
+          actual_type = "_Foreign<#{arg.class}>"
+        end
+
         raise ArgumentTypeError.new("expected #{expected}, found `#{actual_type}'",
                     { function: @name, argument: name }.merge(loc))
       end
