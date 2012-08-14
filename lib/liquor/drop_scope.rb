@@ -2,6 +2,8 @@ module Liquor
   class Drop::Scope
     include Liquor::External
 
+    attr_reader :source
+
     def initialize(source)
       @source = source
     end
