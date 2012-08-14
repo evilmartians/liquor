@@ -312,14 +312,14 @@ module Liquor
     if [].respond_to? :in_groups_of
       function "in_groups_of",
                 unnamed_arg: :tuple,
-                mandatory_named_args: { number: :integer },
+                mandatory_named_args: { size: :integer },
                 optional_named_args:  { fill_with: :string } do |arg, kw|
         arg.in_groups_of(kw[:size], kw[:fill_with])
       end
 
       function "in_groups",
                 unnamed_arg: :tuple,
-                mandatory_named_args: { number: :integer },
+                mandatory_named_args: { size: :integer },
                 optional_named_args:  { fill_with: :string } do |arg, kw|
         arg.in_groups(kw[:size], kw[:fill_with])
       end
