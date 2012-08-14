@@ -143,9 +143,12 @@ module Liquor
         args = [ expr(arg) ]
       end
 
-      kw.each do |kwarg, kwval|
-        args << "#{kwarg.inspect} => #{expr(kwval)}"
+      kw = kw.map do |kwarg, kwval|
+        "#{kwarg.inspect} => #{expr(kwval)}"
       end
+      args << "{ #{kw.join(", ")} }"
+
+      args << nloc(node).inspect
 
       "@functions[#{name.inspect}].call(#{args.join(', ')})"
     end

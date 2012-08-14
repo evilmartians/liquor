@@ -59,7 +59,7 @@ module Liquor
   class TypeError < SourceMappedError
   end
 
-  class ArgumentTypeError < Error
+  class ArgumentTypeError < SourceMappedError
     attr_reader :location
 
     def initialize(message, location=nil)
@@ -77,12 +77,10 @@ module Liquor
         end
       end
 
-      @location = location
-
       if location_info.empty?
-        super(message)
+        super(message, location)
       else
-        super("#{message} at #{location_info}")
+        super("#{message} at #{location_info}", location)
       end
     end
   end

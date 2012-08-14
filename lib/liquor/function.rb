@@ -50,7 +50,7 @@ module Liquor
 
     VALID_VALUE_TYPES = [:null, :boolean, :string, :integer, :tuple, :external]
 
-    def check_type(name, arg, expected_type)
+    def check_type(name, arg, expected_type, loc)
       actual_type  = detect_type arg
       check_failed = false
 
@@ -73,19 +73,19 @@ module Liquor
         end
 
         raise ArgumentTypeError.new("expected #{expected}, found `#{actual_type}'",
-                    { function: @name, argument: name })
+                    { function: @name, argument: name }.merge(loc))
       end
     end
 
-    def call(arg=nil, kw={})
-      check_type nil, arg, @unnamed_arg if @unnamed_arg
+    def call(arg=nil, kw={}, loc={})
+      check_type nil, arg, @unnamed_arg, loc if @unnamed_arg
 
       @mandatory_named_args.each do |name, type|
-        check_type name, kw[name], type
+        check_type name, kw[name], type, loc
       end
 
       @optional_named_args.each do |name, type|
-        check_type name, kw[name], type if kw.has_key?(name)
+        check_type name, kw[name], type, loc if kw.has_key?(name)
       end
 
       @body.call(arg, kw)
