@@ -78,6 +78,33 @@ describe Liquor do
     }).strip.should == '1'
   end
 
+  it "maintains forloop special" do
+    exec(%Q|
+      {% for x in: ["a", "b", "c"] do: %}
+        {{ forloop.length }}
+        {{ forloop.index }}
+        {{ forloop.rindex }}
+        {% if forloop.is_first then: %}first{% end if %}
+        {% if forloop.is_last then: %}last{% end if %}
+        I
+      {% end for %}
+    |).scan(/\w+/).should == \
+        %w(3 0 2 first I 3 1 1 I 3 2 0 last I)
+  end
+
+  it "correctly shadows forloop special" do
+    exec(%Q|
+      {% for x in: ["a", "b"] do: %}
+        {{ x }} {{ forloop.index }}
+        {% for y in: ["x", "y", "z"] do: %}
+          {{ y }} {{ forloop.index }}
+        {% end for %}
+        {{ forloop.length }}
+      {% end for %}
+    |).scan(/\w+/).should == \
+        %w(a 0 x 0 y 1 z 2 2 b 1 x 0 y 1 z 2 2)
+  end
+
   it "supports {% capture %}" do
     exec(%Q{
       {% capture data = %}

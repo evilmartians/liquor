@@ -17,6 +17,36 @@ module Liquor
       emit.out! %Q|#{context.access(var_name)} = #{emit.expr(expr)}\n|
     end
 
+    class ForLoop
+      include Liquor::External
+
+      def initialize(length)
+        @length = length
+        @index  = 0
+      end
+
+      attr_reader   :length
+      attr_accessor :index
+
+      def next!
+        @index += 1
+      end
+
+      def rindex
+        @length - @index - 1
+      end
+
+      def is_first
+        @index == 0
+      end
+
+      def is_last
+        @index == @length - 1
+      end
+
+      export :length, :index, :rindex, :is_first, :is_last
+    end
+
     tag "for" do |emit, context, node|
       name, arg, *kwargs = nvalue(node)
 
@@ -41,15 +71,19 @@ module Liquor
 
       context.nest do
         context.declare var_name, nloc(arg)
+        context.declare 'forloop'
 
         if kw[:in]
+          emit.out! %Q|#{context.access 'forloop'} = Liquor::Builtins::ForLoop.new(#{emit.check_tuple(kw[:in])}.size)\n|
           emit.out! %Q|for #{context.access(var_name)} in #{emit.check_tuple(kw[:in])}\n|
         elsif kw[:from]
+          emit.out! %Q|#{context.access 'forloop'} = Liquor::Builtins::ForLoop.new(#{emit.check_integer(kw[:to])} - #{emit.check_integer(kw[:from])})\n|
           emit.out! %Q<#{emit.check_integer(kw[:from])}.upto(#{emit.check_integer(kw[:to])}) do |#{context.access(var_name)}|\n>
         end
 
         emit.compile_block kw[:do]
 
+        emit.out! %Q|#{context.access 'forloop'}.next!\n|
         emit.out! %Q|end\n|
       end
     end
