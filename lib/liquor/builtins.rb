@@ -262,7 +262,6 @@ module Liquor
         time = Time.parse(arg)
         time.strftime(kw[:format])
       rescue Exception => e
-        raise e
         arg
       end
     end
