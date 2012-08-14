@@ -31,7 +31,7 @@ module Liquor
 
     def decorate(source)
       if @location && @location.has_key?(:line)
-        line = source.lines.drop(@location[:line]).first
+        line = source.lines.drop(@location[:line]).first.rstrip
 
         if @location.has_key? :start
           pointer =  "~" * (@location[:start])
