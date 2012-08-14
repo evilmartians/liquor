@@ -41,4 +41,15 @@ describe Liquor::Partials do
     manager.errors.first.should be_a Liquor::NameError
     manager.errors.first.message.should =~ %r|identifier `y' is not bound at `_action'|
   end
+
+  it "should handle yield with defaults" do
+    exec(%Q|
+      {% content_for "test" capture: %}captured{% end content_for %}
+      {% yield "test" if_none: %}default{% end yield %}
+    |).strip.should == 'captured'
+
+    exec(%Q|
+      {% yield "test" if_none: %}default{% end yield %}
+    |).strip.should == 'default'
+  end
 end

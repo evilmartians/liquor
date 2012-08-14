@@ -3,20 +3,36 @@ module Liquor
     include Library
 
     tag "yield" do |emit, context, node|
-      tag, arg, * = nvalue(node)
+      tag, arg, *kwargs = nvalue(node)
 
       if arg.nil? # {% yield %}
         check_args node,
             nil
 
         emit.cat! context.access('_inner_template')
-      else # {% yield "name" %}
-        arg, kw = check_args node,
-            :string
+      else
+        if kwargs.count == 0
+          # {% yield "name" %}
+          arg, kw = check_args node,
+              :string
 
-        name, = nvalue(arg)
+          name, = nvalue(arg)
 
-        emit.cat! %Q|#{emit.storage}[#{name.inspect}].to_s|
+          emit.cat! %Q|#{emit.storage}[#{name.inspect}].to_s|
+        else
+          # {% yield "name" if_none: %} block {% end yield %}
+          arg, kw = check_args node,
+              :string,
+              :if_none => :block
+
+          name, = nvalue(arg)
+
+          emit.out! %Q|if #{emit.storage}.include?(#{name.inspect})\n|
+          emit.cat! %Q|  #{emit.storage}[#{name.inspect}].to_s|
+          emit.out! %Q|else\n|
+          emit.compile_block kw[:if_none]
+          emit.out! %Q|end\n|
+        end
       end
     end
 
