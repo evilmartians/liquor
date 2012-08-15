@@ -8,6 +8,13 @@ module Liquor
       @source = source
     end
 
+    # Not exported
+    def to_a
+      @source.map do |elem|
+        DropDelegation.wrap_element(elem)
+      end
+    end
+
     def first
       DropDelegation.wrap_element @source.first
     end
