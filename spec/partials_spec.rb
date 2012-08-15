@@ -24,8 +24,8 @@ describe Liquor::Partials do
 
   it "should create a scope" do
     manager = Liquor::Manager.new
-    manager.register_template 'layout', '1 {% assign x = 2 %}{% include "action" %} 3 {{ x }}'
-    manager.register_partial '_action', '{% assign x = "G" %}{{ x }}'
+    manager.register_template 'layout', '1 {% declare x = 2 %}{% include "action" %} 3 {{ x }}'
+    manager.register_partial '_action', '{% declare x = "G" %}{{ x }}'
     manager.compile.should be_true
     manager.render('layout').should == '1 G 3 2'
   end

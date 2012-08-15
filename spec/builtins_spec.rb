@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Liquor do
-  it "supports {% assign var = value %}" do
+  it "supports {% assign %} and {% declare %}" do
     exec(%Q{
       {% assign test = 'hello world' %}
       {{ test }}
@@ -11,6 +11,14 @@ describe Liquor do
       exec(%Q{
         {% assign test = 1 %}
         {% assign test = 2 %}
+        {{ test }}
+      }).should == '2'
+    }.to_not raise_error(Liquor::NameError, %r|is already occupied|)
+
+    expect {
+      exec(%Q{
+        {% declare test = 1 %}
+        {% declare test = 2 %}
         {{ test }}
       }).should == '2'
     }.to_not raise_error(Liquor::NameError, %r|is already occupied|)
@@ -69,13 +77,23 @@ describe Liquor do
     }).scan(/\d+/).should == %w(1 2 3 4 5)
   end
 
-  it "shadows variables within {% for %}" do
+  it "shadows variables of {% for %}" do
     exec(%Q{
       {% assign var = 1 %}
       {% for var from: 1 to: 5 do: %}
       {% end for %}
       {{ var }}
     }).strip.should == '1'
+  end
+
+  it "does not shadow assignments within scopes" do
+    exec(%Q{
+      {% assign var = 1 %}
+      {% for i from: 1 to: 5 do: %}
+        {% assign var = i %}
+      {% end for %}
+      {{ var }}
+    }).strip.should == '5'
   end
 
   it "maintains forloop special" do
@@ -125,9 +143,9 @@ describe Liquor do
 
   it "shadows variables within {% capture %}" do
     exec(%Q{
-      {% assign data = 1 %}
+      {% declare data = 1 %}
       {% capture test = %}
-        {% assign data = 2 %}
+        {% declare data = 2 %}
         {{ data }}
       {% end capture %}
       {{ data }}

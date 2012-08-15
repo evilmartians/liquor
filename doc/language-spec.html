@@ -158,17 +158,22 @@ dd strong, code {
       </li>
       <li><a href="#runtime-behavior">5 Runtime Behavior</a></li>
       <li><a href="#builtins">6 Builtins</a>        <ul>
-          <li><a href="#builtin-tags">6.1 Tags</a>            <ul>
-              <li><a href="#assign">6.1.1 assign</a></li>
-              <li><a href="#for">6.1.2 for</a></li>
-              <li><a href="#if">6.1.2 if</a></li>
-              <li><a href="#unless">6.1.3 unless</a></li>
-              <li><a href="#capture">6.1.4 capture</a></li>
+          <li><a href="#builtin-tags">6.1 Required tags</a>            <ul>
+              <li><a href="#declare">6.1.1 declare</a></li>
+              <li><a href="#assign">6.1.2 assign</a></li>
+              <li><a href="#for">6.1.3 for</a></li>
+              <li><a href="#if">6.1.4 if</a></li>
+              <li><a href="#unless">6.1.5 unless</a></li>
+              <li><a href="#capture">6.1.6 capture</a></li>
+              <li><a href="#contentfor">6.1.7 content_for</a></li>
+              <li><a href="#yield">6.1.8 yield</a></li>
+              <li><a href="#include">6.1.9 include</a></li>
             </ul>
           </li>
           <li><a href="#functions">6.2 Functions</a></li>
         </ul>
       </li>
+      <li><a href="#appendix-layouts">Appendix A: Layouts</a></li>
     </ul>
   </li>
 </ul>
@@ -601,9 +606,19 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <p>Implementations must implement every builtin tag and function mentioned in this section. Implementations may implement any additional tags, but must not alter behavior of the described ones.</p>
 
-<h3 id="builtin-tags">6.1 Tags</h3>
+<h3 id="builtin-tags">6.1 Required tags</h3>
 
-<h4 id="assign">6.1.1 assign</h4>
+<h4 id="declare">6.1.1 declare</h4>
+
+<p>Tag <em>declare</em> has one valid syntactic form:</p>
+
+<pre><code>{% declare <em>var</em> = <em>expr</em> %}</code></pre>
+
+<p><em>Declare</em> binds the name <em>var</em> to the result of executing <em>expr</em> in the current scope. If <em>var</em> is already bound in current scope, <em>declare</em> mutates the binding. If <em>var</em> is already bound in an outer scope, <em>declare</em> creates a new binding in the current scope.</p>
+
+<p>The <em>declare</em> tag itself evaluates to an empty string.</p>
+
+<h4 id="assign">6.1.2 assign</h4>
 
 <p>Tag <em>assign</em> has one valid syntactic form:</p>
 
@@ -613,7 +628,7 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <p>The <em>assign</em> tag itself evaluates to an empty string.</p>
 
-<h4 id="for">6.1.2 for</h4>
+<h4 id="for">6.1.3 for</h4>
 
 <p>Tag <em>for</em> has two valid syntactic forms:</p>
 
@@ -631,7 +646,7 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <p>The <em>for</em> tag itself evaluates to the concatenation of values its <em>code</em> has evaluated to.</p>
 
-<h4 id="if">6.1.2 if</h4>
+<h4 id="if">6.1.4 if</h4>
 
 <p>Tag <em>if</em> has one valid syntactic form:</p>
 
@@ -650,7 +665,7 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <p>The <em>if</em> tag itself evaluates to the result of evaluating the corresponding code block, or to an empty string if none of the blocks were executed.</p>
 
-<h4 id="unless">6.1.3 unless</h4>
+<h4 id="unless">6.1.5 unless</h4>
 
 <p>Tag <em>unless</em> has one valid syntactic form:</p>
 
@@ -662,7 +677,7 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <p>The <em>unless</em> tag itself evaluates to the result of evaluating <em>code</em>, or to an empty string.</p>
 
-<h4 id="capture">6.1.4 capture</h4>
+<h4 id="capture">6.1.6 capture</h4>
 
 <p>Tag <em>capture</em> has one valid syntactic form:</p>
 
@@ -672,7 +687,52 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <p>The <em>capture</em> tag evaluates <em>code</em> and binds the name <em>var</em> to the result. If <em>var</em> is already bound, <em>capture</em> mutates the binding.</p>
 
+<h4 id="contentfor">6.1.7 content_for</h4>
+
+<p>Tag <em>content_for</em> has one valid syntactic form:</p>
+
+<pre><code>{% content_for <em>"handle"</em> capture: %}
+  <em>code</em>
+{% end content_for %}</code></pre>
+
+<p>The <em>content_for</em> tag accepts a <strong>String</strong> handle as an immediate value. It evaluates <em>code</em> and assigns the result to the handle <em>handle</em>, which must be stored in an implementation-specific way.</p>
+
+<p>See also notes on <a href="#appendix-layouts">Layout implementation</a>.</p>
+
+<h4 id="yield">6.1.8 yield</h4>
+
+<p>Tag <em>yield</em> has three valid syntactic forms:</p>
+
+<pre><code>{% yield %}</code></pre>
+
+<p>In this form, the <em>yield</em> tag evaluates to the content of inner template.</p>
+
+<pre><code>{% yield <em>"handle"</em> %}</code></pre>
+<pre><code>{% yield <em>"handle"</em> if_none: %}
+  <em>code</em>
+{% end yield %}</code></pre>
+
+<p>The <em>yield</em> tag accepts a <strong>String</strong> <em>handle</em> as an immediate value. If a string was captured previously with <a href="#content_for">{% content_for %}</a>, then <em>yield</em> evaluates to that string. If there is no captured string with the handle <em>handle</em>, then <em>yield</em> either evaluates to the result of evaluating <em>if_none</em> block if it exists, or to an empty string.</p>
+
+<p>See also notes on <a href="#appendix-layouts">Layout implementation</a>.</p>
+
+<h4 id="include">6.1.9 include</h4>
+
+<p>Tag <em>include</em> has one valid syntactic form:</p>
+
+<pre><code>{% include <em>"partial_name"</em> %}</code></pre>
+
+<p>The <em>include</em> tag accepts a <strong>String</strong> <em>partial_name</em> as an immediate value. It lexically includes the code of partial template <em>partial_name</em> in a newly created scope.</p>
+
+<p>The <em>include</em> tag should check for infinite recursion.</p>
+
+<p>See also notes on <a href="#appendix-layouts">Layout implementation</a>.</p>
+
 <h3 id="functions">6.2 Functions</h3>
+
+<p>TODO</p>
+
+<h2 id="appendix-layouts">Appendix A: Layouts</h2>
 
 <p>TODO</p>
 

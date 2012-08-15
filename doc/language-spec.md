@@ -548,9 +548,19 @@ TODO
 
 Implementations must implement every builtin tag and function mentioned in this section. Implementations may implement any additional tags, but must not alter behavior of the described ones.
 
-### 6.1 Tags {#builtin-tags}
+### 6.1 Required tags {#builtin-tags}
 
-#### 6.1.1 assign
+#### 6.1.1 declare
+
+Tag _declare_ has one valid syntactic form:
+
+<pre><code>{% declare <em>var</em> = <em>expr</em> %}</code></pre>
+
+_Declare_ binds the name _var_ to the result of executing _expr_ in the current scope. If _var_ is already bound in current scope, _declare_ mutates the binding. If _var_ is already bound in an outer scope, _declare_ creates a new binding in the current scope.
+
+The _declare_ tag itself evaluates to an empty string.
+
+#### 6.1.2 assign
 
 Tag _assign_ has one valid syntactic form:
 
@@ -560,7 +570,7 @@ _Assign_ binds the name _var_ to the result of executing _expr_ in the current s
 
 The _assign_ tag itself evaluates to an empty string.
 
-#### 6.1.2 for
+#### 6.1.3 for
 
 Tag _for_ has two valid syntactic forms:
 
@@ -578,7 +588,7 @@ In the _for..from..to_ form, this tag invokes _code_ with _var_ bound to each in
 
 The _for_ tag itself evaluates to the concatenation of values its _code_ has evaluated to.
 
-#### 6.1.2 if
+#### 6.1.4 if
 
 Tag _if_ has one valid syntactic form:
 
@@ -597,7 +607,7 @@ The _if_ tag sequentally evaluates each passed condition _cond-1_, _cond-2_, ...
 
 The _if_ tag itself evaluates to the result of evaluating the corresponding code block, or to an empty string if none of the blocks were executed.
 
-#### 6.1.3 unless
+#### 6.1.5 unless
 
 Tag _unless_ has one valid syntactic form:
 
@@ -609,7 +619,7 @@ The _unless_ tag evaluates _cond_. Unless it yields a [truthful](#boolean-operat
 
 The _unless_ tag itself evaluates to the result of evaluating _code_, or to an empty string.
 
-#### 6.1.4 capture
+#### 6.1.6 capture
 
 Tag _capture_ has one valid syntactic form:
 
@@ -619,6 +629,51 @@ Tag _capture_ has one valid syntactic form:
 
 The _capture_ tag evaluates _code_ and binds the name _var_ to the result. If _var_ is already bound, _capture_ mutates the binding.
 
+#### 6.1.7 content_for
+
+Tag _content_for_ has one valid syntactic form:
+
+<pre><code>{% content_for <em>"handle"</em> capture: %}
+  <em>code</em>
+{% end content_for %}</code></pre>
+
+The _content_for_ tag accepts a **String** handle as an immediate value. It evaluates _code_ and assigns the result to the handle _handle_, which must be stored in an implementation-specific way.
+
+See also notes on [Layout implementation](#appendix-layouts).
+
+#### 6.1.8 yield
+
+Tag _yield_ has three valid syntactic forms:
+
+<pre><code>{% yield %}</code></pre>
+
+In this form, the _yield_ tag evaluates to the content of inner template.
+
+<pre><code>{% yield <em>"handle"</em> %}</code></pre>
+<pre><code>{% yield <em>"handle"</em> if_none: %}
+  <em>code</em>
+{% end yield %}</code></pre>
+
+The _yield_ tag accepts a **String** _handle_ as an immediate value. If a string was captured previously with [{% content_for %}](#content_for), then _yield_ evaluates to that string. If there is no captured string with the handle _handle_, then _yield_ either evaluates to the result of evaluating _if_none_ block if it exists, or to an empty string.
+
+See also notes on [Layout implementation](#appendix-layouts).
+
+#### 6.1.9 include
+
+Tag _include_ has one valid syntactic form:
+
+<pre><code>{% include <em>"partial_name"</em> %}</code></pre>
+
+The _include_ tag accepts a **String** _partial_name_ as an immediate value. It lexically includes the code of partial template _partial_name_ in a newly created scope.
+
+The _include_ tag should check for infinite recursion.
+
+See also notes on [Layout implementation](#appendix-layouts).
+
 ### 6.2 Functions
+
+TODO
+
+## Appendix A: Layouts {#appendix-layouts}
 
 TODO
