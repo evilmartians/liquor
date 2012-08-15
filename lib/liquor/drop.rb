@@ -115,7 +115,11 @@ module Liquor
     end
 
     def ==(other)
-      self.source == other.source
+      if other.is_a? Liquor::Drop
+        self.source == other.source
+      else
+        other == self
+      end
     end
 
     def to_drop
