@@ -196,7 +196,7 @@ module Liquor
       end
     end
 
-    function "size", unnamed_arg: [:string, :tuple] do |arg,|
+    function "size", unnamed_arg: [:string, :tuple, :external] do |arg,|
       arg.size
     end
 

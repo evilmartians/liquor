@@ -86,9 +86,9 @@ describe Liquor::Drop do
         {{ article.name }}
       {% end for %}
     |, user: @dhh.to_drop).strip.should == 'rails rules'
-    exec(%|{{ articles.count }}|, articles: Article.to_drop).should == '3'
-    exec(%|{{ articles.published.count }}|, articles: Article.to_drop).should == '2'
-    exec(%|{{ users.with_login('dhh').count }}|, users: User.to_drop).should == '1'
+    exec(%|{{ size(articles) }}|, articles: Article.to_drop).should == '3'
+    exec(%|{{ size(articles.published) }}|, articles: Article.to_drop).should == '2'
+    exec(%|{{ size(users.with_login('dhh')) }}|, users: User.to_drop).should == '1'
     exec(%|{% if article.user == null then: %}ok{% end if %}|, article: Article.new.to_drop).should == 'ok'
   end
 

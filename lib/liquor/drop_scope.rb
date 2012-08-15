@@ -36,9 +36,9 @@ module Liquor
     def count
       @source.count
     end
-    alias size count
+    alias size count # for builtin compatibility
 
-    export :first, :last, :[], :count, :size
+    export :first, :last, :[]
 
     def limit(count)
       DropDelegation.wrap_scope @source.limit(count)
