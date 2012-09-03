@@ -1,5 +1,5 @@
 module Liquor
-  module Droppable
+  module Dropable
     module ClassMethods
       def to_drop
         DropDelegation.wrap_scope(self)

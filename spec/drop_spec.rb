@@ -22,7 +22,7 @@ end
 # Models
 
 class User < ActiveRecord::Base
-  include Liquor::Droppable
+  include Liquor::Dropable
 
   has_many :articles
 
@@ -30,7 +30,7 @@ class User < ActiveRecord::Base
 end
 
 class Article < ActiveRecord::Base
-  include Liquor::Droppable
+  include Liquor::Dropable
 
   belongs_to :user
 
