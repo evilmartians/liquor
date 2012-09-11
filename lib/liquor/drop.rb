@@ -201,7 +201,7 @@ module Liquor
 
       #
       # It is very important that we do not delegate the 'to_liquor' method and it returns 'self'.
-      NON_DELEGATE_METHODS = ['class', 'send', 'to_liquor', 'respond_to?']
+      NON_DELEGATE_METHODS = ['class', 'object_id', 'respond_to?', 'send', 'to_liquor']
       [].methods.each do |m|
         unless m =~ /^__/ || NON_DELEGATE_METHODS.include?(m.to_s)
           delegate m, :to => :proxy_found
