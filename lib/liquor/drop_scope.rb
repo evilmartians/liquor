@@ -15,6 +15,13 @@ module Liquor
       end
     end
 
+    def find_by(_, fields={})
+      result = @source.where(fields).first
+      DropDelegation.wrap_element result
+    end
+
+    export :find_by
+
     def first
       DropDelegation.wrap_element @source.first
     end

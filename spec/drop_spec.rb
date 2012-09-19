@@ -10,6 +10,7 @@ ActiveRecord::Base.establish_connection(
 ActiveRecord::Schema.define force: true do
   create_table "users", force: true do |t|
     t.string "login"
+    t.string "email"
   end
 
   create_table "articles", force: true do |t|
@@ -37,17 +38,17 @@ class Article < ActiveRecord::Base
   scope :published, where('published = ?', true)
 end
 
-dhh = User.create login: 'dhh'
+dhh = User.create login: 'dhh', email: 'dhh@loudthinking.org'
 dhh.articles.create name: 'java sucks',  published: false
 dhh.articles.create name: 'rails rules', published: true
 
-me = User.create login: 'me'
+me = User.create login: 'me', email: 'vassily@poupkin.org'
 me.articles.create name: 'hello world', published: true
 
 # Drops
 
 class UserDrop < Liquor::Drop
-  attributes :login
+  attributes :login, :email
   scopes :with_login
 
   has_many :articles, scope: [ :published ]
@@ -90,6 +91,11 @@ describe Liquor::Drop do
     exec(%|{{ size(articles.published) }}|, articles: Article.to_drop).should == '2'
     exec(%|{{ size(users.with_login('dhh')) }}|, users: User.to_drop).should == '1'
     exec(%|{% if article.user == null then: %}ok{% end if %}|, article: Article.new.to_drop).should == 'ok'
+  end
+
+  it "should support generic find_by" do
+    exec(%|{{ users.find_by(login: "dhh").email }}|, users: User.to_drop).should == 'dhh@loudthinking.org'
+    exec(%|{{ users.find_by(email: "vassily@poupkin.org").login }}|, users: User.to_drop).should == 'me'
   end
 
   it "should return intact source" do

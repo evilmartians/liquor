@@ -100,7 +100,7 @@ module Liquor
         end
 
         kw.each do |kwarg, kwval|
-          args << "#{kwarg.inspect} => #{expr(kwval)}"
+          out_args << "#{kwarg.inspect} => #{expr(kwval)}"
         end
       else
         out_args = []

@@ -63,7 +63,11 @@ describe Liquor::External do
         self
       end
 
-      export :static, :dynamic, :other
+      def with_hash(param, options={})
+        "#{param} #{options.map{ |k,v| "#{k}: #{v}" }.join(" ")}"
+      end
+
+      export :static, :dynamic, :other, :with_hash
     end
 
     instance = klass.new
@@ -73,6 +77,7 @@ describe Liquor::External do
     expect { exec(%Q|{{ ext.dynamic }}|, ext: instance) }.to raise_error
     exec(%Q|{{ ext.dynamic() }}|, ext: instance).should == ' world'
     exec(%Q|{{ ext.dynamic('bye') }}|, ext: instance).should == 'bye world'
+    exec(%Q|{{ ext.with_hash("1" two: "3") }}|, ext: instance).should == "1 two: 3"
   end
 
   it "should support indexing" do
