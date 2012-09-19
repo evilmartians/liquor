@@ -20,7 +20,11 @@ module Liquor
       DropDelegation.wrap_element result
     end
 
-    export :find_by
+    def find_collection_by(_, fields={})
+      result = @source.where(fields)
+      DropDelegation.wrap_scope(result)
+    end
+    export :find_collection_by, :find_by
 
     def first
       DropDelegation.wrap_element @source.first
@@ -45,7 +49,7 @@ module Liquor
     end
     alias size count # for builtin compatibility
 
-    export :first, :last, :[]
+    export :first, :last, :[], :size, :count
 
     def limit(count)
       DropDelegation.wrap_scope @source.limit(count)
