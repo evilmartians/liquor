@@ -11,6 +11,7 @@ ActiveRecord::Schema.define force: true do
   create_table "users", force: true do |t|
     t.string "login"
     t.string "email"
+    t.string "occupation"
   end
 
   create_table "articles", force: true do |t|
@@ -38,11 +39,11 @@ class Article < ActiveRecord::Base
   scope :published, where('published = ?', true)
 end
 
-dhh = User.create login: 'dhh', email: 'dhh@loudthinking.org'
+dhh = User.create login: 'dhh', email: 'dhh@loudthinking.org', occupation: 'developer'
 dhh.articles.create name: 'java sucks',  published: false
 dhh.articles.create name: 'rails rules', published: true
 
-me = User.create login: 'me', email: 'vassily@poupkin.org'
+me = User.create login: 'me', email: 'vassily@poupkin.org', occupation: 'developer'
 me.articles.create name: 'hello world', published: true
 
 # Drops
@@ -97,6 +98,11 @@ describe Liquor::Drop do
     exec(%|{{ users.find_by(login: "dhh").email }}|, users: User.to_drop).should == 'dhh@loudthinking.org'
     exec(%|{{ users.find_by(email: "vassily@poupkin.org").login }}|, users: User.to_drop).should == 'me'
   end
+
+  it "should support generic find_all_by and return a tuple" do
+    exec(%|{{ users.find_all_by(occupation: "developer").count }}|, users: User.to_drop).should == '2'
+  end
+
 
   it "should return intact source" do
     @dhh.to_drop.source.should == @dhh
