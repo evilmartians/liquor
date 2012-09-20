@@ -8,7 +8,7 @@ module Liquor
       @source = source
     end
 
-    # Not exported
+    # Not exported.
     def to_a
       @source.map do |elem|
         DropDelegation.wrap_element(elem)
@@ -24,6 +24,7 @@ module Liquor
       result = @source.where(fields)
       DropDelegation.wrap_scope(result)
     end
+
     export :find_all_by, :find_by
 
     def first
@@ -38,6 +39,7 @@ module Liquor
       DropDelegation.wrap_element @source[index]
     end
 
+    # Not exported. No block support in Liquor.
     def each
       @source.each do |elem|
         yield DropDelegation.wrap_element(elem)

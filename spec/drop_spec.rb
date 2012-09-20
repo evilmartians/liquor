@@ -46,6 +46,8 @@ dhh.articles.create name: 'rails rules', published: true
 me = User.create login: 'me', email: 'vassily@poupkin.org', occupation: 'developer'
 me.articles.create name: 'hello world', published: true
 
+nate = User.create login: 'xnutsive', email: 'nat@evl.ms', occupation: 'manager'
+
 # Drops
 
 class UserDrop < Liquor::Drop
@@ -101,6 +103,7 @@ describe Liquor::Drop do
 
   it "should support generic find_all_by and return a tuple" do
     exec(%|{{ users.find_all_by(occupation: "developer").count }}|, users: User.to_drop).should == '2'
+    exec(%|{{ users.find_all_by(occupation: "manager").count }}|, users: User.to_drop).should == '1'
   end
 
 
