@@ -20,11 +20,11 @@ module Liquor
       DropDelegation.wrap_element result
     end
 
-    def find_collection_by(_, fields={})
+    def find_all_by(_, fields={})
       result = @source.where(fields)
       DropDelegation.wrap_scope(result)
     end
-    export :find_collection_by, :find_by
+    export :find_all_by, :find_by
 
     def first
       DropDelegation.wrap_element @source.first

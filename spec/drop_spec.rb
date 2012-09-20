@@ -99,8 +99,8 @@ describe Liquor::Drop do
     exec(%|{{ users.find_by(email: "vassily@poupkin.org").login }}|, users: User.to_drop).should == 'me'
   end
 
-  it "should support generic find_collection_by and return a tuple" do
-    exec(%|{{ users.find_collection_by(occupation: "developer").count }}|, users: User.to_drop).should == '2'
+  it "should support generic find_all_by and return a tuple" do
+    exec(%|{{ users.find_all_by(occupation: "developer").count }}|, users: User.to_drop).should == '2'
   end
 
 
