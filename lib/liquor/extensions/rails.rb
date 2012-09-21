@@ -18,18 +18,18 @@ module Liquor
 end
 
 ActionController::Renderers.add :liquor do |options, *|
-  html = nil
+  output = nil
   manager, name, layout_name, environment = \
         options.values_at(:manager, :template, :layout, :environment)
 
   ActiveSupport::Notifications.instrument("render_template.action_view",
         identifier: name, layout: layout_name) do
     if layout_name
-      html = manager.render_with_layout(layout_name, environment, name, environment)
+      output = manager.render_with_layout(layout_name, environment, name, environment)
     else
-      html = manager.render(name, environment)
+      output = manager.render(name, environment)
     end
   end
 
-  render :text => html
+  render :text => output
 end
