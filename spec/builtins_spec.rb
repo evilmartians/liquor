@@ -172,11 +172,22 @@ describe Liquor do
     exec(%!{% if include([ 1, 2, 3 ] element: 2) then: %}yes{% end if %}!).should == "yes"
     exec(%!{{ [ 1, 2, 3 ] | reverse | join }}!).should == "3 2 1"
     exec(%!{{ [ 1, null, 3 ] | compact | join }}!).should == "1 3"
+
+    # is_even & is_odd
     exec(%!{% if is_even(1) then: %}yes{% else: %}no{% end if %}!).should == "no"
     exec(%!{% if is_odd(1) then: %}yes{% else: %}no{% end if %}!).should == "yes"
+
+    # is_empty
     exec(%!{% if is_empty([]) then: %}yes{% end if%}!).should == "yes"
     exec(%|{% if !is_empty([1,2,3]) then: %}not empty{% end if %}|).should == "not empty"
     exec(%!{% if is_empty(null) then: %}yes{% end if%}!).should == "yes"
+
+    # starts_with
     exec(%|{% if starts_with("some string" pattern: "some") then:%}yes{% end if %}|).should == "yes"
+
+    # is_blank
+    exec(%|{% if is_blank("") then: %}yes{%end if%}|).should == "yes"
+    exec(%|{% if is_blank(null) then: %}yes{%end if%}|).should == "yes"
+    exec(%|{% if !is_blank("test string") then: %}no{%end if%}|).should == "no"
   end
 end

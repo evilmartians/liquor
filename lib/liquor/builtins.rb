@@ -370,5 +370,9 @@ module Liquor
                             mandatory_named_args: { pattern: :string } do |arg, kw|
       arg.starts_with?(kw[:pattern])
     end
+
+    function "is_blank", unnamed_arg: [:null, :string] do |arg,|
+      arg.nil? || arg.size == 0
+    end
   end
 end
