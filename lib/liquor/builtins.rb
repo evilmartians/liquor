@@ -362,8 +362,8 @@ module Liquor
       (arg % 2) == 1
     end
 
-    function "is_empty", unnamed_arg: [:tuple, :external] do |arg,|
-      arg.size == 0
+    function "is_empty", unnamed_arg: [:null, :tuple, :external] do |arg,|
+      arg.nil? || arg.size == 0
     end
   end
 end
