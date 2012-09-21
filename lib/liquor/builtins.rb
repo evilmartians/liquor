@@ -365,5 +365,10 @@ module Liquor
     function "is_empty", unnamed_arg: [:tuple, :external] do |arg,|
       arg.size == 0
     end
+
+    function "starts_with", unnamed_arg: :string,
+                            mandatory_named_args: { pattern: :string } do |arg, kw|
+      arg.starts_with?(kw[:pattern])
+    end
   end
 end
