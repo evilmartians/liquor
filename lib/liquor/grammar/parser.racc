@@ -44,7 +44,7 @@ rule
     | tuple
     | ident function_args
       { result = [ :call,   retag(val), val[0], val[1] ] }
-    | primary_expr lbracket expr rbracket
+    | expr lbracket expr rbracket
       { result = [ :index,  retag(val), val[0], val[2] ] }
     | expr dot ident function_args
       { result = [ :external, retag(val), val[0], val[2], val[3] ] }

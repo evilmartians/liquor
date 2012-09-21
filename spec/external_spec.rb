@@ -111,4 +111,24 @@ describe Liquor::External do
       exec(%Q|{{ ext.fail }}|, ext: instance)
     }.to raise_error(Liquor::HostError)
   end
+
+  it "should index chained externals" do
+    klass = Class.new do
+      include Liquor::External
+
+      def other
+        self
+      end
+
+      def [](index)
+        index
+      end
+
+      export :other, :[]
+    end
+
+    instance = klass.new
+
+    exec(%Q|{{ ext.other[5] }}|, ext: instance).should == '5'
+  end
 end

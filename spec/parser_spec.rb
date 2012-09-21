@@ -23,7 +23,7 @@ describe Liquor::Parser do
   it "fails on incorrect syntax" do
     expect { parse("{{ }}") }.to raise_error(Liquor::SyntaxError, %r|unexpected token `}}'|)
     expect { parse("{{ 1 %}") }.to raise_error(Liquor::SyntaxError, %r|unexpected token `%}'|)
-    expect { parse("{{ 1[2] }}") }.to raise_error(Liquor::SyntaxError, %r|unexpected token `\['|)
+    expect { parse("{{ -2] }}") }.to raise_error(Liquor::SyntaxError, %r|unexpected token `\]'|)
     expect { parse("{{ a[2 }}") }.to raise_error(Liquor::SyntaxError, %r|unexpected token `}}'|)
     expect { parse("{{ a && (b || ) }}") }.to raise_error(Liquor::SyntaxError, %r|unexpected token `\)'|)
   end
@@ -328,6 +328,16 @@ describe Liquor::Parser do
           ],
           [:ident, "c"],
           nil]]
+    )
+    parse('{{ a.b[0] }}').should have_node_structure(
+      [:interp,
+        [:index,
+          [:external,
+            [:ident, "a"],
+            [:ident, "b"],
+            nil,
+          ],
+          [:integer, 0]]]
     )
   end
 
