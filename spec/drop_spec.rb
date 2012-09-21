@@ -106,6 +106,25 @@ describe Liquor::Drop do
     exec(%|{{ users.find_all_by(occupation: "manager").count }}|, users: User.to_drop).should == '1'
   end
 
+  it "should provide [] access to the elements, returned by find_all_by function" do
+    exec(%|
+      {% assign found_users = users.find_all_by(occupation: "developer") %}
+      {{ found_users[0].login }}
+    |, users: User.to_drop).strip.should == 'dhh'
+  end
+
+  it "should accept scope returned by find_all_by in for statements" do
+    exec(%|
+      {% for user in: users.find_all_by(occupation: "developer") do: %}
+        {{ user.login }}
+      {% end for %}
+    |, users: User.to_drop).strip.should == "dhh\n      \n        me"
+  end
+
+  it "should accept scope returned by find_all into empty() function" do
+    exec(%|{% if !is_empty(users.find_all_by(occupation: "developer")) then: %}it works{%end if%}|, users: User.to_drop).should == "it works"
+    exec(%|{% if is_empty(users.find_all_by(occupation: "idiot")) then: %}it works{% end if%}|, users: User.to_drop).should == "it works"
+  end
 
   it "should return intact source" do
     @dhh.to_drop.source.should == @dhh
