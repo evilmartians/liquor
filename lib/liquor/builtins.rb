@@ -354,12 +354,16 @@ module Liquor
       arg.compact
     end
 
-    function "even", unnamed_arg: :integer do |arg,|
+    function "is_even", unnamed_arg: :integer do |arg,|
       (arg % 2) == 0
     end
 
-    function "odd", unnamed_arg: :integer do |arg,|
+    function "is_odd", unnamed_arg: :integer do |arg,|
       (arg % 2) == 1
+    end
+
+    function "is_empty", unnamed_arg: [:tuple, :external] do |arg,|
+      arg.size == 0
     end
   end
 end
