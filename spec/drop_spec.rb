@@ -121,6 +121,11 @@ describe Liquor::Drop do
     |, users: User.to_drop).strip.should == "dhh\n      \n        me"
   end
 
+  it "should accept scope returned by find_all into empty() function" do
+    exec(%|{% if !is_empty(users.find_all_by(occupation: "developer")) then: %}it works{%end if%}|, users: User.to_drop).should == "it works"
+    exec(%|{% if is_empty(users.find_all_by(occupation: "idiot")) then: %}it works{% end if%}|, users: User.to_drop).should == "it works"
+  end
+
   it "should return intact source" do
     @dhh.to_drop.source.should == @dhh
   end
