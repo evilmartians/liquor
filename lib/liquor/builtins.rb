@@ -361,5 +361,9 @@ module Liquor
     function "odd", unnamed_arg: :integer do |arg,|
       (arg % 2) == 1
     end
+
+    function "empty", unnamed_arg: :tuple do |arg,|
+      arg.empty?
+    end
   end
 end

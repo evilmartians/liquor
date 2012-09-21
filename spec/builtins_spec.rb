@@ -174,5 +174,7 @@ describe Liquor do
     exec(%!{{ [ 1, null, 3 ] | compact | join }}!).should == "1 3"
     exec(%!{% if even(1) then: %}yes{% else: %}no{% end if %}!).should == "no"
     exec(%!{% if odd(1) then: %}yes{% else: %}no{% end if %}!).should == "yes"
+    exec(%!{% if empty([]) then: %}yes{% end if%}!).should == "yes"
+    exec(%|{% if !empty([1,2,3]) then: %}not empty{% end if %}|).should == "not empty"
   end
 end
