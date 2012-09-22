@@ -189,5 +189,7 @@ describe Liquor do
     exec(%|{% if is_blank("") then: %}yes{%end if%}|).should == "yes"
     exec(%|{% if is_blank(null) then: %}yes{%end if%}|).should == "yes"
     exec(%|{% if !is_blank("test string") then: %}no{%end if%}|).should == "no"
+
+    exec(%|{{ md5("test string for hashing")}}|).should == Digest::MD5.hexdigest("test string for hashing")
   end
 end

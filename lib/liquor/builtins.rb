@@ -1,4 +1,5 @@
 require 'time'
+require 'digest/md5'
 
 module Liquor
   module Builtins
@@ -210,6 +211,10 @@ module Liquor
 
     function "capitalize", unnamed_arg: :string do |arg,|
       arg.capitalize
+    end
+
+    function "md5", unnamed_arg: :string do |arg,|
+      Digest::MD5.hexdigest(arg)
     end
 
     function "url_escape", unnamed_arg: :string do |arg,|

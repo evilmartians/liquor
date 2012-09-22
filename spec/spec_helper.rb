@@ -6,6 +6,7 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 require 'liquor'
+require 'digest/md5'
 
 module LiquorSpecHelpers
   def lex(string)
