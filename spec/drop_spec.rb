@@ -83,6 +83,12 @@ describe Liquor::Drop do
     expect { exec('{{ drop.c }}') }.to raise_error
   end
 
+  it "should allow iterating" do
+    expect {
+      exec(%|{% for user in: users do: %}{{ user.id }}{% end for %}|, users: User.to_drop)
+    }.not_to raise_error
+  end
+
   it "should walk relations and stuff" do
     exec('{{ user.login }}', user: @dhh.to_drop).should == 'dhh'
     exec(%|

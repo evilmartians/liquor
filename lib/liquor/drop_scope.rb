@@ -5,6 +5,10 @@ module Liquor
     attr_reader :source
 
     def initialize(source)
+      unless source.respond_to? :each
+        source = source.scoped
+      end
+
       @source = source
     end
 
