@@ -61,6 +61,10 @@ module Liquor
       DropDelegation.wrap_scope @source.offset(count)
     end
 
-    export :limit, :offset
+    def reverse
+      DropDelegation.wrap_scope @source.reverse_order
+    end
+
+    export :limit, :offset, :reverse
   end
 end

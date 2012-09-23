@@ -51,7 +51,7 @@ nate = User.create login: 'xnutsive', email: 'nat@evl.ms', occupation: 'manager'
 # Drops
 
 class UserDrop < Liquor::Drop
-  attributes :login, :email
+  attributes :id, :login, :email
   scopes :with_login
 
   has_many :articles, scope: [ :published ]
@@ -104,6 +104,12 @@ describe Liquor::Drop do
   it "should support generic find_all_by and return a tuple" do
     exec(%|{{ users.find_all_by(occupation: "developer").count }}|, users: User.to_drop).should == '2'
     exec(%|{{ users.find_all_by(occupation: "manager").count }}|, users: User.to_drop).should == '1'
+  end
+
+  it "should support reversing" do
+    ltr = exec(%|{% for user in: users do: %}{{ user.id }}{% end for %}|, users: User.to_drop)
+    rtl = exec(%|{% for user in: users.reverse do: %}{{ user.id }}{% end for %}|, users: User.to_drop)
+    ltr.should == rtl.reverse
   end
 
   it "should provide [] access to the elements, returned by find_all_by function" do
