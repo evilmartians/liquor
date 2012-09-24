@@ -99,11 +99,11 @@ describe Liquor do
   it "maintains forloop special" do
     exec(%Q|
       {% for x in: ["a", "b", "c"] do: %}
-        {{ forloop.length }}
-        {{ forloop.index }}
-        {{ forloop.rindex }}
-        {% if forloop.is_first then: %}first{% end if %}
-        {% if forloop.is_last then: %}last{% end if %}
+        {{ x_loop.length }}
+        {{ x_loop.index }}
+        {{ x_loop.rindex }}
+        {% if x_loop.is_first then: %}first{% end if %}
+        {% if x_loop.is_last then: %}last{% end if %}
         I
       {% end for %}
     |).scan(/\w+/).should == \
@@ -113,11 +113,11 @@ describe Liquor do
   it "correctly shadows forloop special" do
     exec(%Q|
       {% for x in: ["a", "b"] do: %}
-        {{ x }} {{ forloop.index }}
-        {% for y in: ["x", "y", "z"] do: %}
-          {{ y }} {{ forloop.index }}
+        {{ x }} {{ x_loop.index }}
+        {% for x in: ["x", "y", "z"] do: %}
+          {{ x }} {{ x_loop.index }}
         {% end for %}
-        {{ forloop.length }}
+        {{ x_loop.length }}
       {% end for %}
     |).scan(/\w+/).should == \
         %w(a 0 x 0 y 1 z 2 2 b 1 x 0 y 1 z 2 2)

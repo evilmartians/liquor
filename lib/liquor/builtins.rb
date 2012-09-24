@@ -83,23 +83,24 @@ module Liquor
         raise SyntaxError.new("unexpected `#{kwname(kwargs[0])}:', expecting one of: `in:', `from:'.", nloc(kwargs[0]))
       end
 
-      var_name, = nvalue(arg)
+      var_name,    = nvalue(arg)
+      indexer_name = "#{var_name}_loop"
 
       context.nest do
         context.declare var_name, nloc(arg)
-        context.declare 'forloop'
+        context.declare indexer_name
 
         if kw[:in]
-          emit.out! %Q|#{context.access 'forloop'} = Liquor::Builtins::ForLoop.new(#{emit.check_tuple(kw[:in])}.size)\n|
+          emit.out! %Q|#{context.access indexer_name} = Liquor::Builtins::ForLoop.new(#{emit.check_tuple(kw[:in])}.size)\n|
           emit.out! %Q|for #{context.access(var_name)} in #{emit.check_tuple(kw[:in])}\n|
         elsif kw[:from]
-          emit.out! %Q|#{context.access 'forloop'} = Liquor::Builtins::ForLoop.new(#{emit.check_integer(kw[:to])} - #{emit.check_integer(kw[:from])})\n|
+          emit.out! %Q|#{context.access indexer_name} = Liquor::Builtins::ForLoop.new(#{emit.check_integer(kw[:to])} - #{emit.check_integer(kw[:from])})\n|
           emit.out! %Q<#{emit.check_integer(kw[:from])}.upto(#{emit.check_integer(kw[:to])}) do |#{context.access(var_name)}|\n>
         end
 
         emit.compile_block kw[:do]
 
-        emit.out! %Q|#{context.access 'forloop'}.next!\n|
+        emit.out! %Q|#{context.access indexer_name}.next!\n|
         emit.out! %Q|end\n|
       end
     end
