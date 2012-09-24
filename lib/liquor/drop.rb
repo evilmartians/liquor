@@ -130,4 +130,4 @@ end
 
 require 'liquor/drop_delegation'
 require 'liquor/drop_scope'
-require 'liquor/droppable'
+require 'liquor/dropable'
