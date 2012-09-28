@@ -310,7 +310,13 @@ module Liquor
               mandatory_named_args: { format: :string } do |arg, kw|
       begin
         time = Time.parse(arg)
-        time.strftime(kw[:format])
+
+        if defined?(I18n)
+          I18n.localize(time, format: kw[:format])
+        else
+          time.strftime(kw[:format])
+        end
+
       rescue Exception => e
         arg
       end
@@ -363,7 +369,7 @@ module Liquor
       (arg % 2) == 1
     end
 
-    function "is_empty", unnamed_arg: [:null, :tuple, :external] do |arg,|
+    function "is_empty", unnamed_arg: [:null, :tuple, :external, :string] do |arg,|
       arg.nil? || arg.size == 0
     end
 
@@ -372,8 +378,5 @@ module Liquor
       arg.starts_with?(kw[:pattern])
     end
 
-    function "is_blank", unnamed_arg: [:null, :string] do |arg,|
-      arg.nil? || arg.size == 0
-    end
   end
 end

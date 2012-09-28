@@ -185,9 +185,7 @@ describe Liquor do
     # starts_with
     exec(%|{% if starts_with("some string" pattern: "some") then:%}yes{% end if %}|).should == "yes"
 
-    # is_blank
-    exec(%|{% if is_blank("") then: %}yes{%end if%}|).should == "yes"
-    exec(%|{% if is_blank(null) then: %}yes{%end if%}|).should == "yes"
-    exec(%|{% if !is_blank("test string") then: %}no{%end if%}|).should == "no"
+    exec(%|{% if is_empty("") then: %}yes{%end if%}|).should == "yes"
+    exec(%|{% if !is_empty("test string") then: %}no{%end if%}|).should == "no"
   end
 end
