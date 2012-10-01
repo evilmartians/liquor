@@ -1,5 +1,7 @@
 require "spec_helper"
 
+require 'nokogiri'
+
 describe Liquor do
   it "supports {% assign %} and {% declare %}" do
     exec(%Q{
@@ -187,5 +189,10 @@ describe Liquor do
 
     exec(%|{% if is_empty("") then: %}yes{%end if%}|).should == "yes"
     exec(%|{% if !is_empty("test string") then: %}no{%end if%}|).should == "no"
+
+    # truncate variants (omission is 11 characters)
+    exec(%|{{ truncate("This is a test string." length: 10 + 11 omission: "(continued)") }}|).should == "This is a (continued)"
+    exec(%|{{ truncate_words("This is a test string." words: 4 omission: "(continued)") }}|).should == "This is a test(continued)"
+    exec(%|{{ html_truncate_words("<p>This is a test string. <b>It is very <i>very long</i> to make truncater's job harder." words: 9) }}|).should == "<p>This is a test string. <b>It is very <i>very...</i></b></p>"
   end
 end

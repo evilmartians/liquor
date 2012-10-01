@@ -1,4 +1,6 @@
 require 'time'
+require 'uri'
+require 'liquor/html_truncater'
 
 module Liquor
   module Builtins
@@ -253,6 +255,22 @@ module Liquor
       end
     end
 
+    function "html_truncate_words",
+              unnamed_arg: :string,
+              optional_named_args: {
+                words:    :integer,
+                omission: :string
+              } do |arg, kw|
+      length   = kw[:words]    || 15
+      omission = kw[:omission] || '...'
+
+      if defined?(Nokogiri)
+        HTMLTruncater.truncate_words(arg, length, omission)
+      else
+        raise NotImplementedError, "html_truncate_words() requires Nokogiri"
+      end
+    end
+
     function "strip_newlines", unnamed_arg: :string do |arg,|
       arg.gsub("\n", "")
     end
@@ -331,19 +349,25 @@ module Liquor
     end
     function_alias "to_i", "to_number"
 
-    if [].respond_to? :in_groups_of
-      function "in_groups_of",
-                unnamed_arg: [:tuple, :external],
-                mandatory_named_args: { size: :integer },
-                optional_named_args:  { fill_with: :string } do |arg, kw|
+    function "in_groups_of",
+              unnamed_arg: [:tuple, :external],
+              mandatory_named_args: { size: :integer },
+              optional_named_args:  { fill_with: :string } do |arg, kw|
+      if [].respond_to? :in_groups_of
         arg.to_a.in_groups_of(kw[:size], kw[:fill_with])
+      else
+        raise NotImplementedError, "in_groups_of() requires ActiveSupport Array extensions"
       end
+    end
 
-      function "in_groups",
-                unnamed_arg: [:tuple, :external],
-                mandatory_named_args: { count: :integer },
-                optional_named_args:  { fill_with: :string } do |arg, kw|
+    function "in_groups",
+              unnamed_arg: [:tuple, :external],
+              mandatory_named_args: { count: :integer },
+              optional_named_args:  { fill_with: :string } do |arg, kw|
+      if [].respond_to? :in_groups_of
         arg.to_a.in_groups(kw[:count], kw[:fill_with])
+      else
+        raise NotImplementedError, "in_groups() requires ActiveSupport Array extensions"
       end
     end
 
@@ -375,7 +399,7 @@ module Liquor
 
     function "starts_with", unnamed_arg: :string,
                             mandatory_named_args: { pattern: :string } do |arg, kw|
-      arg.starts_with?(kw[:pattern])
+      arg.start_with?(kw[:pattern])
     end
 
   end
