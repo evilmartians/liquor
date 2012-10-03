@@ -1,6 +1,7 @@
 require "spec_helper"
 
 require 'nokogiri'
+require 'rack'
 
 describe Liquor do
   it "supports {% assign %} and {% declare %}" do
@@ -162,6 +163,7 @@ describe Liquor do
     exec(%!{{ "Abc" | downcase }}!).should == 'abc'
     exec(%!{{ "abc def" | capitalize }}!).should == 'Abc def'
     exec(%!{{ "'" | url_escape }}!).should == '%27'
+    exec(%!{{ "&" | html_escape }}!).should == '&amp;'
     exec(%!{% capture test = %}\na\nb{% end capture %}{{ test | strip_newlines }}!).should == 'ab'
     exec(%!{{ [ 1, 2, "a" ] | join }}!).should == '1 2 a'
     exec(%!{{ "abc abc" | replace pattern: 'abc' replacement: 'def' }}!).should == 'def def'
