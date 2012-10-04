@@ -50,12 +50,18 @@ module Liquor
       end
     end
 
+    def pluck(attribute)
+      @source.map do |elem|
+        DropDelegation.wrap_element(elem).liquor_send(attribute.to_s, [])
+      end
+    end
+
     def count
       @source.count
     end
     alias size count # for builtin compatibility
 
-    export :first, :last, :[], :size, :count
+    export :first, :last, :[], :pluck, :size, :count
 
     def limit(count)
       DropDelegation.wrap_scope @source.limit(count)

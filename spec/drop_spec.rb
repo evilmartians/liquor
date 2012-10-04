@@ -131,12 +131,16 @@ describe Liquor::Drop do
       {% for user in: users.find_all_by(occupation: "developer") do: %}
         {{ user.login }}
       {% end for %}
-    |, users: User.to_drop).strip.should == "dhh\n      \n        me"
+    |, users: User.to_drop).split.should == %w[dhh me]
   end
 
   it "should accept scope returned by find_all into empty() function" do
     exec(%|{% if !is_empty(users.find_all_by(occupation: "developer")) then: %}it works{%end if%}|, users: User.to_drop).should == "it works"
     exec(%|{% if is_empty(users.find_all_by(occupation: "idiot")) then: %}it works{% end if%}|, users: User.to_drop).should == "it works"
+  end
+
+  it "should support #pluck" do
+    exec(%!{{ users.pluck('login') | join with: ', ' }}!, users: User.to_drop).should == 'dhh, me, xnutsive'
   end
 
   it "should return intact source" do
