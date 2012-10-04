@@ -19,6 +19,11 @@ module Liquor
       end
     end
 
+    def model_name
+      @source.model_name
+    end
+    export :model_name
+
     def find_by(_, fields={})
       result = @source.where(fields).first
       DropDelegation.wrap_element result

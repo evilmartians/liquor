@@ -114,6 +114,11 @@ module Liquor
       export name
     end
 
+    def model_name
+      @source.class.model_name
+    end
+    export :model_name
+
     def ==(other)
       if other.is_a? Liquor::Drop
         self.source == other.source

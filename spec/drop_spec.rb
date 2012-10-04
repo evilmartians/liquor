@@ -143,6 +143,11 @@ describe Liquor::Drop do
     exec(%!{{ users.pluck('login') | join with: ', ' }}!, users: User.to_drop).should == 'dhh, me, xnutsive'
   end
 
+  it "should export model name from Drop and Drop::Scope" do
+    exec(%!{{ users.model_name }}!, users: User.to_drop).should == 'User'
+    exec(%!{{ users.first.model_name }}!, users: User.to_drop).should == 'User'
+  end
+
   it "should return intact source" do
     @dhh.to_drop.source.should == @dhh
   end
