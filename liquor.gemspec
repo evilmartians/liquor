@@ -17,12 +17,18 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = '>= 1.9'
 
-  gem.add_development_dependency 'kramdown'
+  # Generation of the parsers and documentation.
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'racc'
+  gem.add_development_dependency 'kramdown'
+
+  # Testing.
   gem.add_development_dependency 'rspec'
   gem.add_development_dependency 'guard-rspec'
+
+  # Testing dependencies.
   gem.add_development_dependency 'rack'
+  gem.add_development_dependency 'nokogiri'
   gem.add_development_dependency 'activerecord'
   gem.add_development_dependency 'sqlite3'
 end
