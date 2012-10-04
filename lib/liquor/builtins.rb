@@ -223,7 +223,7 @@ module Liquor
       if defined?(Rack::Utils)
         Rack::Utils.escape_html(arg)
       else
-        raise NotImplementedError, "escape_html() requires Rack"
+        raise NotImplementedError, "html_escape() requires Rack"
       end
     end
 
