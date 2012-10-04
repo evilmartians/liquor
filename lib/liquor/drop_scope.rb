@@ -19,10 +19,10 @@ module Liquor
       end
     end
 
-    def model_name
+    def entity
       @source.model_name
     end
-    export :model_name
+    export :entity
 
     def find_by(_, fields={})
       result = @source.where(fields).first

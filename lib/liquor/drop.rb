@@ -114,10 +114,10 @@ module Liquor
       export name
     end
 
-    def model_name
+    def entity
       @source.class.model_name
     end
-    export :model_name
+    export :entity
 
     def ==(other)
       if other.is_a? Liquor::Drop
