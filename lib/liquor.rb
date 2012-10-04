@@ -17,7 +17,8 @@ module Liquor
 
   require "liquor/library"
 
-  require "liquor/builtins"
+  require "liquor/builtin_tags"
+  require "liquor/builtin_functions"
   require "liquor/partials"
 
   require "liquor/compiler"
