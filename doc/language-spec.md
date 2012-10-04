@@ -167,7 +167,7 @@ Liquor supports exactly one implicit type conversion. In any context where a **S
 
 Liquor has _expressions_, which can be used to perform computations with values. This section does not define a normative grammar; the full grammar is provided in section [Grammar](#grammar).
 
-Order of evaluation of Liquor expressions is not defined. As every value is immutable, the value of the entire expression should not depend upon the order of evaluation. Implementation-provided tags and functions should not mutate any global state.
+Order of evaluation of Liquor expressions is not defined. As every value is immutable, the value of the entire expression should not depend upon the order of evaluation. Implementation-provided tags and functions must not mutate any global state and should not access it whenever possible.
 
 #### 2.4.1 Literals
 
@@ -353,7 +353,7 @@ The following Extended Backus-Naur form grammar is normative. The native charact
 
 Statement <code><em>a</em> to <em>b</em></code> is equivalent to codepoint set which includes every codepoint from _a_ to _b_ inclusive. Statement <code><em>a</em> except <em>b</em></code> means that both _a_ and _b_ are tokens which consist of exactly one codepoint, and every character satisfying _a_ and not satisfying in _b_ is accepted. Statement <code>lookahead <em>a</em></code> means that the current token should only be produced if the codepoint immediately following it satisfies _a_.
 
-Strictly, this grammar lies within _GLR_ domain, but if, as it is usually the case, an implementation has separate lexer and parser, an _LR(1)_ parser could be used. This will be further explained in section [Blocks](#blocks-1).
+Strictly speaking, this grammar lies within _GLR_ domain, but if, as it is usually the case, an implementation has separate lexer and parser, an _LR(1)_ parser could be used. This will be further explained in section [Blocks](#blocks-1).
 
 ### 3.1 Basic Syntax
 

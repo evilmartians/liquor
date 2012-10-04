@@ -235,7 +235,7 @@ dd strong, code {
 
 <p>Liquor has <em>expressions</em>, which can be used to perform computations with values. This section does not define a normative grammar; the full grammar is provided in section <a href="#grammar">Grammar</a>.</p>
 
-<p>Order of evaluation of Liquor expressions is not defined. As every value is immutable, the value of the entire expression should not depend upon the order of evaluation. Implementation-provided tags and functions should not mutate any global state.</p>
+<p>Order of evaluation of Liquor expressions is not defined. As every value is immutable, the value of the entire expression should not depend upon the order of evaluation. Implementation-provided tags and functions must not mutate any global state and should not access it whenever possible.</p>
 
 <h4 id="literals">2.4.1 Literals</h4>
 
@@ -426,7 +426,7 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <p>Statement <code><em>a</em> to <em>b</em></code> is equivalent to codepoint set which includes every codepoint from <em>a</em> to <em>b</em> inclusive. Statement <code><em>a</em> except <em>b</em></code> means that both <em>a</em> and <em>b</em> are tokens which consist of exactly one codepoint, and every character satisfying <em>a</em> and not satisfying in <em>b</em> is accepted. Statement <code>lookahead <em>a</em></code> means that the current token should only be produced if the codepoint immediately following it satisfies <em>a</em>.</p>
 
-<p>Strictly, this grammar lies within <em>GLR</em> domain, but if, as it is usually the case, an implementation has separate lexer and parser, an <em>LR(1)</em> parser could be used. This will be further explained in section <a href="#blocks-1">Blocks</a>.</p>
+<p>Strictly speaking, this grammar lies within <em>GLR</em> domain, but if, as it is usually the case, an implementation has separate lexer and parser, an <em>LR(1)</em> parser could be used. This will be further explained in section <a href="#blocks-1">Blocks</a>.</p>
 
 <h3 id="basic-syntax">3.1 Basic Syntax</h3>
 
