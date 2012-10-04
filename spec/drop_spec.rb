@@ -144,8 +144,8 @@ describe Liquor::Drop do
   end
 
   it "should export model name from Drop and Drop::Scope" do
-    exec(%!{{ users.model_name }}!, users: User.to_drop).should == 'User'
-    exec(%!{{ users.first.model_name }}!, users: User.to_drop).should == 'User'
+    exec(%!{{ users.entity }}!, users: User.to_drop).should == 'User'
+    exec(%!{{ users.first.entity }}!, users: User.to_drop).should == 'User'
   end
 
   it "should return intact source" do
