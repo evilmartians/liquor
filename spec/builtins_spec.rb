@@ -1,7 +1,9 @@
 require "spec_helper"
 
+require 'rails'
+require 'action_view'
 require 'nokogiri'
-require 'rack'
+require 'htmlentities'
 
 describe Liquor do
   it "supports {% assign %} and {% declare %}" do
@@ -191,6 +193,11 @@ describe Liquor do
 
     exec(%|{% if is_empty("") then: %}yes{%end if%}|).should == "yes"
     exec(%|{% if !is_empty("test string") then: %}no{%end if%}|).should == "no"
+
+    # html stuff
+    exec(%|{{ h(html_escape_once('&')) }}|).should == '&amp;'
+    exec(%|{{ strip_html('<b>test</b>') }}|).should == 'test'
+    exec(%|{{ decode_html_entities('&amp;&gt;') }}|).should == '&>'
 
     # truncate variants (omission is 11 characters)
     exec(%|{{ truncate("This is a test string." length: 10 + 11 omission: "(continued)") }}|).should == "This is a (continued)"

@@ -141,6 +141,34 @@ module Liquor
         raise NotImplementedError, "html_escape() requires Rack"
       end
     end
+
+    function "html_escape_once", unnamed_arg: :string do |arg,|
+      if defined?(ActionView)
+        @html_escape_once_helper ||= Object.new.
+            tap { |obj| obj.extend ActionView::Helpers::TagHelper }
+        @html_escape_once_helper.escape_once(arg)
+      else
+        raise NotImplementedError, "html_escape_once() requires ActionView"
+      end
+    end
+    function_alias "h", "html_escape_once"
+
+    function "strip_html", unnamed_arg: :string do |arg,|
+      if defined?(HTML::Sanitizer)
+        HTML::FullSanitizer.new.sanitize(arg)
+      else
+        raise NotImplementedError, "escape_once() requires HTML::Sanitizer (try loading ActionView)"
+      end
+    end
+
+    function "decode_html_entities", unnamed_arg: :string do |arg,|
+      if defined?(HTMLEntities)
+        HTMLEntities.new.decode(arg)
+      else
+        raise NotImplementedError, "decode_html_entities() requires HTMLEntities"
+      end
+    end
+
     #
     # Tuple functions
     #
