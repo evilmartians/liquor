@@ -89,7 +89,7 @@ tag_start := |*
             tag_conts = registered_tags[tag_stack.last].continuations
           end
         else
-          (sl, sc), (el, ec) = loc.(ts), loc.(te)
+          (sl, sc), (el, ec) = loc.(ts), loc.(te - 1)
           info = { file: name, line: sl, start: sc, end: ec }
           if tag_stack.any?
             raise SyntaxError.new("unmatched `end #{tag}', expected `end #{tag_stack.last}'", info)
