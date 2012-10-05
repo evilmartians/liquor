@@ -45,11 +45,4 @@ describe Liquor::Manager do
 
     manager.render('test').should == 'world'
   end
-
-  it "should pass tag database along" do
-    @manager.register_template 'test', '{% if false then: %}a{% elsif true then: %}b{% end if %}'
-    @manager.compile.should be_true
-
-    @manager.render('test').should == 'b'
-  end
 end

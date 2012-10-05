@@ -84,10 +84,7 @@ tag_start := |*
         if tag_stack.last == tag
           fixtok.(:lblock2)
           tok.(:endtag)
-          tag_stack.pop
-          if registered_tags.include?(tag_stack.last)
-            tag_conts = registered_tags[tag_stack.last].continuations
-          end
+          pop_tag.()
         else
           (sl, sc), (el, ec) = loc.(ts), loc.(te - 1)
           info = { file: name, line: sl, start: sc, end: ec }
@@ -100,6 +97,12 @@ tag_start := |*
         fgoto code;
       };
 
+    identifier ':' =>
+      { fixtok.(:lblock2)
+        tok.(:keyword, data[ts...te - 1])
+        fgoto code;
+      };
+
     identifier =>
       { tag = data[ts...te]
 
@@ -107,19 +110,11 @@ tag_start := |*
           fixtok.(:lblock2)
           tok.(:keyword, tag)
           fgoto code;
-        elsif registered_tags.include?(tag)
-          tag_conts = registered_tags[tag].continuations
         end
 
         tok.(:ident, tag)
         last_tag = tag
 
-        fgoto code;
-      };
-
-    identifier ':' =>
-      { fixtok.(:lblock2)
-        tok.(:keyword, data[ts...te - 1])
         fgoto code;
       };
 
@@ -137,10 +132,7 @@ code := |*
     identifier %{ kw_stop = p } ':' whitespace* rblock =>
       { tok.(:keyword, data[ts...kw_stop], te: kw_stop)
         tok.(:rblock,  nil,                ts: te - 2)
-        if last_tag
-          tag_stack.push last_tag
-          last_tag = nil
-        end
+        push_last_tag.()
         fgoto plaintext;
       };
 
@@ -151,10 +143,7 @@ code := |*
       {
         tok.(:keyword, '=', te: ts + 1)
         tok.(:rblock,  nil, ts: te - 2)
-        if last_tag
-          tag_stack.push last_tag
-          last_tag = nil
-        end
+        push_last_tag.()
         fgoto plaintext;
       };
 
@@ -193,8 +182,8 @@ code := |*
     '"'  => { str_start = p; fgoto dqstring; };
     "'"  => { str_start = p; fgoto sqstring; };
 
-    rinterp => { tok.(:rinterp); fgoto plaintext; };
-    rblock  => { tok.(:rblock);  fgoto plaintext; };
+    rinterp => { tok.(:rinterp);                 fgoto plaintext; };
+    rblock  => { tok.(:rblock);  last_tag = nil; fgoto plaintext; };
 
     any => error;
 *|;
@@ -234,9 +223,6 @@ module Liquor
       runaway   = false
 
       # Tags
-      tag_stack  = []
-      tag_conts  = []
-      last_tag   = nil
       kw_stop    = nil
 
       line_starts = [0]
@@ -250,6 +236,29 @@ module Liquor
       loc = ->(index) {
         line_start_index = find_line_start.(index)
         [ line_start_index, index - line_starts[line_start_index] ]
+      }
+
+      # Tag stack
+      tag_stack  = []
+      tag_conts  = []
+      last_tag   = nil
+
+      update_tag_cont = ->() {
+        tag = tag_stack.last
+        if registered_tags.include?(tag)
+          tag_conts = registered_tags[tag].continuations
+        end
+      }
+      push_last_tag = ->() {
+        if last_tag
+          tag_stack.push last_tag
+          last_tag = nil
+          update_tag_cont.()
+        end
+      }
+      pop_tag = ->() {
+        tag_stack.pop
+        update_tag_cont.()
       }
 
       tokens = []

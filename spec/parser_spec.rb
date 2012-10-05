@@ -348,7 +348,14 @@ describe Liquor::Parser do
   it "does not want {% end elsif %}" do
     expect {
       compiler = Liquor::Compiler.new
-      parse %|{% if true then: %}{% elsif true then: %}{% end if %}|, compiler
-    }.not_to raise_error(Liquor::SyntaxError, %r|expected `end elsif'|)
+      parse %|
+        {% if !is_empty(clip_videos) then: %}
+          {% assign current_video = clip_videos[0] %}
+        {% elsif !is_empty(live_videos) then: %}
+        {% elsif: !is_empty(live_videos) then: %}
+        {% elsif !is_empty(live_videos) then: %}
+        {% end if %}
+      |, compiler
+    }.not_to raise_error(Liquor::SyntaxError)
   end
 end
