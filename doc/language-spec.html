@@ -272,11 +272,13 @@ The following operators are infix and unary: <code>-</code>, <code>!</code>.</p>
 
 <h5 id="arithmetic-operators">2.4.2.1 Arithmetic Operators</h5>
 
-<p>Arithmetic operators are <code>*</code> (multiply), <code>/</code> (division), <code>%</code> (modulo), <code>+</code> (plus) and <code>-</code> (minus; binary and unary).</p>
+<p>Arithmetic operators are <code>*</code> (multiplication), <code>/</code> (division), <code>%</code> (modulo), <code>+</code> (plus) and <code>-</code> (minus; binary and unary).</p>
 
-<p>All arithmetic operators, whether unary or binary, require every argument to be of type <strong>Integer</strong>. If this is not the case, a runtime error condition is signaled.</p>
+<p>All arithmetic operators except <code>+</code>, whether unary or binary, require every argument to be of type <strong>Integer</strong>. If this is not the case, a runtime error condition is signaled.</p>
 
-<p>If the result of an arithmetic operation exceeds the range an implementation can represent, the behavior is implementation-defined.</p>
+<p>Operator <code>+</code> requires both arguments to be of the same type, and only accepts arguments of type <strong>Integer</strong>, <strong>String</strong> or <strong>Tuple</strong>. If any of the conditions is not satisfied, a runtime error condition is signaled. For arguments of type <strong>String</strong> or <strong>Tuple</strong>, the <code>+</code> operator evaluates to the concatenation of left and right arguments in that order.</p>
+
+<p>If the result of an arithmetic operation, except operator <code>+</code> with non-<strong>Integer</strong> arguments, exceeds the range an implementation can represent, the behavior is implementation-defined.</p>
 
 <h5 id="boolean-operators">2.4.2.2 Boolean Operators</h5>
 

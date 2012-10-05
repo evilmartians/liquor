@@ -202,11 +202,13 @@ The operators `[]`, `.`, `()`, `.()` are not infix and are provided in this tabl
 
 ##### 2.4.2.1 Arithmetic Operators
 
-Arithmetic operators are `*` (multiply), `/` (division), `%` (modulo), `+` (plus) and `-` (minus; binary and unary).
+Arithmetic operators are `*` (multiplication), `/` (division), `%` (modulo), `+` (plus) and `-` (minus; binary and unary).
 
-All arithmetic operators, whether unary or binary, require every argument to be of type **Integer**. If this is not the case, a runtime error condition is signaled.
+All arithmetic operators except `+`, whether unary or binary, require every argument to be of type **Integer**. If this is not the case, a runtime error condition is signaled.
 
-If the result of an arithmetic operation exceeds the range an implementation can represent, the behavior is implementation-defined.
+Operator `+` requires both arguments to be of the same type, and only accepts arguments of type **Integer**, **String** or **Tuple**. If any of the conditions is not satisfied, a runtime error condition is signaled. For arguments of type **String** or **Tuple**, the `+` operator evaluates to the concatenation of left and right arguments in that order.
+
+If the result of an arithmetic operation, except operator `+` with non-**Integer** arguments, exceeds the range an implementation can represent, the behavior is implementation-defined.
 
 ##### 2.4.2.2 Boolean Operators
 
