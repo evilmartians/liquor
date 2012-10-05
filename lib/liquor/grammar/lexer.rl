@@ -49,7 +49,7 @@ action error {
 comment := |*
     lcomment => { fcall comment; };
     rcomment => { fret; };
-    any;
+    any_newline;
 *|;
 
 dqstring := |*
