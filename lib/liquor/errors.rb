@@ -34,9 +34,13 @@ module Liquor
         line = source.lines.drop(@location[:line]).first.rstrip
 
         if @location.has_key? :start
-          pointer =  "~" * (@location[:start])
-          if @location.has_key? :end
-            pointer += "^" * (@location[:end] - @location[:start] + 1)
+          start_col = tabify_column line, @location[:start]
+          pointer =  "~" * start_col
+
+          if location.has_key? :end
+            end_col = tabify_column line, @location[:end]
+
+            pointer += "^" * (end_col - start_col + 1)
           else
             pointer += "^"
           end
@@ -44,6 +48,22 @@ module Liquor
       end
 
       [ line, pointer ].compact
+    end
+
+    # Dammit, why should I replicate parts of VT-52 all over again?!
+    # Curse backwards compatibility and C.
+    def tabify_column(line, column)
+      display_column = 0
+
+      line[0...column].each_char do |char|
+        if char == "\t"
+          display_column += 8 - (display_column % 8)
+        else
+          display_column += 1
+        end
+      end
+
+      display_column
     end
   end
 
