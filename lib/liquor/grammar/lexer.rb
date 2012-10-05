@@ -7,7 +7,7 @@
 module Liquor
   module Lexer
     
-# line 11 "lib/liquor/lexer.rb"
+# line 11 "lib/liquor/grammar/lexer.rb"
 class << self
 	attr_accessor :_liquor_actions
 	private :_liquor_actions, :_liquor_actions=
@@ -313,7 +313,7 @@ self.liquor_en_plaintext = 6;
       }
 
       
-# line 317 "lib/liquor/lexer.rb"
+# line 317 "lib/liquor/grammar/lexer.rb"
 begin
 	p ||= 0
 	pe ||= data.length
@@ -326,7 +326,7 @@ end
 
 # line 267 "lib/liquor/grammar/lexer.rl"
       
-# line 330 "lib/liquor/lexer.rb"
+# line 330 "lib/liquor/grammar/lexer.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -356,7 +356,7 @@ begin
 		begin
 ts = p
 		end
-# line 360 "lib/liquor/lexer.rb"
+# line 360 "lib/liquor/grammar/lexer.rb"
 		end # from state action switch
 	end
 	if _trigger_goto
@@ -1127,7 +1127,7 @@ when 72 then
  begin p = ((te))-1; end
  begin  tok.(:plaintext, data[ts...te]);  end
 		end
-# line 1131 "lib/liquor/lexer.rb"
+# line 1131 "lib/liquor/grammar/lexer.rb"
 			end # action switch
 		end
 	end
@@ -1147,7 +1147,7 @@ when 3 then
 # line 1 "NONE"
 		begin
 ts = nil;		end
-# line 1151 "lib/liquor/lexer.rb"
+# line 1151 "lib/liquor/grammar/lexer.rb"
 		end # to state action switch
 	end
 	if _trigger_goto
@@ -1179,7 +1179,7 @@ when 1 then
 
   runaway = true
 		end
-# line 1183 "lib/liquor/lexer.rb"
+# line 1183 "lib/liquor/grammar/lexer.rb"
 		end # eof action switch
 	end
 	if _trigger_goto

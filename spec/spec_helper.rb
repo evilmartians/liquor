@@ -9,8 +9,8 @@ require 'liquor'
 require 'digest/md5'
 
 module LiquorSpecHelpers
-  def lex(string)
-    Liquor::Lexer.lex(string)
+  def lex(string, tags={})
+    Liquor::Lexer.lex(string, '(code)', tags)
   end
 
   def parse(string, compiler=nil)
@@ -31,7 +31,7 @@ module LiquorSpecHelpers
 
   def compile(string, externals=[])
     compiler = Liquor::Compiler.new
-    compiler.compile! parse(string), externals
+    compiler.compile! parse(string, compiler), externals
   end
 
   def exec(string, env={})

@@ -203,6 +203,7 @@ module Liquor
       end
     end
 
+    # DEPRECATED
     function "includes",
               unnamed_arg: :tuple,
               mandatory_named_args: { element: :any } do |arg, kw|

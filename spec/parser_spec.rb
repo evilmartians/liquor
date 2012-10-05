@@ -344,4 +344,11 @@ describe Liquor::Parser do
   it "does not allow duplicate kwargs for external calls" do
     expect { parse('{{ ext.call(kw: 1 kw: 2) }}') }.to raise_error(Liquor::SyntaxError, %r|duplicate keyword argument|)
   end
+
+  it "does not want {% end elsif %}" do
+    expect {
+      compiler = Liquor::Compiler.new
+      parse %|{% if true then: %}{% elsif true then: %}{% end if %}|, compiler
+    }.not_to raise_error(Liquor::SyntaxError, %r|expected `end elsif'|)
+  end
 end
