@@ -19,7 +19,7 @@ module Liquor
 
   require "liquor/builtin_tags"
   require "liquor/builtin_functions"
-  require "liquor/partials"
+  require "liquor/partial_tags"
 
   require "liquor/compiler"
   require "liquor/manager"
