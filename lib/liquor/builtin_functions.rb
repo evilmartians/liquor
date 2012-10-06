@@ -8,11 +8,11 @@ module Liquor
     # Universal functions
     #
 
-    function "is_empty", unnamed_arg: [:null, :tuple, :external, :string] do |arg,|
-      arg.nil? || arg.size == 0
+    function "is_empty", unnamed_arg: [:null, :tuple, :string, :external] do |arg,|
+      arg.nil? || (arg.respond_to?(:size) && arg.size == 0)
     end
 
-    function "size", unnamed_arg: [:string, :tuple, :external] do |arg,|
+    function "size", unnamed_arg: [:string, :tuple] do |arg,|
       arg.size
     end
 
@@ -182,7 +182,7 @@ module Liquor
     end
 
     function "in_groups_of",
-              unnamed_arg: [:tuple, :external],
+              unnamed_arg: [:tuple],
               mandatory_named_args: { size: :integer },
               optional_named_args:  { fill_with: :string } do |arg, kw|
       if [].respond_to? :in_groups_of
@@ -193,7 +193,7 @@ module Liquor
     end
 
     function "in_groups",
-              unnamed_arg: [:tuple, :external],
+              unnamed_arg: [:tuple],
               mandatory_named_args: { count: :integer },
               optional_named_args:  { fill_with: :string } do |arg, kw|
       if [].respond_to? :in_groups

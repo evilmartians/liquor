@@ -32,6 +32,11 @@ module Liquor
       end
     end
 
+    # Proper indexable external API:
+    # .[](index) => element fetch
+    # .size      => element count
+    # .to_a      => converts to Array
+
     def self.tuple!(value, loc)
       unless value.is_a?(Array) ||
              value.is_a?(External) &&

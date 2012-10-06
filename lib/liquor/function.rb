@@ -65,6 +65,14 @@ module Liquor
         raise "Invalid type specifier: #{expected_type.inspect}"
       end
 
+      if check_failed &&
+            Array(expected_type).include?(:tuple) &&
+            actual_type == :external &&
+            arg.class.liquor_exports &&
+            arg.class.liquor_exports.include?(:[])
+        check_failed = false
+      end
+
       if check_failed
         expected = Array(expected_type).
             map { |x| "`#{x.capitalize}'" }.

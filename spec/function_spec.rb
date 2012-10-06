@@ -33,4 +33,33 @@ describe Liquor::Function do
     expect { fun.call("a", other: 1)  }.not_to raise_error
     expect { fun.call("a", other: Class) }.to raise_error(Liquor::ArgumentTypeError)
   end
+
+
+  it "accepts an indexable external as a tuple" do
+    fun = Liquor::Function.new("test",
+          unnamed_arg: [:tuple]) do |arg, kw|
+      # nothing
+    end
+
+    ext = Class.new do
+      include Liquor::External
+
+      def [](index); end
+      def size; 0;   end
+      def to_a; [];  end
+
+      export :[], :size, :to_a
+    end
+
+    ext2 = Class.new do
+      include Liquor::External
+
+      def nothing; end
+
+      export :nothing
+    end
+
+    expect { fun.call(ext.new) }.not_to raise_error
+    expect { fun.call(ext2.new) }.to raise_error(Liquor::ArgumentTypeError)
+  end
 end
