@@ -117,7 +117,14 @@ module Liquor
 
       def path
         @url_generator ||= UrlGenerator.bootstrap.new
-        @url_generator.polymorphic_path(@collection.klass, page: @index)
+
+        if @collection.respond_to? :to_page_url
+          @collection.to_page_path(@url_generator, @index)
+        elsif @collection.is_a? ActiveRecord::Relation
+          @url_generator.polymorphic_path(@collection.klass, page: @index)
+        else
+          raise "Don't know how to generate page path for #{@collection.class}"
+        end
       end
       export :path
     end
