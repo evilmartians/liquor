@@ -30,5 +30,9 @@ module Liquor
 
   if defined?(Rails)
     require "liquor/extensions/rails"
+
+    if defined?(Kaminari)
+      require "liquor/extensions/pagination"
+    end
   end
 end
