@@ -3,6 +3,8 @@ module Liquor
     attr_reader :errors
 
     def initialize(options={})
+      @debug = options.delete(:debug)
+
       import = options.delete(:import).to_a || []
       if options.any?
         raise "Unknown function options: #{options.keys.join ", "}"
@@ -67,7 +69,7 @@ module Liquor
       @compiled_templates = {}
 
       @templates.each do |name, (template, externals)|
-        @compiler.compile(template, externals)
+        @compiler.compile(template, externals, template_name: name, dump_code: debug?)
 
         if @compiler.success?
           @compiled_templates[name] = @compiler.code
@@ -81,6 +83,10 @@ module Liquor
 
     def success?
       @errors.none?
+    end
+
+    def debug?
+      @debug
     end
 
     def render(name, externals={}, storage={})

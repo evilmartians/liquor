@@ -45,4 +45,11 @@ describe Liquor::Manager do
 
     manager.render('test').should == 'world'
   end
+
+  it "accepts debug option" do
+    manager = Liquor::Manager.new(debug: true)
+    manager.should be_debug
+
+    @manager.should_not be_debug
+  end
 end

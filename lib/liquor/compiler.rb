@@ -1,3 +1,5 @@
+require 'fileutils'
+
 module Liquor
   class Compiler
     attr_reader :manager
@@ -61,17 +63,20 @@ module Liquor
       @functions[name]
     end
 
-    def compile(ast, externals=[])
+    def compile(ast, externals=[], options = {})
+      options = { dump_code: false }.merge(options)
       @errors.clear
 
       externals = externals.map(&:to_sym)
-
       context = Liquor::Context.new(self, externals)
       source  = context.emitter.compile_toplevel(ast)
 
       if success?
         @source = source
-        @code = eval(source, nil, '(liquor)')
+        trace_error_message = options[:template_name].nil? ? "liquor" : "liquor #{options[:template_name]}"
+        @code = eval(source, nil, trace_error_message)
+
+        dump(options[:template_name], @source) if options[:dump_code]
       else
         @source = nil
         @code = nil
@@ -80,8 +85,8 @@ module Liquor
       success?
     end
 
-    def compile!(ast, externals=[])
-      compile ast, externals
+    def compile!(ast, externals=[], options = {})
+      compile ast, externals, options
 
       if success?
         @code
@@ -97,5 +102,14 @@ module Liquor
     def success?
       errors.empty?
     end
+
+    protected
+      def dump(name, code)
+        path = defined?(Rails) ? Rails.root : File.dirname(__FILE__)
+        FileUtils.mkdir_p("#{path}/compiled_templates")
+        File.open("#{path}/compiled_templates/#{name}.rb", "w+") do |file|
+          file.write(code)
+        end
+      end
   end
 end
