@@ -1,6 +1,7 @@
 #!/usr/bin/env rake
 
 require "bundler/gem_tasks"
+require 'rspec/core/rake_task'
 
 file 'lib/liquor/grammar/lexer.rb' => 'lib/liquor/grammar/lexer.rl' do
   sh "ragel -R lib/liquor/grammar/lexer.rl -o lib/liquor/grammar/lexer.rb"
@@ -19,3 +20,9 @@ task :default => [
   'lib/liquor/grammar/parser.rb',
   'doc/language-spec.html'
 ]
+
+desc "Run specs"
+RSpec::Core::RakeTask.new do |t|
+  t.pattern = FileList['spec/**/*_spec.rb']
+  t.rspec_opts = %w(-fs --color)
+end
