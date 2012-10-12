@@ -250,6 +250,22 @@ module Liquor
       end
     end
 
+    function "html_truncate",
+              unnamed_arg: :string,
+              optional_named_args: {
+                length:   :integer,
+                omission: :string
+              } do |arg, kw|
+      length   = kw[:length]   || 100
+      omission = kw[:omission] || '...'
+
+      if defined?(Nokogiri)
+        HTMLTruncater.truncate(arg, length, omission)
+      else
+        raise NotImplementedError, "html_truncate() requires Nokogiri"
+      end
+    end
+
     function "html_truncate_words",
               unnamed_arg: :string,
               optional_named_args: {
