@@ -47,8 +47,8 @@ module Liquor
       :mul    => '*',  :div   => '/',  :mod => '%',
       :plus   => '+',  :minus => '-',
       :eq     => '==', :neq   => '!=',
-      :lt     => '<',  :lte   => '<=',
-      :gt     => '>',  :gte   => '>=',
+      :lt     => '<',  :leq   => '<=',
+      :gt     => '>',  :geq   => '>=',
       :and    => '&&', :or    => '||',
     }
 
@@ -65,7 +65,7 @@ module Liquor
       when :plus
         plus(node)
       when :mul, :div, :mod, :minus,
-           :lt, :lte, :gt, :gte
+           :lt, :leq, :gt, :geq
         integer_binop(node)
       when :uminus
         integer_unop(node)
