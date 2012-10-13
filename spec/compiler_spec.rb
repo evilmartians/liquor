@@ -21,6 +21,14 @@ describe Liquor::Compiler do
     exec('{% if "ab" == "a" + "b" then: %}yes{% end if %}').should == 'yes'
   end
 
+  it "correctly handles comparison operators" do
+    exec('{% if 5 > 2 then: %}yes{% end if %}').should == 'yes'
+    exec('{% if 5 >= 5 then: %}yes{% end if %}').should == 'yes'
+    exec('{% if 5 == 1 then: %}no{% end if %}').should == ''
+    exec('{% if !(5 <= 2) then: %}yes{% end if %}').should == 'yes'
+    exec('{% if !(5 < 2) then: %}yes{% end if %}').should == 'yes'
+  end
+
   it "handles unbound identifiers" do
     expect { compile('{{ i }}') }.to raise_error(Liquor::NameError, %r|is not bound|)
   end
