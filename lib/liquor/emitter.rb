@@ -166,28 +166,28 @@ module Liquor
 
     def integer_binop(node)
       lhs, rhs = nvalue(node)
-      "#{check_integer(lhs)} #{OPERATORS[ntype(node)]} #{check_integer(rhs)}"
+      "(#{check_integer(lhs)} #{OPERATORS[ntype(node)]} #{check_integer(rhs)})"
     end
 
     def integer_unop(node)
       expr, = nvalue(node)
-      "#{OPERATORS[ntype(node)]}#{check_integer(expr)}"
+      "#{OPERATORS[ntype(node)]}(#{check_integer(expr)})"
     end
 
     def equality_binop(node)
       lhs, rhs = nvalue(node)
-      "#{expr(lhs)} #{OPERATORS[ntype(node)]} #{expr(rhs)}"
+      "(#{expr(lhs)} #{OPERATORS[ntype(node)]} #{expr(rhs)})"
     end
 
     def boolean_binop(node)
       lhs, rhs = nvalue(node)
-      "#{convert_boolean(lhs)} #{OPERATORS[ntype(node)]} #{convert_boolean(rhs)}"
+      "(#{convert_boolean(lhs)} #{OPERATORS[ntype(node)]} #{convert_boolean(rhs)})"
     end
 
     def boolean_unop(node)
       expr, = nvalue(node)
       # converts by itself
-      "#{OPERATORS[ntype(node)]}#{expr(expr)}"
+      "#{OPERATORS[ntype(node)]}(#{expr(expr)})"
     end
 
     def convert_boolean(node)
