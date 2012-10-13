@@ -256,7 +256,7 @@ module Liquor
                 length:   :integer,
                 omission: :string
               } do |arg, kw|
-      length   = kw[:length]   || 100
+      length   = kw[:length]   || 50
       omission = kw[:omission] || '...'
 
       if defined?(Nokogiri)
