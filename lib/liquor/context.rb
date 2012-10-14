@@ -76,6 +76,7 @@ module Liquor
               @mapping.values.include?(mapped) ||
               @retired.include?(mapped)
           mapped = "#{name}_m#{idx}" # `m' stands for `mangled'
+          idx += 1
         end
 
         @variables.add name

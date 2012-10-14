@@ -213,6 +213,12 @@ describe Liquor do
         {% assign artist = 1 %}
       {% end if %}
       {{ artist }}
+
+      {% for artist in: [1,2,3] do: %}{% end for %}
+      {% if false then: %}
+        {% assign artist = 1 %}
+      {% end if %}
+      {{ artist }}
     |).strip.should == ''
   end
 end
