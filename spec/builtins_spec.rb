@@ -205,4 +205,17 @@ describe Liquor do
     exec(%|{{ html_truncate("<p>This is a test string. <b>It is very <i>very long</i> to make truncater's job harder." length: 30) }}|).should == "<p>This is a test string. <b>It is v...</b></p>"
     exec(%|{{ html_truncate_words("<p>This is a test string. <b>It is very <i>very long</i> to make truncater's job harder." words: 9) }}|).should == "<p>This is a test string. <b>It is very <i>very...</i></b></p>"
   end
+
+  it "should not leak iterator binding from {% for %}" do
+    expect {
+      exec(%|
+{% assign artists = site.self_and_descendant_artists.active.with_orders.sort_by_human_order(site) %}
+{% for artist in: artists do: %}
+  <li {% if request.param('artist') == artist.name then: %}class="here"{% end if %} ><a href="/podcasts?artist={{ artist.name }}">{{ artist.name }}</a></li>
+{% end for %}
+
+{{ artist }}
+      |, site: nil, request: nil)
+    }.to raise_error(Liquor::NameError, %r|identifier `artist' is not bound|)
+  end
 end
