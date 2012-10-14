@@ -207,15 +207,12 @@ describe Liquor do
   end
 
   it "should not leak iterator binding from {% for %}" do
-    expect {
-      exec(%|
-{% assign artists = site.self_and_descendant_artists.active.with_orders.sort_by_human_order(site) %}
-{% for artist in: artists do: %}
-  <li {% if request.param('artist') == artist.name then: %}class="here"{% end if %} ><a href="/podcasts?artist={{ artist.name }}">{{ artist.name }}</a></li>
-{% end for %}
-
-{{ artist }}
-      |, site: nil, request: nil)
-    }.to raise_error(Liquor::NameError, %r|identifier `artist' is not bound|)
+    exec(%|
+      {% for artist in: [1,2,3] do: %}{% end for %}
+      {% if false then: %}
+        {% assign artist = 1 %}
+      {% end if %}
+      {{ artist }}
+    |).strip.should == ''
   end
 end

@@ -24,6 +24,8 @@ module Liquor
       @mapping   = {}
       @map_stack = []
 
+      @retired   = Set[]
+
       @nesting   = 1
 
       @externals.each do |external|
@@ -71,7 +73,8 @@ module Liquor
       if !@variables.include?(name) || shadow
         mapped, idx = name, 0
         while RESERVED_NAMES.include?(mapped) ||
-              @mapping.values.include?(mapped)
+              @mapping.values.include?(mapped) ||
+              @retired.include?(mapped)
           mapped = "#{name}_m#{idx}" # `m' stands for `mangled'
         end
 
@@ -101,6 +104,8 @@ module Liquor
 
       yield
     ensure
+      @retired  += @mapping.values
+
       @variables = @var_stack.pop
       @mapping   = @map_stack.pop
 
