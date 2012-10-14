@@ -131,4 +131,27 @@ describe Liquor::External do
 
     exec(%Q|{{ ext.other[5] }}|, ext: instance).should == '5'
   end
+
+  it "should correctly pass arrays" do
+    klass = Class.new do
+      include Liquor::External
+
+      attr_reader :memorized
+
+      def memorize(arg)
+        @memorized = arg
+        "d'oh"
+      end
+
+      export :memorize
+    end
+
+    instance = klass.new
+
+    expect {
+      exec(%Q|{{ ext.memorize(["a", "b"]) }}|, ext: instance)
+    }.not_to raise_error
+
+    instance.memorized.should == ["a", "b"]
+  end
 end
