@@ -154,6 +154,7 @@ describe Liquor::Drop do
 
   it "should support equality" do
     (@dhh.to_drop == @dhh.to_drop).should == true
+    (@dhh.to_drop.eql? @dhh.to_drop).should == true
   end
 
   it "should support include?" do
@@ -182,5 +183,10 @@ describe Liquor::Drop do
         strip.should == 'yes'
     code.call(collection: User.to_drop, element: User.new.to_drop).
         strip.should == ''
+  end
+
+  it "should support uniq'ing" do
+    @dhh.to_drop.hash.should == @dhh.to_drop.hash
+    [@me, @dhh, @dhh].map(&:to_drop).uniq.size.should == 2
   end
 end

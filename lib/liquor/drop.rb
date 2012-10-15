@@ -4,8 +4,6 @@ module Liquor
   class Drop
     include Liquor::External
 
-    delegate :hash, to: :drop
-
     attr_reader :source
 
     def self.inherited(klass)
@@ -127,6 +125,12 @@ module Liquor
       else
         other == self
       end
+    end
+
+    alias eql? ==
+
+    def hash
+      @source.hash
     end
 
     def to_drop
