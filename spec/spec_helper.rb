@@ -40,7 +40,7 @@ module LiquorSpecHelpers
 
   def check_exec(string, env={})
     compiler = Liquor::Compiler.new
-    compiler.compile! string, env.keys
+    compiler.compile! parse(string, compiler), env.keys
     $stderr.puts compiler.source
     compiler.code.call(env)
   end

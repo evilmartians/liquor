@@ -5,7 +5,7 @@ class Liquor::Parser
         rbracket rinterp rparen string tag_ident
 
   prechigh
-    nonassoc op_uminus op_neg
+    nonassoc op_uminus op_not
     left dot
     left op_mul op_div op_mod
     left op_plus op_minus
@@ -14,7 +14,7 @@ class Liquor::Parser
     left op_or
   preclow
 
-  expect 14
+  expect 15
 
   start block
 

@@ -51,6 +51,13 @@ describe Liquor::Parser do
             [:and, [:ident, "b"], [:ident, "c"]]],
           [:ident, "d"]]]
     )
+    parse('{{ !x && x }}').should have_node_structure(
+      [:interp,
+        [:and,
+          [:not,
+            [:ident, "x"]],
+          [:ident, "x"]]]
+    )
   end
 
   it "changes evaluation order due to parentheses" do
