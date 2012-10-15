@@ -4,7 +4,7 @@ module Liquor
 
     attr_reader :source
 
-    delegate :include?, to: :source
+    delegate :include?, to: :@source
 
     def initialize(source)
       unless source.respond_to? :each
