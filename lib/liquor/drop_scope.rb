@@ -18,6 +18,7 @@ module Liquor
         DropDelegation.wrap_element(elem)
       end
     end
+    alias to_ary to_a
 
     def entity
       @source.model_name
