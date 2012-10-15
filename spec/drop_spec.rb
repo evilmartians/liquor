@@ -109,8 +109,8 @@ describe Liquor::Drop do
   end
 
   it "should support generic find_all_by and return a tuple" do
-    exec(%|{{ users.find_all_by(occupation: "developer").count }}|, users: User.to_drop).should == '2'
-    exec(%|{{ users.find_all_by(occupation: "manager").count }}|, users: User.to_drop).should == '1'
+    exec(%|{{ size(users.find_all_by(occupation: "developer")) }}|, users: User.to_drop).should == '2'
+    exec(%|{{ size(users.find_all_by(occupation: "manager")) }}|, users: User.to_drop).should == '1'
   end
 
   it "should support reversing" do
