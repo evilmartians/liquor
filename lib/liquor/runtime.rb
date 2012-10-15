@@ -1,14 +1,22 @@
 module Liquor
   module Runtime
+    def self.indexable?(value)
+      value.is_a?(Array) ||
+        value.is_a?(External) &&
+        value.class.liquor_exports &&
+        value.class.liquor_exports.include?(:[])
+    end
+
     def self.add!(left, left_loc, right, right_loc)
       if left.is_a? Integer
         integer! right, right_loc
       elsif left.is_a? String
         string! right, right_loc
-      elsif left.is_a? Array
+      elsif indexable?(left)
+        left = left.to_a
         tuple! right, right_loc
       else
-        raise TypeError.new("Integer, String or Tuple value expected, #{type(left)} found", left_loc)
+        raise TypeError.new("Integer, String, Tuple or indexable External value expected, #{type(left)} found", left_loc)
       end
 
       left + right
@@ -38,10 +46,7 @@ module Liquor
     # .to_a      => converts to Array
 
     def self.tuple!(value, loc)
-      unless value.is_a?(Array) ||
-             value.is_a?(External) &&
-                value.class.liquor_exports &&
-                value.class.liquor_exports.include?(:[])
+      unless indexable?(value)
         raise TypeError.new("Tuple or indexable External value expected, #{type(value)} found", loc)
       end
 

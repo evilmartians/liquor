@@ -154,4 +154,23 @@ describe Liquor::External do
 
     instance.memorized.should == ["a", "b"]
   end
+
+  it "concatenates indexable externals with tuples" do
+    klass = Class.new do
+      include Liquor::External
+
+      def initialize(array)
+        @array = array
+      end
+
+      def [](index); @array[index]; end
+      def size;      @array.size;   end
+      def to_a;      @array;        end
+
+      export :[], :size
+    end
+
+    exec(%Q|{% for i in: ext + ["b", "c"] do: %}{{ i }} {% end for %}|,
+            ext: klass.new(["0", "a"])).strip.should == "0 a b c"
+  end
 end
