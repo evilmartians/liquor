@@ -5,8 +5,8 @@ class Liquor::Parser
         rbracket rinterp rparen string tag_ident
 
   prechigh
-    nonassoc op_uminus op_not
     left dot
+    nonassoc op_uminus op_not
     left op_mul op_div op_mod
     left op_plus op_minus
     left op_eq op_neq op_lt op_leq op_gt op_geq

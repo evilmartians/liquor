@@ -58,6 +58,9 @@ describe Liquor::Parser do
             [:ident, "x"]],
           [:ident, "x"]]]
     )
+    expect {
+      exec(%|{% for x in: [1,2,3] do: %}{% if !x_loop.is_first then: %}y{% end if %}{% end for %}|)
+    }.not_to raise_error
   end
 
   it "changes evaluation order due to parentheses" do
