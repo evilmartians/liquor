@@ -155,4 +155,32 @@ describe Liquor::Drop do
   it "should support equality" do
     (@dhh.to_drop == @dhh.to_drop).should == true
   end
+
+  it "should support include?" do
+    lib = Module.new do
+      include Liquor::Library
+
+      function "check", {
+                  mandatory_named_args: {
+                    collection: :any,
+                    element:    :any,
+                  }
+                } do |arg, kw|
+        kw[:collection].include? kw[:element]
+      end
+    end
+
+    compiler = Liquor::Compiler.new
+    lib.export compiler
+    code = compiler.compile!(parse(%|
+      {% if check(collection: collection element: element) then: %}
+        yes
+      {% end if %}
+    |, compiler), [:collection, :element])
+
+    code.call(collection: User.to_drop, element: @dhh.to_drop).
+        strip.should == 'yes'
+    code.call(collection: User.to_drop, element: User.new.to_drop).
+        strip.should == ''
+  end
 end

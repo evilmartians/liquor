@@ -4,8 +4,6 @@ module Liquor
 
     attr_reader :source
 
-    delegate :include?, to: :@source
-
     def initialize(source)
       unless source.respond_to? :each
         source = source.scoped
@@ -54,6 +52,15 @@ module Liquor
     def each
       @source.each do |elem|
         yield DropDelegation.wrap_element(elem)
+      end
+    end
+
+    # Not exported. No ? in names in Liquor.
+    def include?(elem)
+      if elem.is_a? Liquor::Drop
+        @source.include? elem.source
+      else
+        false
       end
     end
 
