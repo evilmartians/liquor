@@ -46,10 +46,18 @@ describe Liquor::Manager do
     manager.render('test').should == 'world'
   end
 
-  it "accepts debug option" do
-    manager = Liquor::Manager.new(debug: true)
-    manager.should be_debug
+  it "dumps debug code" do
+    require 'tmpdir'
 
-    @manager.should_not be_debug
+    Dir.mktmpdir do |code_dir|
+      manager = Liquor::Manager.new(dump_intermediates: code_dir)
+      manager.register_template 'test', '{{ "hello world" }}'
+      manager.compile.should be_true
+
+      path = File.join(code_dir, 'test.liquor.rb')
+
+      File.exists?(path).should be_true
+      File.read(path).include?('hello world').should be_true
+    end
   end
 end

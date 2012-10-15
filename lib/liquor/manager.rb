@@ -3,9 +3,9 @@ module Liquor
     attr_reader :errors
 
     def initialize(options={})
-      @debug = options.delete(:debug)
+      import   = options.delete(:import).to_a || []
+      @dump_ir = options.delete(:dump_intermediates)
 
-      import = options.delete(:import).to_a || []
       if options.any?
         raise "Unknown function options: #{options.keys.join ", "}"
       end
@@ -69,7 +69,8 @@ module Liquor
       @compiled_templates = {}
 
       @templates.each do |name, (template, externals)|
-        @compiler.compile(template, externals, template_name: name, dump_code: debug?)
+        @compiler.compile(template, externals, name)
+        dump_intermediates(name, template)
 
         if @compiler.success?
           @compiled_templates[name] = @compiler.code
@@ -83,10 +84,6 @@ module Liquor
 
     def success?
       @errors.none?
-    end
-
-    def debug?
-      @debug
     end
 
     def render(name, externals={}, storage={})
@@ -125,6 +122,17 @@ module Liquor
       end
 
       decorated
+    end
+
+    protected
+
+    def dump_intermediates(template_name, liquor_source)
+      if @dump_ir
+        path = File.join(@dump_ir, "#{template_name}.liquor.rb")
+        if @compiler.success?
+          File.write(path, @compiler.source)
+        end
+      end
     end
   end
 end
