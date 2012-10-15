@@ -4,6 +4,8 @@ module Liquor
   class Drop
     include Liquor::External
 
+    delegate :hash, to: :drop
+
     attr_reader :source
 
     def self.inherited(klass)
