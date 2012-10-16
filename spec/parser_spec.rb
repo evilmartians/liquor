@@ -368,4 +368,10 @@ describe Liquor::Parser do
       |, compiler
     }.not_to raise_error(Liquor::SyntaxError)
   end
+
+  it "should report correct line numbers" do
+    expect {
+      parse("{\n%\n{% end if %}")
+    }.to raise_error(Liquor::SyntaxError, /line 3/)
+  end
 end

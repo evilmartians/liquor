@@ -2,9 +2,13 @@
 
 machine liquor;
 
+action add_line_start {
+  line_starts.push(p + 1)
+}
+
 whitespace  = [\t ]+;
 symbol      = [a-zA-Z_];
-any_newline = '\n' @ { line_starts.push(p + 1) } | any;
+any_newline = '\n' @ add_line_start | any;
 identifier  = symbol ( symbol | digit )*;
 
 lblock  = '{%';
@@ -189,7 +193,7 @@ code := |*
 *|;
 
 plaintext := |*
-    ( '\\{' [%{!]? | '{' [^%{!] | any_newline - '{' )* =>
+    ( '\\{' [%{!]? | '{' ( [^%{!] | '\n' @ add_line_start ) | any_newline - '{' )* =>
       { tok.(:plaintext, data[ts...te]); };
 
     '{{' =>
