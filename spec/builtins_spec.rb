@@ -188,6 +188,7 @@ describe Liquor do
     exec(%|{% if !is_empty([1,2,3]) then: %}not empty{% end if %}|).should == "not empty"
     exec(%!{% if is_empty(null) then: %}yes{% end if%}!).should == "yes"
     exec(%|{% if !is_empty(42) then: %}no{%end if%}|).should == "no"
+    exec(%|{% if !is_empty(0) then: %}no{%end if%}|).should == "no"
 
     # starts_with
     exec(%|{% if starts_with("some string" pattern: "some") then:%}yes{% end if %}|).should == "yes"
