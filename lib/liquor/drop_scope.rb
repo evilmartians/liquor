@@ -26,11 +26,15 @@ module Liquor
     export :entity
 
     def find_by(_, fields={})
+      fields, = Drop.unwrap_scope_arguments([ fields ])
+
       result = @source.where(fields).first
       DropDelegation.wrap_element result
     end
 
     def find_all_by(_, fields={})
+      fields, = Drop.unwrap_scope_arguments([ fields ])
+
       result = @source.where(fields)
       DropDelegation.wrap_scope(result)
     end

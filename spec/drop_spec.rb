@@ -107,6 +107,7 @@ describe Liquor::Drop do
   it "should support generic find_by" do
     exec(%|{{ users.find_by(login: "dhh").email }}|, users: User.to_drop).should == 'dhh@loudthinking.org'
     exec(%|{{ users.find_by(email: "vassily@poupkin.org").login }}|, users: User.to_drop).should == 'me'
+    exec(%|{{ users.find_by(id: user).email }}|, users: User.to_drop, user: @dhh.to_drop).should == 'dhh@loudthinking.org'
   end
 
   it "should support generic find_all_by and return a tuple" do
