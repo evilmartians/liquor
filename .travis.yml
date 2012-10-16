@@ -3,6 +3,3 @@ rvm:
   - 1.9.3
 script:
   - bundle exec rspec
-branches:
-  only:
-    - 2.0
