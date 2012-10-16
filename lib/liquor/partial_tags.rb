@@ -65,6 +65,8 @@ module Liquor
         source = manager.fetch_partial "_#{name}"
         if source.nil?
           raise ArgumentError.new("partial `#{name}' does not exist", nloc(arg))
+        elsif source == :syntax_error
+          raise PartialError.new("partial `#{name}' contains a syntax error", nloc(arg))
         end
 
         emit.compile_block source

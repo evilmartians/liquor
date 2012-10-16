@@ -70,6 +70,9 @@ module Liquor
   class SyntaxError < SourceMappedError
   end
 
+  class PartialError < SourceMappedError
+  end
+
   class ArgumentError < SourceMappedError
   end
 

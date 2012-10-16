@@ -30,7 +30,7 @@ describe Liquor::Partials do
     manager.render('layout').should == '1 G 3 2'
   end
 
-  it "should emit correct error messages" do
+  it "should report errors in partials in partials" do
     manager = Liquor::Manager.new
     manager.register_template 'layout', '{% assign x = 2 %} {% include "action" %}'
     manager.register_partial '_action', '{{ y }}'
@@ -40,6 +40,18 @@ describe Liquor::Partials do
     manager.errors.count.should == 1
     manager.errors.first.should be_a Liquor::NameError
     manager.errors.first.message.should =~ %r|identifier `y' is not bound at `_action'|
+  end
+
+  it "should not say that a partial with a syntax error does not exist" do
+    manager = Liquor::Manager.new
+    manager.register_template 'layout', '{% assign x = 2 %} {% include "action" %}'
+    manager.register_partial '_action', '{{ y '
+
+    manager.compile.should be_false
+
+    manager.errors.count.should == 2
+    manager.errors.first.should be_a Liquor::SyntaxError
+    manager.errors.last.should be_a Liquor::PartialError
   end
 
   it "should handle yield with defaults" do

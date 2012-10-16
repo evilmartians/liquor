@@ -57,6 +57,7 @@ module Liquor
       if @parser.parse(source, name)
         @partials[name.to_s] = @parser.ast
       else
+        @partials[name.to_s] = :syntax_error
         @errors.concat @parser.errors
       end
     end
