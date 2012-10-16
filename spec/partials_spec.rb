@@ -49,9 +49,8 @@ describe Liquor::Partials do
 
     manager.compile.should be_false
 
-    manager.errors.count.should == 2
+    manager.errors.count.should == 1
     manager.errors.first.should be_a Liquor::SyntaxError
-    manager.errors.last.should be_a Liquor::PartialError
   end
 
   it "should handle yield with defaults" do

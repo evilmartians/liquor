@@ -66,10 +66,10 @@ module Liquor
         if source.nil?
           raise ArgumentError.new("partial `#{name}' does not exist", nloc(arg))
         elsif source == :syntax_error
-          raise PartialError.new("partial `#{name}' contains a syntax error", nloc(arg))
+          # Do nothing. The manager has already reported the error.
+        else
+          emit.compile_block source
         end
-
-        emit.compile_block source
       end
     end
   end
