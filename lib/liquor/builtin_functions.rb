@@ -8,7 +8,7 @@ module Liquor
     # Universal functions
     #
 
-    function "is_empty", unnamed_arg: [:null, :tuple, :string, :external] do |arg,|
+    function "is_empty", unnamed_arg: :any do |arg,|
       arg.nil? || (arg.respond_to?(:size) && arg.size == 0)
     end
 
