@@ -204,6 +204,10 @@ describe Liquor do
     exec(%|{{ truncate_words("This is a test string." words: 4 omission: "(continued)") }}|).should == "This is a test(continued)"
     exec(%|{{ html_truncate("<p>This is a test string. <b>It is very <i>very long</i> to make truncater's job harder." length: 30) }}|).should == "<p>This is a test string. <b>It is v...</b></p>"
     exec(%|{{ html_truncate_words("<p>This is a test string. <b>It is very <i>very long</i> to make truncater's job harder." words: 9) }}|).should == "<p>This is a test string. <b>It is very <i>very...</i></b></p>"
+
+    # uniq
+    exec(%|{{ join( uniq([1, 2, 2, 1]) with:" ") }}|).should == "1 2"
+    exec(%|{{ join( uniq([1,2,3])) }}|).should == "1 2 3"
   end
 
   it "should not leak iterator binding from {% for %}" do

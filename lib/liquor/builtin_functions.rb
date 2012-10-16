@@ -173,6 +173,10 @@ module Liquor
     # Tuple functions
     #
 
+    function "uniq", unnamed_arg: :tuple do |arg,|
+      arg.uniq
+    end
+
     function "compact", unnamed_arg: :tuple do |arg,|
       arg.compact
     end
