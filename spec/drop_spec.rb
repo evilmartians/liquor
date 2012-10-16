@@ -30,6 +30,7 @@ class User < ActiveRecord::Base
   has_many :articles
 
   scope :with_login, ->(login) { where('login = ?', login) }
+  scope :with_id,    ->(id)    { where('id = ?', id) }
 end
 
 class Article < ActiveRecord::Base
@@ -53,7 +54,7 @@ nate = User.create login: 'xnutsive', email: 'nat@evl.ms', occupation: 'manager'
 
 class UserDrop < Liquor::Drop
   attributes :id, :login, :email
-  scopes :with_login
+  scopes :with_login, :with_id
 
   has_many :articles, scope: [ :published ]
 end
@@ -188,5 +189,16 @@ describe Liquor::Drop do
   it "should support uniq'ing" do
     @dhh.to_drop.hash.should == @dhh.to_drop.hash
     [@me, @dhh, @dhh].map(&:to_drop).uniq.size.should == 2
+  end
+
+  it "should unwrap arguments to derivative scopes" do
+    Liquor::Drop.unwrap_scope_arguments([ @me.to_drop ]).
+        should == [@me.id]
+    Liquor::Drop.unwrap_scope_arguments([ [@me.to_drop, @dhh.to_drop] ]).
+        should ==  [ [@me.id, @dhh.id] ]
+    Liquor::Drop.unwrap_scope_arguments([ 1, { a: @me.to_drop, b: @dhh.to_drop } ]).
+        should == [ 1, { a: @me.id, b: @dhh.id } ]
+    exec('{{ scope.with_id(obj).first.login }}', scope: User.to_drop, obj: @me.to_drop).
+        should == @me.login
   end
 end

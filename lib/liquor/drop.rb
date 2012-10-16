@@ -32,9 +32,25 @@ module Liquor
       const_get(:Scope).instance_exec do
         scopes.each do |scope|
           define_method(scope) { |*args|
+            args = Drop.unwrap_scope_arguments(args)
             DropDelegation.wrap_scope @source.send(scope, *args)
           }
           export scope
+        end
+      end
+    end
+
+    def self.unwrap_scope_arguments(args)
+      args.map do |arg|
+        case arg
+        when Drop
+          arg.id
+        when Array
+          unwrap_scope_arguments(arg)
+        when Hash
+          Hash[arg.keys.zip(unwrap_scope_arguments(arg.values))]
+        else
+          arg
         end
       end
     end
