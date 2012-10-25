@@ -184,7 +184,7 @@ module Liquor
     function "in_groups_of",
               unnamed_arg: [:tuple],
               mandatory_named_args: { size: :integer },
-              optional_named_args:  { fill_with: :string } do |arg, kw|
+              optional_named_args:  { fill_with: [:string, :boolean] } do |arg, kw|
       if [].respond_to? :in_groups_of
         arg.to_a.in_groups_of(kw[:size], kw[:fill_with])
       else
@@ -195,7 +195,7 @@ module Liquor
     function "in_groups",
               unnamed_arg: [:tuple],
               mandatory_named_args: { count: :integer },
-              optional_named_args:  { fill_with: :string } do |arg, kw|
+              optional_named_args:  { fill_with: [:string, :boolean] } do |arg, kw|
       if [].respond_to? :in_groups
         arg.to_a.in_groups(kw[:count], kw[:fill_with])
       else
