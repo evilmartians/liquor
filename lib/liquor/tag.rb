@@ -39,9 +39,9 @@ module Liquor
 
       kwarg_types.zip(kwargs).each do |(name, type), kwarg|
         if kwarg.nil?
-          raise SyntaxError.new("unexpected `%}', expecting `#{name}'", nloc(node))
+          raise SyntaxError.new("unexpected `%}', expecting `#{name}:'", nloc(node))
         elsif kwname(kwarg) != name.to_s
-          raise SyntaxError.new("unexpected `#{kwname(kwarg)}', expecting `#{name}'", nloc(kwarg))
+          raise SyntaxError.new("unexpected `#{kwname(kwarg)}:', expecting `#{name}:'", nloc(kwarg))
         end
 
         check_arg_type(kwarg, type)

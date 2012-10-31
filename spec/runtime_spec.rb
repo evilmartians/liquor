@@ -51,4 +51,13 @@ describe Liquor::Runtime do
       %r|Tuple or indexable External value expected, String found|,
     ], 'a1 testb')
   end
+
+  it "should report type errors for functions and continue" do
+    check_with_error('a{{ join("a" with: "q") }}b', [
+      %r|Tuple value expected, String found|
+    ], 'ab')
+    check_with_error('a{{ to_number(true) }}b', [
+      %r|Integer, String value expected, Boolean found|
+    ], 'a0b')
+  end
 end

@@ -54,8 +54,8 @@ module Liquor
       @errors    = old_errors
     end
 
-    def self.type_error(message, expectation, loc)
-      error = TypeError.new(message, loc)
+    def self.type_error(klass=TypeError, message, expectation, loc)
+      error = klass.new(message, loc)
 
       if @errors.nil?
         raise error
