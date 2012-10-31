@@ -29,7 +29,7 @@ module Liquor
       fields, = Drop.unwrap_scope_arguments([ fields ])
 
       result = @source.where(fields).first
-      DropDelegation.wrap_element result
+      DropDelegation.wrap_element result if result
     end
 
     def find_all_by(_, fields={})

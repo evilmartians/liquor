@@ -110,6 +110,10 @@ describe Liquor::Drop do
     exec(%|{{ users.find_by(id: user).email }}|, users: User.to_drop, user: @dhh.to_drop).should == 'dhh@loudthinking.org'
   end
 
+  it "should return null from find_by" do
+    exec(%|{% if users.find_by(login: "123") == null then: %}ok{% end if %}|, users: User.to_drop).should == 'ok'
+  end
+
   it "should support generic find_all_by and return a tuple" do
     exec(%|{{ size(users.find_all_by(occupation: "developer")) }}|, users: User.to_drop).should == '2'
     exec(%|{{ size(users.find_all_by(occupation: "manager")) }}|, users: User.to_drop).should == '1'
