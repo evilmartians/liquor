@@ -1,5 +1,71 @@
 module Liquor
   module Runtime
+    class DummyExternal
+      def liquor_send(method, args, loc=nil)
+        nil
+      end
+    end
+
+    def self.type(value)
+      case value
+      when nil;         :null
+      when true, false; :boolean
+      when Integer;     :integer
+      when String;      :string
+      when Array;       :tuple
+      when External;    :external
+      else;             :invalid
+      end
+    end
+
+    def self.pretty_type(value)
+      case value
+      when nil;         "Null"
+      when true, false; "Boolean"
+      when Integer;     "Integer"
+      when String;      "String"
+      when Array;       "Tuple"
+      when External;    indexable?(value) ? "IndexableExternal" : "External"
+      else              "_Foreign<#{value.class}>"
+      end
+    end
+
+    def self.default_value_of(type)
+      case type
+      when :null;     nil
+      when :boolean;  false
+      when :integer;  0
+      when :string;   ""
+      when :tuple;    []
+      when :external; DummyExternal.new
+      end
+    end
+
+    @errors = nil
+
+    def self.capture_errors
+      old_errors = @errors
+      @errors    = []
+
+      yield
+
+      @errors
+    ensure
+      @errors    = old_errors
+    end
+
+    def self.type_error(message, expectation, loc)
+      error = TypeError.new(message, loc)
+
+      if @errors.nil?
+        raise error
+      else
+        @errors << error
+
+        default_value_of expectation
+      end
+    end
+
     def self.indexable?(value)
       value.is_a?(Array) ||
         value.is_a?(External) &&
@@ -9,14 +75,14 @@ module Liquor
 
     def self.add!(left, left_loc, right, right_loc)
       if left.is_a? Integer
-        integer! right, right_loc
+        right = integer! right, right_loc
       elsif left.is_a? String
-        string! right, right_loc
+        right = string! right, right_loc
       elsif indexable?(left)
-        left = left.to_a
-        tuple! right, right_loc
+        left  = left.to_a
+        right = tuple! right, right_loc
       else
-        raise TypeError.new("Integer, String, Tuple or indexable External value expected, #{type(left)} found", left_loc)
+        return type_error("Integer, String, Tuple or indexable External value expected, #{pretty_type(left)} found", :null, left_loc)
       end
 
       left + right
@@ -24,7 +90,7 @@ module Liquor
 
     def self.integer!(value, loc)
       unless value.is_a? Integer
-        raise TypeError.new("Integer value expected, #{type(value)} found", loc)
+        return type_error("Integer value expected, #{pretty_type(value)} found", :integer, loc)
       end
 
       value
@@ -36,7 +102,7 @@ module Liquor
       elsif value.is_a? Integer
         value.to_s
       else
-        raise TypeError.new("String value expected, #{type(value)} found", loc)
+        return type_error("String value expected, #{pretty_type(value)} found", :string, loc)
       end
     end
 
@@ -47,7 +113,7 @@ module Liquor
 
     def self.tuple!(value, loc)
       unless indexable?(value)
-        raise TypeError.new("Tuple or indexable External value expected, #{type(value)} found", loc)
+        return type_error("Tuple or indexable External value expected, #{pretty_type(value)} found", :tuple, loc)
       end
 
       value
@@ -55,7 +121,7 @@ module Liquor
 
     def self.external!(value, loc)
       unless value.is_a? External
-        raise TypeError.new("External value expected, #{type(value)} found", loc)
+        return type_error("External value expected, #{pretty_type(value)} found", :external, loc)
       end
 
       value
@@ -65,22 +131,10 @@ module Liquor
       unless value.is_a?(String) ||
              value.is_a?(Integer) ||
              value.nil?
-        raise TypeError.new("String or Null value expected, #{type(value)} found", loc)
+        return type_error("String or Null value expected, #{pretty_type(value)} found", :string, loc)
       end
 
       value.to_s
-    end
-
-    def self.type(value)
-      case value
-      when nil;         "Null"
-      when true, false; "Boolean"
-      when Integer;     "Integer"
-      when String;      "String"
-      when Array;       "Tuple"
-      when External;    "External"
-      else              "_Foreign<#{value.class}>"
-      end
     end
   end
 end
