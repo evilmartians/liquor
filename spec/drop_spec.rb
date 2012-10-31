@@ -1,7 +1,7 @@
 require "spec_helper"
 
 require "sqlite3"
-require "liquor/drop"
+require "liquor/drop/drop"
 
 ActiveRecord::Base.establish_connection(
   adapter:  'sqlite3',

@@ -1,4 +1,4 @@
-require 'liquor/drop'
+require 'liquor/drop/drop'
 
 describe Liquor::DropDelegation do
   before :all do

@@ -17,15 +17,15 @@ module Liquor
 
   require "liquor/library"
 
-  require "liquor/builtin_tags"
-  require "liquor/builtin_functions"
-  require "liquor/partial_tags"
+  require "liquor/stdlib/builtin_tags"
+  require "liquor/stdlib/builtin_functions"
+  require "liquor/stdlib/partial_tags"
 
   require "liquor/compiler"
   require "liquor/manager"
 
   if defined?(ActiveRecord)
-    require "liquor/drop"
+    require "liquor/drop/drop"
   end
 
   if defined?(Rails)

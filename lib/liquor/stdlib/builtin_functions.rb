@@ -1,6 +1,6 @@
 require 'time'
 require 'uri'
-require 'liquor/html_truncater'
+require_relative 'html_truncater'
 
 module Liquor
   module Builtins

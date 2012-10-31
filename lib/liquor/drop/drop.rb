@@ -155,6 +155,6 @@ module Liquor
   end
 end
 
-require 'liquor/drop_delegation'
-require 'liquor/drop_scope'
-require 'liquor/dropable'
+require_relative 'drop_delegation'
+require_relative 'drop_scope'
+require_relative 'dropable'
