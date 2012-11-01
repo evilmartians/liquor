@@ -101,9 +101,8 @@ module Liquor
     end
 
     def render_with_layout(layout_name, layout_externals,
-                           template_name, template_externals)
-      storage = {}
-
+                           template_name, template_externals,
+                           storage={})
       template_result = render(template_name, template_externals, storage)
       layout_result   = render(layout_name, layout_externals.
                             merge(_inner_template: template_result), storage)
