@@ -118,7 +118,7 @@ module Liquor
       def path
         @url_generator ||= UrlGenerator.bootstrap.new
 
-        if @collection.respond_to? :to_page_url
+        if @collection.respond_to? :to_page_path
           @collection.to_page_path(@url_generator, @index)
         elsif @collection.is_a? ActiveRecord::Relation
           @url_generator.polymorphic_path(@collection.klass, page: @index)
