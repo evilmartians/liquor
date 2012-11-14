@@ -109,7 +109,7 @@ module Liquor
     end
 
     def self.has_many(name, options={})
-      unsupported_options = (options.keys - [:scope])
+      unsupported_options = (options.keys - [:scope, :include])
       if unsupported_options.any?
         raise ArgumentError, "Unsupported options #{unsupported_options.join(", ")}"
       end
@@ -122,6 +122,12 @@ module Liquor
           # to the current scope, starting from `value' and using
           # each result as current scope for the next operation.
           value = options[:scope].to_ary.reduce(value, &:send)
+        end
+
+        if options[:include]
+          options[:include].each do |collection|
+            value = value.includes(collection)
+          end
         end
 
         DropDelegation.wrap_scope(value, value.klass)
