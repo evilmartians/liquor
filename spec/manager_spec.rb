@@ -21,6 +21,14 @@ describe Liquor::Manager do
     }.to raise_error ArgumentError, %r|is not a partial|
   end
 
+  it "should report presence of templates" do
+    @manager.register_template 'test', '{{ i }}', [:i]
+    @manager.compile.should be_true
+
+    @manager.has_template?('test').should be_true
+    @manager.has_template?('foo').should be_false
+  end
+
   it "should render layouts" do
     @manager.register_layout 'layout', '{% yield "head" %} 1 {% yield %}'
     @manager.register_template 'action', '{% content_for "head" capture: %} 2 {% end content_for %} 3'

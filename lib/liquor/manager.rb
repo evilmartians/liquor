@@ -87,6 +87,10 @@ module Liquor
       @errors.none?
     end
 
+    def has_template?(name)
+      !@compiled_templates[name].nil?
+    end
+
     def render(name, externals={}, storage={})
       if @compiled_templates.nil?
         raise ::RuntimeError, "Call #compile before #render"
