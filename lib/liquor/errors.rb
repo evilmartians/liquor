@@ -4,6 +4,7 @@ module Liquor
 
   class SourceMappedError < Error
     attr_reader :location
+    attr_reader :raw_message
 
     def initialize(message, location=nil)
       location_info = ""
@@ -20,7 +21,8 @@ module Liquor
         end
       end
 
-      @location = location
+      @location    = location
+      @raw_message = message
 
       if location_info.empty?
         super(message)
