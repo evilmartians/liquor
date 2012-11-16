@@ -134,11 +134,13 @@ module Liquor
       URI.encode_www_form_component(arg)
     end
 
-    function "html_escape", unnamed_arg: :string do |arg,|
-      if defined?(Rack::Utils)
-        Rack::Utils.escape_html(arg)
-      else
-        raise NotImplementedError, "html_escape() requires Rack"
+    function "html_escape", unnamed_arg: [:string, :null] do |arg,|
+      if arg
+        if defined?(Rack::Utils)
+          Rack::Utils.escape_html(arg)
+        else
+          raise NotImplementedError, "html_escape() requires Rack"
+        end
       end
     end
 
