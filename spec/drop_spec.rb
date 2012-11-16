@@ -125,6 +125,10 @@ describe Liquor::Drop do
     ltr.should == rtl.reverse
   end
 
+  it "should not fail if the [] argument is out of range" do
+    exec(%|{% if users[5] == null then: %}ok{% end if %}|, users: User.to_drop).should == 'ok'
+  end
+
   it "should provide [] access to the elements, returned by find_all_by function" do
     exec(%|
       {% assign found_users = users.find_all_by(occupation: "developer") %}

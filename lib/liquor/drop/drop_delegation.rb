@@ -9,8 +9,10 @@ module Liquor
     end
 
     def wrap_element(element)
-      drop_klass = "#{element.class.name}Drop".constantize
-      drop_klass.new(element)
+      unless element.nil?
+        drop_klass = "#{element.class.name}Drop".constantize
+        drop_klass.new(element)
+      end
     end
 
     def unwrap_drop_class(klass)
