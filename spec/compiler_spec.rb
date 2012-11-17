@@ -129,4 +129,8 @@ describe Liquor::Compiler do
     compiler.compile! parse('{% if a then: %} 1 {% elsif !a then: %} 2 {% end if %}', compiler), [:a]
     compiler.code.call(a: false).strip.should == '2'
   end
+
+  it "correctly converts types" do
+    exec(%|{% assign out_sum = 5 %}{% assign some = capitalize("nyaa:" + out_sum + ":more nyaa") %}{{ some }}|).should == 'Nyaa:5:more nyaa'
+  end
 end
