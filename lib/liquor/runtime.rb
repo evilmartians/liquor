@@ -60,7 +60,7 @@ module Liquor
       if @errors.nil?
         raise error
       else
-        error.set_backtrace(caller)
+        error.set_backtrace(caller(2))
         @errors << error
 
         default_value_of expectation
