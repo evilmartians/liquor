@@ -83,7 +83,7 @@ module Liquor
         # be in the host exception backtrace. Second, remove that one.
         host_backtrace = (e.backtrace - caller)[0..-2]
 
-        raise HostError.new(e.message, e, host_backtrace, loc)
+        raise HostError.new(nil, e, host_backtrace, loc)
       end
     end
   end

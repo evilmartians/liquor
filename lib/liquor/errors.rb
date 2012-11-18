@@ -117,6 +117,10 @@ module Liquor
       @original_error = original_error
       @host_backtrace = host_backtrace
 
+      if message.nil?
+        message = "#{original_error.class}: #{original_error}.message"
+      end
+
       super(message, location)
     end
   end
