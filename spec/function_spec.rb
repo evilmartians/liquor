@@ -34,7 +34,6 @@ describe Liquor::Function do
     expect { fun.call("a", other: Class) }.to raise_error(Liquor::ArgumentTypeError)
   end
 
-
   it "accepts an indexable external as a tuple" do
     fun = Liquor::Function.new("test",
           unnamed_arg: [:tuple]) do |arg, kw|
@@ -61,5 +60,13 @@ describe Liquor::Function do
 
     expect { fun.call(ext.new) }.not_to raise_error
     expect { fun.call(ext2.new) }.to raise_error(Liquor::ArgumentTypeError)
+  end
+
+  it "catches host errors" do
+    fun = Liquor::Function.new("test") do |arg, kw|
+      "".to_hash
+    end
+
+    expect { fun.call() }.to raise_error(Liquor::HostError)
   end
 end

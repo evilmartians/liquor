@@ -73,7 +73,18 @@ module Liquor
         kw[name] = check_type name, kw[name], type, loc if kw.has_key?(name)
       end
 
-      @body.call(arg, kw)
+      begin
+        @body.call(arg, kw)
+      rescue ::Liquor::Error => e
+        raise e
+      rescue ::Exception => e
+        # First, remove the caller backtrace at the following line.
+        # This will not include the line in liquor_send which will
+        # be in the host exception backtrace. Second, remove that one.
+        host_backtrace = (e.backtrace - caller)[0..-2]
+
+        raise HostError.new(e.message, e, host_backtrace, loc)
+      end
     end
   end
 end
