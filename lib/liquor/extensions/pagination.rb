@@ -1,5 +1,5 @@
 require 'rails'
-require 'kaminari'
+require 'liquor/drop/drop'
 
 module Liquor
   module Pagination
@@ -127,6 +127,18 @@ module Liquor
         end
       end
       export :path
+    end
+
+    class Scope < Liquor::Drop::Scope
+      def total_entries
+        @source.total_entries
+      end
+
+      def per_page(size)
+        @source.per(size).to_drop
+      end
+
+      export :total_entries, :per_page
     end
 
     tag "pagination" do |emit, context, node|

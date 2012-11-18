@@ -30,9 +30,14 @@ module Liquor
 
   if defined?(Rails)
     require "liquor/extensions/rails"
+    require "liquor/extensions/pagination"
+  end
 
-    if defined?(Kaminari)
-      require "liquor/extensions/pagination"
-    end
+  if defined?(Kaminari)
+    require "liquor/extensions/kaminari"
+  end
+
+  if defined?(ThinkingSphinx)
+    require "liquor/extensions/thinking_sphinx"
   end
 end
