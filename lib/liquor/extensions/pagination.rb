@@ -131,7 +131,7 @@ module Liquor
 
     class Scope < Liquor::Drop::Scope
       def total_entries
-        @source.total_entries
+        @source.total_count
       end
 
       def per_page(size)
