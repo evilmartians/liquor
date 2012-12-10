@@ -67,6 +67,17 @@ module Liquor
 
       display_column
     end
+
+    def as_json(options = nil)
+      {
+        message:  @raw_message,
+        location: @location
+      }
+    end
+
+    def to_json(options = nil)
+      as_json.to_json(options)
+    end
   end
 
   class SyntaxError < SourceMappedError

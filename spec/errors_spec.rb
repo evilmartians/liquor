@@ -8,5 +8,13 @@ describe Liquor::SourceMappedError do
       "this is an error",
       "~~~~~~~~~~~^^^^^"
     ]
+    error.as_json.should == {
+      message:  'error',
+      location: {
+        line:  1,
+        start: 11,
+        end:   15
+      }
+    }
   end
 end
