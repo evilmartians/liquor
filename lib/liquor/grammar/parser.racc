@@ -20,6 +20,7 @@ class Liquor::Parser
 
 rule
   block: /* empty */
+      { result = [] }
     | plaintext block
       { result = [ val[0], *val[1] ] }
     | interp block

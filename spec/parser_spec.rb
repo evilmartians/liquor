@@ -369,9 +369,13 @@ describe Liquor::Parser do
     }.not_to raise_error(Liquor::SyntaxError)
   end
 
-  it "should report correct line numbers" do
+  it "reports correct line numbers" do
     expect {
       parse("{\n%\n{% end if %}")
     }.to raise_error(Liquor::SyntaxError, /line 3/)
+  end
+
+  it "does not return nil for empty string input" do
+    parse("").should_not == nil
   end
 end
