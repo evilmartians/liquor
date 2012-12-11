@@ -176,22 +176,40 @@ module Liquor
     end
 
     tag "capture" do |emit, context, node|
-      arg, kw = check_args node,
-          :ident,
-          :"=" => :block
+      tag, arg, *kwargs = nvalue(node)
 
-      var_name, = nvalue(arg)
-      block     = kw[:"="]
+      if kwargs.count == 1 && kwname(kwargs.first) == 'yield'
+        arg, kw = check_args node,
+            :ident,
+            :yield => :string
 
-      context.declare var_name, nloc(arg)
-      access_var_name = context.access(var_name)
+        var_name, = nvalue(arg)
+        fragment  = kw[:yield]
 
-      context.nest do
-        capture_var_name = emit.capture do
-          emit.compile_block block
+        context.declare var_name, nloc(arg)
+        access_var_name = context.access(var_name)
+
+        context.nest do
+          emit.out! %Q|#{access_var_name} = #{emit.storage}[#{emit.expr(fragment)}].to_s\n|
         end
+      else
+        arg, kw = check_args node,
+            :ident,
+            :"=" => :block
 
-        emit.out! %Q|#{access_var_name} = #{capture_var_name}\n|
+        var_name, = nvalue(arg)
+        block     = kw[:"="]
+
+        context.declare var_name, nloc(arg)
+        access_var_name = context.access(var_name)
+
+        context.nest do
+          capture_var_name = emit.capture do
+            emit.compile_block block
+          end
+
+          emit.out! %Q|#{access_var_name} = #{capture_var_name}\n|
+        end
       end
     end
 

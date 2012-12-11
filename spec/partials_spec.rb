@@ -63,4 +63,12 @@ describe Liquor::Partials do
       {% yield "test" if_none: %}default{% end yield %}
     |).strip.should == 'default'
   end
+
+  it "should handle {% capture var yield: 'name' %}" do
+    exec(%Q|
+      {% content_for "frag" capture: %}captured{% end content_for %}
+      {% capture foo yield: "frag" %}
+      {{ foo }}{{ foo }}
+    |).strip.should == 'capturedcaptured'
+  end
 end
