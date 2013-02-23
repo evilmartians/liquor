@@ -1,4 +1,4 @@
-guard 'rspec', :version => 2 do
+guard 'rspec' do
   watch(%r{^spec/.+_spec\.rb$})
   watch('lib/liquor.rb') { "spec" }
   watch(%r{^lib/liquor/(.+)\.rb$}) { "spec" }

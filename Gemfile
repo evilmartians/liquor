@@ -4,5 +4,8 @@ source 'https://rubygems.org'
 gemspec
 
 group :development do
-  gem 'libnotify' if RUBY_PLATFORM =~ /linux/i
+  if RUBY_PLATFORM =~ /linux/i
+    gem 'rb-inotify', '~> 0.8.8'
+    gem 'libnotify'
+  end
 end
