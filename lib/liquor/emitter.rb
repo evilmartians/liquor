@@ -279,7 +279,7 @@ module Liquor
           raise "unknown block-level node #{ntype(node)}"
         end
       end
-    rescue Liquor::Error => e
+    rescue Liquor::Diagnostic => e
       @compiler.add_error e
     end
 

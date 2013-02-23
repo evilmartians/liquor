@@ -1,9 +1,9 @@
 require "spec_helper"
 
-describe Liquor::SourceMappedError do
+describe Liquor::Diagnostic do
   it "decorates source" do
     source = "line 1\nthis is an error"
-    error  = Liquor::SourceMappedError.new("error", line: 1, start: 11, end: 15)
+    error  = Liquor::Diagnostic.new("error", line: 1, start: 11, end: 15)
     error.decorate(source).should == [
       "this is an error",
       "~~~~~~~~~~~^^^^^"

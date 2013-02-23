@@ -1,7 +1,7 @@
 require "liquor/version"
 
 module Liquor
-  require "liquor/errors"
+  require "liquor/diagnostics"
   require "liquor/grammar/lexer"
   require "liquor/grammar/parser"
 

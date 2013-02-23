@@ -75,7 +75,7 @@ module Liquor
 
       begin
         @body.call(arg, kw)
-      rescue ::Liquor::Error => e
+      rescue ::Liquor::Diagnostic => e
         raise e
       rescue ::Exception => e
         # First, remove the caller backtrace at the following line.

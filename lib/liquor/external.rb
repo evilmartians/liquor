@@ -25,7 +25,7 @@ module Liquor
       if self.class.liquor_exports.include?(method.to_sym)
         begin
           send method, *args
-        rescue ::Liquor::Error => e
+        rescue ::Liquor::Diagnostic => e
           raise e
         rescue ::Exception => e
           # First, remove the caller backtrace at the following line.

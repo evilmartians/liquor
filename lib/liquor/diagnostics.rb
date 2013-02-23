@@ -1,8 +1,5 @@
 module Liquor
-  class Error < StandardError
-  end
-
-  class SourceMappedError < Error
+  class Diagnostic < StandardError
     attr_reader :location
     attr_reader :raw_message
 
@@ -80,22 +77,22 @@ module Liquor
     end
   end
 
-  class SyntaxError < SourceMappedError
+  class SyntaxError < Diagnostic
   end
 
-  class PartialError < SourceMappedError
+  class PartialError < Diagnostic
   end
 
-  class ArgumentError < SourceMappedError
+  class ArgumentError < Diagnostic
   end
 
-  class NameError < SourceMappedError
+  class NameError < Diagnostic
   end
 
-  class TypeError < SourceMappedError
+  class TypeError < Diagnostic
   end
 
-  class ArgumentTypeError < SourceMappedError
+  class ArgumentTypeError < Diagnostic
     attr_reader :location
 
     def initialize(message, location=nil)
@@ -121,7 +118,7 @@ module Liquor
     end
   end
 
-  class HostError < SourceMappedError
+  class HostError < Diagnostic
     attr_reader :original_error, :host_backtrace
 
     def initialize(message, original_error, host_backtrace, location=nil)
