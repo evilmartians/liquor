@@ -28,6 +28,10 @@ module Liquor
       end
     end
 
+    def error?
+      false
+    end
+
     def decorate(source)
       if @location && @location.has_key?(:line)
         line = source.lines.drop(@location[:line]).first.rstrip
@@ -68,7 +72,8 @@ module Liquor
     def as_json(options = nil)
       {
         message:  @raw_message,
-        location: @location
+        is_error: error?,
+        location: @location,
       }
     end
 
@@ -77,22 +82,28 @@ module Liquor
     end
   end
 
-  class SyntaxError < Diagnostic
+  class Error < Diagnostic
+    def error?
+      true
+    end
   end
 
-  class PartialError < Diagnostic
+  class SyntaxError < Error
   end
 
-  class ArgumentError < Diagnostic
+  class PartialError < Error
   end
 
-  class NameError < Diagnostic
+  class ArgumentError < Error
   end
 
-  class TypeError < Diagnostic
+  class NameError < Error
   end
 
-  class ArgumentTypeError < Diagnostic
+  class TypeError < Error
+  end
+
+  class ArgumentTypeError < Error
     attr_reader :location
 
     def initialize(message, location=nil)
@@ -118,7 +129,7 @@ module Liquor
     end
   end
 
-  class HostError < Diagnostic
+  class HostError < Error
     attr_reader :original_error, :host_backtrace
 
     def initialize(message, original_error, host_backtrace, location=nil)

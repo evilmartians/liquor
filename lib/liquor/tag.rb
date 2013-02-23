@@ -82,7 +82,7 @@ module Liquor
       end
 
       if failed
-        actual   = Parser::TOKEN_NAME_MAP[actual] || actual
+        actual   = Parser::TOKEN_NAME_MAP[actual]   || actual
         expected = Parser::TOKEN_NAME_MAP[expected] || expected
         raise SyntaxError.new("unexpected `#{actual}', expecting `#{expected}'", nloc(node))
       end
