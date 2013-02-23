@@ -24,6 +24,7 @@ Gem::Specification.new do |gem|
 
   # Testing.
   gem.add_development_dependency 'rspec'
+  gem.add_development_dependency 'simplecov'
   gem.add_development_dependency 'guard-rspec'
 
   # Testing dependencies.
