@@ -4,9 +4,9 @@ require File.expand_path('../lib/liquor/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["Peter Zotov"]
   gem.email         = ["whitequark@whitequark.org"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = ""
+  gem.description   = %q{Liquor is a template system based on well-defined, strongly dynamically typed language, and is fun to use and easy to debug.}
+  gem.summary       = gem.description
+  gem.homepage      = "http://github.com/evilmartians/liquor"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
