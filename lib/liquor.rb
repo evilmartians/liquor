@@ -24,20 +24,20 @@ module Liquor
   require "liquor/compiler"
   require "liquor/manager"
 
-  if defined?(ActiveRecord)
+  if defined?(::ActiveRecord)
     require "liquor/drop/drop"
   end
 
-  if defined?(Rails)
+  if defined?(::Rails)
     require "liquor/extensions/rails"
     require "liquor/extensions/pagination"
   end
 
-  if defined?(Kaminari)
+  if defined?(::Kaminari)
     require "liquor/extensions/kaminari"
   end
 
-  if defined?(ThinkingSphinx)
+  if defined?(::ThinkingSphinx)
     require "liquor/extensions/thinking_sphinx"
   end
 end

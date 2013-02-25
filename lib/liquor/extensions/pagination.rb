@@ -39,7 +39,7 @@ module Liquor
     class UrlGenerator
       def self.bootstrap
         unless @bootstrapped
-          include Rails.application.routes.url_helpers
+          include ::Rails.application.routes.url_helpers
           @bootstrapped = true
         end
 
