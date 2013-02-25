@@ -12,6 +12,19 @@ describe Liquor::Manager do
     @manager.render('test', i: 10).should == '10'
   end
 
+  it "should decorate errors" do
+    @manager.register_template 'test', '{{ }}', [:i]
+    @manager.compile.should be_false
+
+    @manager.errors.count.should == 1
+    error = @manager.errors.first
+
+    @manager.decorate(error).should == [
+      "{{ }}",
+      "~~~^^"
+    ]
+  end
+
   it "should check names for correctness" do
     expect {
       @manager.register_template '_test', '{{ i }}', [:i]

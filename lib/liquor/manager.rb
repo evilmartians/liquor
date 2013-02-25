@@ -117,7 +117,7 @@ module Liquor
     def decorate(error)
       decorated = []
 
-      if error.is_a? SourceMappedError
+      if error.is_a? Diagnostic
         if error.location
           if file = error.location[:file]
             decorated = error.decorate @sources[file]
