@@ -165,9 +165,9 @@ Liquor supports exactly one implicit type conversion. In any context where a **S
 
 ### 2.4 Expressions
 
-Liquor has _expressions_, which can be used to perform computations with values. This section does not define a normative grammar; the full grammar is provided in section [Grammar](#grammar).
+Liquor features _expressions_, which can be used to perform computations with values. This section does not define a normative grammar; the full grammar is provided in section [Grammar](#grammar).
 
-Order of evaluation of Liquor expressions is not defined. As every value is immutable, the value of the entire expression should not depend upon the order of evaluation. Implementation-provided tags and functions must not mutate any global state and should not access it whenever possible.
+Order of evaluation of Liquor expressions is not defined. As every value is immutable, the value of the entire expression should not depend upon the order of evaluation. Implementation-provided functions must not access or mutate global state; implementation-provided tags may access or mutate global state, but this is highly discouraged.
 
 #### 2.4.1 Literals
 
@@ -219,7 +219,7 @@ All boolean operators, whether unary or binary, convert each argument to type **
 1. If the value equals _null_ or _false_, it is assumed to be _false_.
 2. Else, the value is assumed to be _true_.
 
-All boolean operators return a value of type **Boolean**. Binary boolean operators do not provide any guarantees on order or sequence of evaluation.
+All boolean operators return a value of type **Boolean**. Binary boolean operators do not provide any guarantees on order or sequence of evaluation. However, a correct implementation which does not feature functions with side effects will not suffer from this behavior.
 
 ##### 2.4.2.3 Comparison Operators
 
@@ -277,7 +277,7 @@ Referencing an undefined variable will result in a compile-time error ([name err
 
 #### 2.4.6 Filter Expressions
 
-Filter expressions are a syntactic sugar for method composition and currying.
+Filter expressions are a syntactic sugar for chaining method calls.
 
 Filter expressions consist of a linear chain of function calls where _n_-th function's return value is passed to _n+1_-th function's unnamed parameter. Named parameters may be specified without parentheses within a corresponding chain element.
 
@@ -297,11 +297,13 @@ A block consisting only of plaintext would return its literal value upon executi
 
 This program would evaluate to a string `Hello World!`.
 
-A block can have other elements embedded into it. When such a block is executed, these elements are executed in syntactical order and are replaced with the value returned by the element.
+A block can have other elements embedded into it. When such a block is executed, these elements are executed in lexical order and are replaced with the value returned by the element.
 
 ### 2.6 Interpolations
 
 An interpolation is a syntactic construct of form `{{ expr }}` which can be embedded in a block. The expression `expr` should evaluate to a value of type **String** or **Null**; an [implicit conversion](#type-conversion) might take place. If this is not the case, a runtime error condition is signaled.
+
+If _expr_ evaluates to a **String**, the interpolation returns it. Otherwise, the interpolation returns an empty string.
 
 An example of using an interpolation would be:
 
@@ -319,7 +321,7 @@ To pass a block of code to a tag, the closing tag delimiter should immediately f
 
 If a tag <code><em>t</em></code> does not include any embedded blocks, it ends after a first matching closing tag delimiter. Otherwise, the tag ends after a first matching construct of the form <code>{% end <em>t</em> %}</code>.
 
-Unlike functions, tags can receive multiple named parameters with the same name. Tag named parameters are a syntactic tool and should be thoroughly verified by the tag implementation. Specifying incorrect names or order of named parameters may result in a compile-time error ([syntax error](#syntax-error)).
+Unlike functions, tags can receive multiple named parameters with the same name. Named parameters of tags are a syntactic tool and should be thoroughly verified by the implementation. Specifying incorrect names or order of named parameters may result in a compile-time error ([syntax error](#syntax-error)).
 
 All of the following are examples of syntactically valid tags:
 
@@ -351,16 +353,16 @@ All of the following are examples of syntactically valid tags:
 3 Grammar
 ---------
 
-The following Extended Backus-Naur form grammar is normative. The native character set of Liquor is Unicode, and every character literal specified is an explicit codepoint.
+The following Extended Backus-Naur Form grammar is normative. The native character set of Liquor is Unicode, and every character literal specified is an explicit codepoint.
 
 Statement <code><em>a</em> to <em>b</em></code> is equivalent to codepoint set which includes every codepoint from _a_ to _b_ inclusive. Statement <code><em>a</em> except <em>b</em></code> means that both _a_ and _b_ are tokens which consist of exactly one codepoint, and every character satisfying _a_ and not satisfying in _b_ is accepted. Statement <code>lookahead <em>a</em></code> means that the current token should only be produced if the codepoint immediately following it satisfies _a_.
 
-Strictly speaking, this grammar lies within _GLR_ domain, but if, as it is usually the case, an implementation has separate lexer and parser, an _LR(1)_ parser could be used. This will be further explained in section [Blocks](#blocks-1).
+Strictly speaking, this grammar lies within _GLR_ domain, but if, as it is usually the case, an implementation has separate lexer and parser, a _LALR(1)_ parser could be used. This will be further explained in section [Blocks](#blocks-1).
 
 ### 3.1 Basic Syntax
 
 Whitespace
-: **U+0007** \| **U+0020**
+: **U+0007** \| **U+000A** \| **U+0020**
 
 Alpha
 : **a** to **z** \| **A** to **Z**
@@ -495,11 +497,22 @@ Liquor compiling process consists of three distinct parts: _parsing_, _scope res
 
 To ease development process, an implementation generally should not stop compilation after encountering an error. As an exception to the general rule, implementation must stop parsing and abandon any intermediate result after encountering a syntax error. Rationale to this behavior is that with Liquor's interleaved structure, successful error recovery after parsing errors is unlikely.
 
-Every error must carry accurate location information.
+Every error must carry precise location information: in particular, an error location must feature _line_, _start column_ and _end column_.
+
+The following algorithm can be used to calculate precise location information for every Unicode character in the source code:
+
+1. The initial line and column numbers equal 1.
+2. For each character in the source, in order, perform the following:
+    1. If the character is **U+000A**, increase line number by 1 and set column number to 1.
+    2. If the character is **U+0007**, increase column number by 1 until it equals zero modulo 8. If the column number already equals zero modulo 8, increase it by 8.
+    3. If the character is a combining character, the implementation may recognize this fact and do nothing.
+    4. If nothing of the above applies, increase column number by 1.
+
+This algorithm, unlike the rest of Liquor, is specified in terms of characters and not codepoints. This means that an implementation must recognize surrogate pairs and compose them into one character.
 
 #### 4.1.1 Syntax Error
 
-Syntax error will be raised upon encountering any of the following conditions:
+Syntax error will be signaled upon encountering any of the following conditions:
 
 1. Parsing failure (section [Grammar](#grammar))
 2. Duplicate function keyword arguments (section [Function Calls](#function-calls))
@@ -509,7 +522,7 @@ Syntax errors must include source location information and point to the exact to
 
 #### 4.1.2 Argument Error
 
-Argument error will be raised upon encountering any of the following conditions:
+Argument error will be signaled upon encountering any of the following conditions:
 
 1. Absence of a mandatory parameter, or presence of non-accepted parameter (sections [Function Calls](#function-calls), [Tags](#tags))
 
@@ -517,7 +530,7 @@ Argument errors must include source location information and point either to the
 
 #### 4.1.3 Name Error
 
-Name error will be raised upon encountering any of the following conditions:
+Name error will be signaled upon encountering any of the following conditions:
 
 1. Referencing an undefined variable (sections [Variable Access](#variable-access), [Scope Resolution](#scope-resolution))
 2. Referencing an undefined function (section [Function Calls](#function-calls))
@@ -588,7 +601,7 @@ In the _for..in_ form, this tag invokes _code_ with _var_ bound to each element 
 
 In the _for..from..to_ form, this tag invokes _code_ with _var_ bound to each integer between _lower-limit_ and _upper-limit_, inclusive. If _lower-limit_ or _upper-limit_ is not an *Integer*, a [runtime error condition] is signaled.
 
-The _for_ tag itself evaluates to the concatenation of values its _code_ has evaluated to.
+The _for_ tag returns the concatenation of the values its _code_ has evaluated to.
 
 #### 6.1.4 if
 
@@ -607,7 +620,7 @@ This tag can optionally have any amount of _elsif_ clauses and only one _else_ c
 
 The _if_ tag sequentally evaluates each passed condition _cond-1_, _cond-2_, ... until a [truthful](#boolean-operators) value is computed. Then, it executes the corresponding code. If none of the conditions evaluate to a truthful value, the tag executes _code-else_ if it exists.
 
-The _if_ tag itself evaluates to the result of evaluating the corresponding code block, or to an empty string if none of the blocks were executed.
+The _if_ tag returns the result of evaluating the corresponding code block, or an empty string if none of the blocks were executed.
 
 #### 6.1.5 unless
 
@@ -619,7 +632,7 @@ Tag _unless_ has one valid syntactic form:
 
 The _unless_ tag evaluates _cond_. Unless it yields a [truthful](#boolean-operators), _code_ is also evaluated.
 
-The _unless_ tag itself evaluates to the result of evaluating _code_, or to an empty string.
+The _unless_ tag returns the result of evaluating _code_, or an empty string.
 
 #### 6.1.6 capture
 
@@ -631,6 +644,8 @@ Tag _capture_ has one valid syntactic form:
 
 The _capture_ tag evaluates _code_ and binds the name _var_ to the result. If _var_ is already bound, _capture_ mutates the binding.
 
+The _capture_ tag returns an empty string.
+
 #### 6.1.7 content_for
 
 Tag _content_for_ has one valid syntactic form:
@@ -640,6 +655,8 @@ Tag _content_for_ has one valid syntactic form:
 {% end content_for %}</code></pre>
 
 The _content_for_ tag accepts a **String** handle as an immediate value. It evaluates _code_ and assigns the result to the handle _handle_, which must be stored in an implementation-specific way.
+
+The _content_for_ tag returns an empty string.
 
 See also notes on [Layout implementation](#appendix-layouts).
 
@@ -656,7 +673,7 @@ In this form, the _yield_ tag evaluates to the content of inner template.
   <em>code</em>
 {% end yield %}</code></pre>
 
-The _yield_ tag accepts a **String** _handle_ as an immediate value. If a string was captured previously with [{% content_for %}](#content_for), then _yield_ evaluates to that string. If there is no captured string with the handle _handle_, then _yield_ either evaluates to the result of evaluating _if_none_ block if it exists, or to an empty string.
+The _yield_ tag accepts a **String** _handle_ as an immediate value. If a string with handle _handle_ was captured previously with [{% content_for %}](#content_for), then _yield_ returns that string. If there is no captured string with that handle, _yield_ either returns the result of evaluating _if_none_ block if it exists, or an empty string.
 
 See also notes on [Layout implementation](#appendix-layouts).
 
@@ -668,7 +685,7 @@ Tag _include_ has one valid syntactic form:
 
 The _include_ tag accepts a **String** _partial_name_ as an immediate value. It lexically includes the code of partial template _partial_name_ in a newly created scope.
 
-The _include_ tag should check for infinite recursion.
+The _include_ tag must not allow infinite recursion to happen. If such a condition is encountered, a compile-time error ([syntax error](#syntax-error)) is signaled.
 
 See also notes on [Layout implementation](#appendix-layouts).
 
