@@ -15,6 +15,7 @@ file 'doc/language-spec.html' => 'doc/language-spec.md' do
   sh "kramdown --template document doc/language-spec.md >doc/language-spec.html"
 end
 
+desc "Regenerate everything (grammar, docs) and run specs."
 task :default => [
   'lib/liquor/grammar/lexer.rb',
   'lib/liquor/grammar/parser.rb',
