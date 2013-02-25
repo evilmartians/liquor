@@ -280,7 +280,7 @@ module Liquor
         end
       end
     rescue Liquor::Diagnostic => e
-      @compiler.add_error e
+      @compiler.add_diagnostic e
     end
 
     def capture

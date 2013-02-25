@@ -1,15 +1,15 @@
 module Liquor
   class Compiler
     attr_reader :manager
-    attr_reader :errors, :source, :code
+    attr_reader :diagnostics, :source, :code
     attr_reader :tags, :functions
 
     def initialize(options={})
       @tags      = {}
       @functions = {}
 
-      @errors = []
-      @code   = nil
+      @diagnostics = []
+      @code        = nil
 
       options = options.dup
       import_builtins = options.delete(:import_builtins)
@@ -62,7 +62,7 @@ module Liquor
     end
 
     def compile(ast, externals=[], template_name=nil)
-      @errors.clear
+      @diagnostics.clear
 
       externals = externals.map(&:to_sym)
       context = Liquor::Context.new(self, externals)
@@ -76,10 +76,10 @@ module Liquor
         end
 
         @source = source
-        @code = eval(source, nil, source_identity)
+        @code   = eval(source, nil, source_identity)
       else
         @source = nil
-        @code = nil
+        @code   = nil
       end
 
       success?
@@ -91,12 +91,16 @@ module Liquor
       if success?
         @code
       else
-        raise errors.first
+        raise diagnostics.first
       end
     end
 
-    def add_error(error)
-      @errors << error
+    def errors
+      @diagnostics.select &:error?
+    end
+
+    def add_diagnostic(diagnostic)
+      @diagnostics << diagnostic
     end
 
     def success?
