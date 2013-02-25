@@ -21,6 +21,46 @@ ActionController::Renderers.add :liquor do |options, *|
 end
 
 module Liquor::Rails
+  class Request
+    include Liquor::External
+
+    def initialize(request, controller)
+      @request    = request
+      @controller = controller
+    end
+
+    delegate :url,     to: :@request
+    delegate :path,    to: :@request
+    delegate :referer, to: :@request
+
+    export :url, :path, :referer
+
+    def param(arg, kw={})
+      @request.params[arg.to_s]
+    end
+
+    export :param
+
+    def controller
+      @controller.controller_name
+    end
+
+    def action
+      @controller.action_name
+    end
+
+    export :controller, :action
+
+    def form_authenticity_token
+      # Sorry for sends
+      if @controller.send(:protect_against_forgery?)
+        @controller.send(:form_authenticity_token)
+      end
+    end
+
+    export :form_authenticity_token
+  end
+
   class TemplateLoader
     # TODO
   end
