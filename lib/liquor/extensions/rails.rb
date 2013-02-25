@@ -19,3 +19,39 @@ ActionController::Renderers.add :liquor do |options, *|
 
   render :text => output
 end
+
+module Liquor::Rails
+  class TemplateLoader
+    # TODO
+  end
+
+  class LogSubscriber
+    def load_template(event)
+      line(event, "  Template Load", color: WHITE, info: "#{event.payload[:name]}")
+    end
+
+    def load(event)
+      line(event, "Template Load All", color: CYAN)
+    end
+
+    def compile(event)
+      line(event, "Template Compile", color: CYAN)
+    end
+
+    def logger
+      ActionController::Base.logger
+    end
+
+    protected
+
+    def line(event, what, options={})
+      if options[:color]
+        what = color(what, options[:color], true)
+      end
+
+      debug("  %s (%.1fms)  %s" % [what, event.duration, options[:info]])
+    end
+  end
+
+  LogSubscriber.attach_to :liquor
+end
