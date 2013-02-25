@@ -65,7 +65,7 @@ module Liquor::Rails
     # TODO
   end
 
-  class LogSubscriber
+  class LogSubscriber < ActiveSupport::LogSubscriber
     def load_template(event)
       line(event, "  Template Load", color: WHITE, info: "#{event.payload[:name]}")
     end
