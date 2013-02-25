@@ -18,7 +18,8 @@ end
 task :default => [
   'lib/liquor/grammar/lexer.rb',
   'lib/liquor/grammar/parser.rb',
-  'doc/language-spec.html'
+  'doc/language-spec.html',
+  :spec
 ]
 
 desc "Run specs"
