@@ -2,8 +2,14 @@
 require File.expand_path('../lib/liquor/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.authors       = ["Peter Zotov"]
-  gem.email         = ["whitequark@whitequark.org"]
+  gem.authors       = ["Peter Zotov",
+                       "Nate Gadgibalaev",
+                       "Yaroslav Markin"]
+
+  gem.email         = ["whitequark@whitequark.org",
+                       "nat@xnsv.ru",
+                       "yaroslav@markin.net"]
+
   gem.description   = %q{Liquor is a template system based on well-defined, strongly } <<
                       %q{dynamically typed language which is fun to use and easy to debug.}
   gem.summary       = gem.description
