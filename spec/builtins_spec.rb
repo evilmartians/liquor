@@ -35,6 +35,16 @@ describe Liquor do
     }.to raise_error(Liquor::NameError, %r|is already occupied by builtin|)
   end
 
+  it "does not make bound name in {% assign %} available in its expression" do
+    expect {
+      exec(%{ {% declare foo = foo %} })
+    }.to raise_error(Liquor::NameError, %r|is not bound|)
+
+    expect {
+      exec(%{ {% assign foo = foo %} })
+    }.to raise_error(Liquor::NameError, %r|is not bound|)
+  end
+
   it "supports {% if %}" do
     code = compile(%Q{
       {% if x == 1 then: %}
@@ -89,6 +99,16 @@ describe Liquor do
       {% end for %}
       {{ var }}
     }).strip.should == '1'
+  end
+
+  it "does not make name bound in {% for %} available in its expression" do
+    expect {
+      exec(%{ {% for foo in: foo do: %}{% end for %} })
+    }.to raise_error(Liquor::NameError, %r|is not bound|)
+
+    expect {
+      exec(%{ {% for foo from: foo to: 1 do: %}{% end for %} })
+    }.to raise_error(Liquor::NameError, %r|is not bound|)
   end
 
   it "does not shadow assignments within scopes" do
