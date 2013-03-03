@@ -34,7 +34,9 @@ module Liquor
 
     def decorate(source)
       if @location && @location.has_key?(:line)
-        line = source.lines.drop(@location[:line]).first.rstrip
+        line   = source.lines.drop(@location[:line]).first
+        line ||= "(source spans only #{source.lines.count} lines)"
+        line   = line.rstrip
 
         if @location.has_key? :start
           start_col = tabify_column line, @location[:start]
