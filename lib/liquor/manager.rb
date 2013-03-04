@@ -98,7 +98,7 @@ module Liquor
 
       template = @compiled_templates[name]
       if template.nil?
-        raise ::ArgumentError, "Template `#{name}' does not exist"
+        raise Error.new("Template `#{name}' does not exist")
       end
 
       template.call(externals, storage)
