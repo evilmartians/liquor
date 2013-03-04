@@ -173,4 +173,35 @@ describe Liquor::External do
     exec(%Q|{% for i in: ext + ["b", "c"] do: %}{{ i }} {% end for %}|,
             ext: klass.new(["0", "a"])).strip.should == "0 a b c"
   end
+
+  it "sets up deprecations" do
+    klass = Class.new do
+      include Liquor::External
+    end
+
+    expect {
+      klass.class_eval { deprecate :foo }
+    }.to raise_error(ArgumentError)
+
+    expect {
+      klass.class_eval { deprecate :foo, date: '2012-03-14' }
+    }.to raise_error(ArgumentError)
+
+    expect {
+      klass.class_eval { deprecate :foo, message: 'not available' }
+    }.to raise_error(ArgumentError)
+
+    expect {
+      klass.class_eval { deprecate :foo, date: '2012-03-14', message: 'not available', foo: 'bar' }
+    }.to raise_error(ArgumentError)
+
+    klass.class_eval {
+      deprecate :foo, :bar, date: '2012-03-14', message: 'not available'
+    }
+
+    klass.liquor_deprecations.should == {
+      foo: { date: Date.parse('2012-03-14'), message: 'not available' },
+      bar: { date: Date.parse('2012-03-14'), message: 'not available' }
+    }
+  end
 end

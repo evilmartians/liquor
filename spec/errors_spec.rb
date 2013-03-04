@@ -4,9 +4,6 @@ describe Liquor::Diagnostic do
   it "is not an error" do
     diag = Liquor::Diagnostic.new("foobar")
     diag.error?.should be_false
-
-    diag = Liquor::Error.new("foobar")
-    diag.error?.should be_true
   end
 
   it "decorates source" do
@@ -25,5 +22,19 @@ describe Liquor::Diagnostic do
         end:   19
       }
     }
+  end
+end
+
+describe Liquor::Error do
+  it "is an error" do
+    diag = Liquor::Error.new("foobar")
+    diag.error?.should be_true
+  end
+end
+
+describe Liquor::Deprecation do
+  it "is not an error" do
+    diag = Liquor::Deprecation.new("foobar")
+    diag.error?.should be_false
   end
 end

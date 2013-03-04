@@ -145,4 +145,7 @@ module Liquor
       super(message, location)
     end
   end
+
+  class Deprecation < Diagnostic
+  end
 end

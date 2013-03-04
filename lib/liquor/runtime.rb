@@ -41,29 +41,38 @@ module Liquor
       end
     end
 
-    @errors = nil
+    @diagnostics = nil
 
-    def self.capture_errors
-      old_errors = @errors
-      @errors    = []
+    def self.capture_diagnostics
+      old_diagnostics = @diagnostics
+      @diagnostics    = []
 
       yield
 
-      @errors
+      @diagnostics
     ensure
-      @errors    = old_errors
+      @diagnostics    = old_diagnostics
     end
 
     def self.type_error(klass=TypeError, message, expectation, loc)
       error = klass.new(message, loc)
 
-      if @errors.nil?
+      if @diagnostics.nil?
         raise error
       else
         error.set_backtrace(caller(2))
-        @errors << error
+        @diagnostics << error
 
         default_value_of expectation
+      end
+    end
+
+    def self.deprecation(message, loc)
+      unless @diagnostics.nil?
+        error = Liquor::Deprecation.new(message, loc)
+        error.set_backtrace(caller(2))
+
+        @diagnostics << error
       end
     end
 
