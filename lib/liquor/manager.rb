@@ -1,6 +1,6 @@
 module Liquor
   class Manager
-    attr_reader :errors
+    attr_reader :diagnostics
 
     def initialize(options={})
       import   = options.delete(:import).to_a || []
@@ -22,7 +22,7 @@ module Liquor
       @partials  = {}
       @compiled_templates = nil
 
-      @errors = []
+      @diagnostics = []
     end
 
     def partial?(name)
@@ -39,7 +39,7 @@ module Liquor
       if @parser.parse(source, name)
         @templates[name.to_s] = [ @parser.ast, externals ]
       else
-        @errors.concat @parser.errors
+        @diagnostics.concat @parser.errors
       end
     end
 
@@ -58,7 +58,7 @@ module Liquor
         @partials[name.to_s] = @parser.ast
       else
         @partials[name.to_s] = :syntax_error
-        @errors.concat @parser.errors
+        @diagnostics.concat @parser.errors
       end
     end
 
@@ -76,15 +76,19 @@ module Liquor
         if @compiler.success?
           @compiled_templates[name] = @compiler.code
         else
-          @errors.concat @compiler.errors
+          @diagnostics.concat @compiler.diagnostics
         end
       end
 
       success?
     end
 
+    def errors
+      diagnostics.select &:error?
+    end
+
     def success?
-      @errors.none?
+      errors.none?
     end
 
     def has_template?(name)
