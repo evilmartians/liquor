@@ -54,6 +54,17 @@ module Liquor
       @diagnostics    = old_diagnostics
     end
 
+    @fatal_deprecations = false
+
+    def self.with_fatal_deprecations
+      old_fatal_deprecations = @fatal_deprecations
+      @fatal_deprecations    = true
+
+      yield
+    ensure
+      @fatal_deprecations    = old_fatal_deprecations
+    end
+
     def self.type_error(klass=TypeError, message, expectation, loc)
       error = klass.new(message, loc)
 
@@ -68,10 +79,12 @@ module Liquor
     end
 
     def self.deprecation(message, loc)
-      unless @diagnostics.nil?
-        error = Liquor::Deprecation.new(message, loc)
-        error.set_backtrace(caller(2))
+      error = Liquor::Deprecation.new(message, loc)
+      error.set_backtrace(caller(2))
 
+      if @fatal_deprecations
+        raise error
+      elsif @diagnostics
         @diagnostics << error
       end
     end

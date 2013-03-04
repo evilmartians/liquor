@@ -85,5 +85,13 @@ describe Liquor::Runtime do
         %r|`foo' is deprecated and will be removed after 2013-03-04: not available|
       ], '1')
     end
+
+    it "allows to make deprecations fatal" do
+      expect {
+        Liquor::Runtime.with_fatal_deprecations do
+          exec '{{ bar.foo }}', bar: @klass.new
+        end
+      }.to raise_error(Liquor::Deprecation)
+    end
   end
 end
