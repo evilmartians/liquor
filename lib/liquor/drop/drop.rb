@@ -45,6 +45,8 @@ module Liquor
         case arg
         when Drop
           arg.id
+        when Drop::Scope
+          unwrap_scope_arguments(arg.to_a)
         when Array
           unwrap_scope_arguments(arg)
         when Hash

@@ -209,5 +209,7 @@ describe Liquor::Drop do
         should == [ 1, { a: @me.id, b: @dhh.id } ]
     exec('{{ scope.with_id(obj).first.login }}', scope: User.to_drop, obj: @me.to_drop).
         should == @me.login
+    Liquor::Drop.unwrap_scope_arguments([ User.order(:id).to_drop ]).
+        should == [ User.pluck(:id).sort ]
   end
 end
