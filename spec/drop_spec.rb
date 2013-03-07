@@ -125,6 +125,16 @@ describe Liquor::Drop do
     ltr.should == rtl.reverse
   end
 
+  it "should support except" do
+    res = exec(%|{% for user in: users.except(users.find_by(login: 'xnutsive')) do: %}{{ user.login }},{% end for %}|, users: User.to_drop)
+    res.split(',').sort.should == %w(me dhh).sort
+  end
+
+  it "should support find_except_by" do
+    res = exec(%|{% for user in: users.find_except_by(login: 'xnutsive') do: %}{{ user.login }},{% end for %}|, users: User.to_drop)
+    res.split(',').sort.should == %w(me dhh).sort
+  end
+
   it "should not fail if the [] argument is out of range" do
     exec(%|{% if users[5] == null then: %}ok{% end if %}|, users: User.to_drop).should == 'ok'
   end

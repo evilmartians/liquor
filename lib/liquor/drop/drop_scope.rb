@@ -41,6 +41,25 @@ module Liquor
 
     export :find_all_by, :find_by
 
+    def except(record)
+      record, = Drop.unwrap_scope_arguments([ record ])
+
+      result = @source.where(@source.arel_table[:id].eq(record).not)
+      DropDelegation.wrap_scope(result)
+    end
+
+    def find_except_by(_, fields={})
+      fields, = Drop.unwrap_scope_arguments([ fields ])
+
+      result = @source.
+        where(fields.map do |key, value|
+          @source.arel_table[key].eq(value)
+        end.reduce(&:and).not)
+      DropDelegation.wrap_scope(result)
+    end
+
+    export :except, :find_except_by
+
     def first
       DropDelegation.wrap_element @source.first
     end
