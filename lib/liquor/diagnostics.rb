@@ -40,7 +40,7 @@ module Liquor
 
         if @location.has_key? :start
           start_col = tabify_column line, @location[:start]
-          pointer =  "~" * start_col
+          pointer =  " " * start_col
 
           if location.has_key? :end
             end_col = tabify_column line, @location[:end]
