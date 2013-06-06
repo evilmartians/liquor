@@ -11,7 +11,7 @@ describe Liquor::Diagnostic do
     diag  = Liquor::Diagnostic.new("foobar", line: 1, start: 10, end: 19)
     diag.decorate(source).should == [
       "this is a diagnostic",
-      "~~~~~~~~~~^^^^^^^^^^"
+      "          ^^^^^^^^^^"
     ]
     diag.as_json.should == {
       message:  'foobar',

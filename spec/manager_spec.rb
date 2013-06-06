@@ -21,7 +21,7 @@ describe Liquor::Manager do
 
     @manager.decorate(error).should == [
       "{{ }}",
-      "~~~^^"
+      "   ^^"
     ]
   end
 
