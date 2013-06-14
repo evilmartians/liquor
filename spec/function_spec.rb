@@ -69,4 +69,12 @@ describe Liquor::Function do
 
     expect { fun.call() }.to raise_error(Liquor::HostError)
   end
+
+  it "provides loc to the inside of functions" do
+    fun = Liquor::Function.new("whereami") do |arg, kw, loc|
+      loc.to_s
+    end
+
+    fun.call(nil, {}, {rabbit: 'hole'}).should == '{:rabbit=>"hole"}'
+  end
 end

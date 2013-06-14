@@ -74,7 +74,11 @@ module Liquor
       end
 
       begin
-        @body.call(arg, kw)
+        if @body.arity == 3
+          @body.call(arg, kw, loc)
+        else
+          @body.call(arg, kw)
+        end
       rescue ::Liquor::Diagnostic => e
         raise e
       rescue ::Exception => e
