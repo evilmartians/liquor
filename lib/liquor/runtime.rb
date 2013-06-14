@@ -4,6 +4,10 @@ module Liquor
       def liquor_send(method, args, loc=nil)
         nil
       end
+
+      def source
+        nil
+      end
     end
 
     def self.type(value)
