@@ -65,7 +65,7 @@ module Liquor
       @fatal_deprecations    = old_fatal_deprecations
     end
 
-    def self.type_error(klass=TypeError, message, expectation, loc)
+    def self.soft_error(klass=TypeError, message, expectation, loc)
       error = klass.new(message, loc)
 
       if @diagnostics.nil?
@@ -105,7 +105,7 @@ module Liquor
         left  = left.to_a
         right = tuple! right, right_loc
       else
-        return type_error("Integer, String, Tuple or indexable External value expected, #{pretty_type(left)} found", :null, left_loc)
+        return soft_error("Integer, String, Tuple or indexable External value expected, #{pretty_type(left)} found", :null, left_loc)
       end
 
       left + right
@@ -113,7 +113,7 @@ module Liquor
 
     def self.integer!(value, loc)
       unless value.is_a? Integer
-        return type_error("Integer value expected, #{pretty_type(value)} found", :integer, loc)
+        return soft_error("Integer value expected, #{pretty_type(value)} found", :integer, loc)
       end
 
       value
@@ -125,7 +125,7 @@ module Liquor
       elsif value.is_a? Integer
         value.to_s
       else
-        return type_error("String value expected, #{pretty_type(value)} found", :string, loc)
+        return soft_error("String value expected, #{pretty_type(value)} found", :string, loc)
       end
     end
 
@@ -136,7 +136,7 @@ module Liquor
 
     def self.tuple!(value, loc)
       unless indexable?(value)
-        return type_error("Tuple or indexable External value expected, #{pretty_type(value)} found", :tuple, loc)
+        return soft_error("Tuple or indexable External value expected, #{pretty_type(value)} found", :tuple, loc)
       end
 
       value
@@ -144,7 +144,7 @@ module Liquor
 
     def self.external!(value, loc)
       unless value.is_a? External
-        return type_error("External value expected, #{pretty_type(value)} found", :external, loc)
+        return soft_error("External value expected, #{pretty_type(value)} found", :external, loc)
       end
 
       value
@@ -154,7 +154,7 @@ module Liquor
       unless value.is_a?(String) ||
              value.is_a?(Integer) ||
              value.nil?
-        return type_error("String or Null value expected, #{pretty_type(value)} found", :string, loc)
+        return soft_error("String or Null value expected, #{pretty_type(value)} found", :string, loc)
       end
 
       value.to_s

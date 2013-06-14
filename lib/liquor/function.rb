@@ -53,7 +53,7 @@ module Liquor
       if check_failed
         expected = Array(expected_type).map(&:capitalize).join(", ")
 
-        Runtime.type_error(ArgumentTypeError,
+        Runtime.soft_error(ArgumentTypeError,
                     "#{expected} value expected, #{Runtime.pretty_type arg} found",
                     Array(expected_type).first,
                     { function: @name, argument: name }.merge(loc))
