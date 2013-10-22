@@ -93,11 +93,8 @@ describe Liquor::Drop do
 
   it "should walk relations and stuff" do
     exec('{{ user.login }}', user: @dhh.to_drop).should == 'dhh'
-    exec(%|
-      {% for article in: user.articles do: %}
-        {{ article.name }}
-      {% end for %}
-    |, user: @dhh.to_drop).strip.should == 'rails rules'
+    exec(%|{% for article in: user.articles do: %}{{ article.name }}, {% end for %}|,
+         user: @dhh.to_drop).strip.should == 'rails rules, hello world,'
     exec(%|{{ size(articles) }}|, articles: Article.to_drop).should == '3'
     exec(%|{{ size(articles.published) }}|, articles: Article.to_drop).should == '2'
     exec(%|{{ size(users.with_login('dhh')) }}|, users: User.to_drop).should == '1'

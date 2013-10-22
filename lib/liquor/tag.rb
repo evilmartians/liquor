@@ -27,11 +27,13 @@ module Liquor
       name, arg, *kwargs = nvalue(node)
       if arg_type.nil? && !arg.nil?
         raise SyntaxError.new("extraneous argument", nloc(arg))
-      elsif !arg_type.nil? && arg.nil?
-        raise SyntaxError.new("missing unnamed argument", nloc(node))
+      elsif arg.nil?
+        if !arg_type.nil? && !(arg_type.is_a?(Array) && arg_type.include?(nil))
+          raise SyntaxError.new("missing unnamed argument", nloc(node))
+        end
       end
 
-      if !arg_type.nil?
+      if !arg_type.nil? && !arg.nil?
         check_arg_type arg, arg_type
       end
 
@@ -63,6 +65,8 @@ module Liquor
       else
         actual = ntype(node)
       end
+
+      type = type.compact.first if type.is_a?(Array)
 
       case type
       when :ident, :string
