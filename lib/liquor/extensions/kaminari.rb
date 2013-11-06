@@ -8,7 +8,8 @@ module Kaminari
     end
 
     def to_page_path(url_generator, page)
-      raise NotImplementedError, "Liquor: Kaminari::PaginatableArray cannot generate page paths"
+      url_generator.search_path(query: @query, page: page)
+      #raise NotImplementedError, "Liquor: Kaminari::PaginatableArray cannot generate page paths"
     end
   end
 end
