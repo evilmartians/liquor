@@ -17,7 +17,7 @@ describe Liquor do
         {% assign test = 1 %}
         {% assign test = 2 %}
         {{ test }}
-      }).should == '2'
+      }).strip.should == '2'
     }.to_not raise_error
 
     expect {
@@ -25,7 +25,7 @@ describe Liquor do
         {% declare test = 1 %}
         {% declare test = 2 %}
         {{ test }}
-      }).should == '2'
+      }).strip.should == '2'
     }.to_not raise_error
 
     expect {
