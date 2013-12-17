@@ -183,6 +183,33 @@ module Liquor
       arg.reverse
     end
 
+    function "uniq", unnamed_arg: :tuple do |arg, |
+      arg.uniq
+    end
+
+    minmax = lambda do |fn, fn_by, set, key|
+      if key
+        set.to_a.select { |r| !r.liquor_send(key, []).nil? }.
+                 send(fn_by) { |r| r.liquor_send(key, []) }
+      else
+        set.to_a.send(fn)
+      end
+    end
+
+    function "min", unnamed_arg: [:tuple],
+                    optional_named_args: {
+                      by: :string
+                    } do |source_set, kw|
+      minmax.call(:min, :min_by, source_set, kw[:by])
+    end
+
+    function "max", unnamed_arg: [:tuple],
+                    optional_named_args: {
+                      by: :string
+                    } do |source_set, kw|
+      minmax.call(:max, :max_by, source_set, kw[:by])
+    end
+
     function "in_groups_of",
               unnamed_arg: [:tuple],
               mandatory_named_args: { size: :integer },

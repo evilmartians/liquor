@@ -227,6 +227,23 @@ describe Liquor do
     exec(%|{{ truncate_words("This is a test string." words: 4 omission: "(continued)") }}|).should == "This is a test(continued)"
     exec(%|{{ html_truncate("<p>This is a test string. <b>It is very <i>very long</i> to make truncater's job harder." length: 30) }}|).should == "<p>This is a test string. <b>It is v...</b></p>"
     exec(%|{{ html_truncate_words("<p>This is a test string. <b>It is very <i>very long</i> to make truncater's job harder." words: 9) }}|).should == "<p>This is a test string. <b>It is very <i>very...</i></b></p>"
+
+    # tuples
+    exec(%|{% for i in: uniq([1,1,2]) do: %}{{ i }}{% end for %}|).should == '12'
+    exec(%|{{ min([0,1,2]) }}|).should == '0'
+    exec(%|{{ max([0,1,2]) }}|).should == '2'
+
+    ext = Class.new do
+      include Liquor::External
+
+      attr_reader :n
+      def initialize(n) @n = n end
+      export :n
+    end
+
+    exts = [0,1,nil,2].map { |n| ext.new(n) }
+    exec(%|{{ min(exts by: "n").n }}|, exts: exts).should == '0'
+    exec(%|{{ max(exts by: "n").n }}|, exts: exts).should == '2'
   end
 
   it "should not leak iterator binding from {% for %}" do
