@@ -6,7 +6,7 @@ module Liquor
 
     def initialize(source)
       unless source.respond_to? :each
-        source = source.all
+        source = source.scoped
       end
 
       @source = source
