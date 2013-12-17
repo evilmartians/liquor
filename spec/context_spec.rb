@@ -15,8 +15,8 @@ describe Liquor::Context do
   it "verifies variable names" do
     expect { @context.declare 'null' }.to raise_error(Liquor::NameError)
     expect { @context.declare 'a' }.not_to raise_error
-    expect { @context.declare 'a' }.not_to raise_error(Liquor::NameError)
-    expect { @context.declare 'ext' }.not_to raise_error(Liquor::NameError)
+    expect { @context.declare 'a' }.not_to raise_error
+    expect { @context.declare 'ext' }.not_to raise_error
   end
 
   it "mangles names" do

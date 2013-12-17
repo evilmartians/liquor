@@ -366,7 +366,7 @@ describe Liquor::Parser do
         {% elsif !is_empty(live_videos) then: %}
         {% end if %}
       |, compiler
-    }.not_to raise_error(Liquor::SyntaxError)
+    }.not_to raise_error
   end
 
   it "reports correct line numbers" do

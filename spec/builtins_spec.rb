@@ -18,7 +18,7 @@ describe Liquor do
         {% assign test = 2 %}
         {{ test }}
       }).should == '2'
-    }.to_not raise_error(Liquor::NameError, %r|is already occupied|)
+    }.to_not raise_error
 
     expect {
       exec(%Q{
@@ -26,7 +26,7 @@ describe Liquor do
         {% declare test = 2 %}
         {{ test }}
       }).should == '2'
-    }.to_not raise_error(Liquor::NameError, %r|is already occupied|)
+    }.to_not raise_error
 
     expect {
       exec(%Q{

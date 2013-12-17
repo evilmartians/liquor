@@ -38,7 +38,7 @@ class Article < ActiveRecord::Base
 
   belongs_to :user
 
-  scope :published, where('published = ?', true)
+  scope :published, -> { where('published = ?', true) }
 end
 
 dhh = User.create login: 'dhh', email: 'dhh@loudthinking.org', occupation: 'developer'
