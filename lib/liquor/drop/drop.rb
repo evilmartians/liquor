@@ -139,7 +139,7 @@ module Liquor
     end
 
     def entity
-      @source.class.model_name
+      @source.class.model_name.to_s
     end
     export :entity
 

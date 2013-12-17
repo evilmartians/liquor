@@ -21,7 +21,7 @@ module Liquor
     alias to_ary to_a
 
     def entity
-      @source.model_name
+      @source.model_name.to_s
     end
     export :entity
 
