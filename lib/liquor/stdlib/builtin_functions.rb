@@ -232,11 +232,24 @@ module Liquor
       end
     end
 
-    # DEPRECATED
     function "includes",
-              unnamed_arg: :tuple,
+              unnamed_arg: [:tuple, :external],
               mandatory_named_args: { element: :any } do |arg, kw|
-      arg.include?(kw[:element])
+      if arg.respond_to? :include?
+        arg.include?(kw[:element])
+      else
+        raise Liquor::TypeError.new("includes() requires an external that exports include? method")
+      end
+    end
+
+    function "index_of",
+             unnamed_arg: [:tuple, :external],
+             mandatory_named_args: { element: :any } do |arg, kw|
+      if arg.respond_to? :index
+        arg.index(kw[:element])
+      else
+        raise Liquor::TypeError.new("includes() requires an external that exports index method")
+      end
     end
 
     #

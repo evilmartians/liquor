@@ -197,6 +197,7 @@ describe Liquor do
     exec(%!{{ '12 Jun' | strftime format: '%d' }}!).should == "12"
     exec(%!{{ to_number("12") + 10 }}!).should == "22"
     exec(%!{% if includes([ 1, 2, 3 ] element: 2) then: %}yes{% end if %}!).should == "yes"
+    exec(%!{{ index_of([1, 2, 3] element: 2) }}!).should == "1"
     exec(%!{{ [ 1, 2, 3 ] | reverse | join }}!).should == "3 2 1"
     exec(%!{{ [ 1, null, 3 ] | compact | join }}!).should == "1 3"
 
