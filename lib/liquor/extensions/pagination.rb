@@ -13,17 +13,17 @@ module Liquor
   {% if page.is_current then: %}
   <span class="disabled previous_page">&#8592; Previous</span>
   {% else %}
-  <a href="{{ previous_page_url }}" rel="previous" class="previous_page_page">&#8592; Previous</a>
+  <a href="{{ previous_page_path }}" rel="previous" class="previous_page_page">&#8592; Previous</a>
   {% end if %}
 {% page: %}
   {% if page.is_current then: %}
   <em class="current">{{ page.number }}</em>
   {% elsif page.is_next then: %}
-  <a href="{{ page.url }}" rel="next">{{ page.number }}</a>
+  <a href="{{ page.path }}" rel="next">{{ page.number }}</a>
   {% elsif page.is_prev then: %}
-  <a href="{{ page.url }}" rel="previous">{{ page.number }}</a>
+  <a href="{{ page.path }}" rel="previous">{{ page.number }}</a>
   {% else %}
-  <a href="{{ page.url }}">3</a>
+  <a href="{{ page.path }}">3</a>
   {% end if %}
 {% gap: %}
   <span class="gap">&hellip;</span>
@@ -31,7 +31,7 @@ module Liquor
   {% if page.is_current then: %}
   <span class="disabled next_page">Next &#8594;</span>
   {% else %}
-  <a href="{{ next_page_url }}" rel="next" class="next_page">Next &#8594;</a></div>
+  <a href="{{ next_page_path }}" rel="next" class="next_page">Next &#8594;</a></div>
   {% end if %}
 {% end pagination %}
 =end
@@ -126,7 +126,12 @@ module Liquor
           raise "Don't know how to generate page path for #{@collection.class}"
         end
       end
-      export :path
+
+      def number
+        @index
+      end
+
+      export :path, :number
     end
 
     class Scope < Liquor::Drop::Scope
