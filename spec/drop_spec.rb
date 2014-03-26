@@ -125,6 +125,9 @@ describe Liquor::Drop do
   it "should support except" do
     res = exec(%|{% for user in: users.except(users.find_by(login: 'xnutsive')) do: %}{{ user.login }},{% end for %}|, users: User.to_drop)
     res.split(',').sort.should == %w(me dhh).sort
+
+    res = exec(%|{% for user in: users.except([users.find_by(login: 'xnutsive'), users.find_by(login: 'dhh')]) do: %}{{ user.login }},{% end for %}|, users: User.to_drop)
+    res.split(',').sort.should == %w(me).sort
   end
 
   it "should support find_except_by" do

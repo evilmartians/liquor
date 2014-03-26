@@ -44,7 +44,7 @@ module Liquor
     def except(record)
       record, = Drop.unwrap_scope_arguments([ record ])
 
-      result = @source.where(@source.arel_table[:id].eq(record).not)
+      result = @source.where(@source.arel_table[:id].in(record).not)
       DropDelegation.wrap_scope(result)
     end
 
