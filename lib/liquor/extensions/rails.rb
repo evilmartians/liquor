@@ -36,7 +36,18 @@ module Liquor::Rails
     export :url, :path, :referer
 
     def param(arg, kw={})
-      @request.params[arg.to_s]
+      escape_params(@request.params)[arg.to_s]
+    end
+
+    def escape_params(input)
+      case input
+      when String
+        Rack::Utils.escape_html(input)
+      when Array
+        input.map &method(:escape_params)
+      when Hash
+        Hash[input.map { |k, v| [k.to_s, escape_params(v)] }]
+      end
     end
 
     export :param
