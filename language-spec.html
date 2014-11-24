@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+    
+
+    <title>Liquor 2.0 Language Specification</title>
+    <meta name="generator" content="kramdown 1.4.2" />
+  </head>
+  <body>
+  <style>
+body {
+  margin: 0 auto;
+  color: #444444;
+  line-height: 1;
+  max-width: 960px;
+  padding: 30px;
+}
+h1, h2, h3, h4 {
+  color: #111111;
+  font-weight: 400;
+}
+h1, h2, h3, h4, h5 {
+  margin-bottom: 24px;
+  padding: 0;
+}
+h1 {
+  font-size: 48px;
+}
+h2 {
+  font-size: 36px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 21px;
+}
+h5 {
+  font-size: 18px;
+}
+a {
+  color: #0099ff;
+  margin: 0;
+  padding: 0;
+  vertical-align: baseline;
+}
+a:visited {
+  color: #0047ff;
+}
+a:hover {
+  text-decoration: none;
+  color: #ff6600;
+}
+li {
+  line-height: 24px;
+}
+p, ul, ol {
+  font-size: 16px;
+  line-height: 24px;
+  max-width: 740px;
+  margin-bottom: 14px;
+}
+pre {
+  padding: 0px 24px;
+  max-width: 800px;
+  white-space: pre-wrap;
+}
+code {
+  line-height: 1.5;
+  font-size: 13px;
+  background: #E9E8E7;
+}
+pre > code {
+  border: none;
+  background: none;
+}
+#markdown-toc, #markdown-toc ul {
+  list-style-type: none;
+  margin: 0 0 0 1em;
+  padding: 0;
+}
+#markdown-toc {
+  margin: 20px 0 0 0;
+}
+code, dd {
+  font-family: Consolas, Monaco, Andale Mono, monospace;
+}
+body, em {
+  font-family: Georgia, Palatino, serif;
+}
+dl {
+  font-size: 16px;
+  line-height: 24px;
+}
+dt {
+  font-style: italic;
+  margin-top: 10px;
+}
+dt:after {
+  font-style: normal;
+  padding-left: 0.5em;
+  content: '::';
+}
+dd strong, code {
+  padding: 1px;
+  border: 1px solid #E0DDDA;
+  border-radius: 0.2em;
+}
+</style>
+
+<h1 id="liquor-20-language-specification">Liquor 2.0 Language Specification</h1>
+
+<h2 id="table-of-contents">Table of Contents</h2>
+
+<ul id="markdown-toc">
+  <li><a href="#liquor-20-language-specification">Liquor 2.0 Language Specification</a>    <ul>
+      <li><a href="#table-of-contents">Table of Contents</a></li>
+      <li><a href="#preface">1 Preface</a></li>
+      <li><a href="#overview">2 Overview</a>        <ul>
+          <li><a href="#introduction">2.1 Introduction</a></li>
+          <li><a href="#types-and-values">2.2 Types and Values</a></li>
+          <li><a href="#type-conversion">2.3 Type Conversion</a></li>
+          <li><a href="#expressions">2.4 Expressions</a>            <ul>
+              <li><a href="#literals">2.4.1 Literals</a></li>
+              <li><a href="#operators">2.4.2 Operators</a>                <ul>
+                  <li><a href="#arithmetic-operators">2.4.2.1 Arithmetic Operators</a></li>
+                  <li><a href="#boolean-operators">2.4.2.2 Boolean Operators</a></li>
+                  <li><a href="#comparison-operators">2.4.2.3 Comparison Operators</a></li>
+                  <li><a href="#indexing-operator">2.4.2.4 Indexing Operator</a></li>
+                </ul>
+              </li>
+              <li><a href="#function-calls">2.4.3 Function Calls</a></li>
+              <li><a href="#access-operators">2.4.4 Access Operators</a></li>
+              <li><a href="#variable-access">2.4.5 Variable Access</a></li>
+              <li><a href="#filter-expressions">2.4.6 Filter Expressions</a></li>
+            </ul>
+          </li>
+          <li><a href="#blocks">2.5 Blocks</a></li>
+          <li><a href="#interpolations">2.6 Interpolations</a></li>
+          <li><a href="#tags">2.7 Tags</a></li>
+        </ul>
+      </li>
+      <li><a href="#grammar">3 Grammar</a>        <ul>
+          <li><a href="#basic-syntax">3.1 Basic Syntax</a></li>
+          <li><a href="#expressions-1">3.2 Expressions</a></li>
+          <li><a href="#blocks-1">3.3 Blocks</a></li>
+        </ul>
+      </li>
+      <li><a href="#compile-time-behavior">4 Compile-time Behavior</a>        <ul>
+          <li><a href="#compile-time-errors">4.1 Errors</a>            <ul>
+              <li><a href="#syntax-error">4.1.1 Syntax Error</a></li>
+              <li><a href="#argument-error">4.1.2 Argument Error</a></li>
+              <li><a href="#name-error">4.1.3 Name Error</a></li>
+            </ul>
+          </li>
+          <li><a href="#scope-resolution">4.2 Scope Resolution</a></li>
+        </ul>
+      </li>
+      <li><a href="#runtime-behavior">5 Runtime Behavior</a>        <ul>
+          <li><a href="#type-error">5.1 Type Error</a></li>
+          <li><a href="#external-error">5.2 External Error</a></li>
+          <li><a href="#the-dummy-external">5.3 The dummy external</a></li>
+        </ul>
+      </li>
+      <li><a href="#builtins">6 Builtins</a>        <ul>
+          <li><a href="#builtin-tags">6.1 Required tags</a>            <ul>
+              <li><a href="#declare">6.1.1 declare</a></li>
+              <li><a href="#assign">6.1.2 assign</a></li>
+              <li><a href="#for">6.1.3 for</a>                <ul>
+                  <li><a href="#for-loop-external">6.1.3.1 for loop external</a></li>
+                </ul>
+              </li>
+              <li><a href="#if">6.1.4 if</a></li>
+              <li><a href="#unless">6.1.5 unless</a></li>
+              <li><a href="#capture">6.1.6 capture</a></li>
+              <li><a href="#contentfor">6.1.7 content_for</a></li>
+              <li><a href="#yield">6.1.8 yield</a></li>
+              <li><a href="#include">6.1.9 include</a></li>
+            </ul>
+          </li>
+          <li><a href="#functions">6.2 Functions</a>            <ul>
+              <li><a href="#universal-functions">6.2.1 Universal functions</a>                <ul>
+                  <li><a href="#isempty">6.2.1.1 is_empty</a></li>
+                  <li><a href="#size">6.2.1.2 size</a></li>
+                </ul>
+              </li>
+              <li><a href="#conversion-functions">6.2.2 Conversion functions</a>                <ul>
+                  <li><a href="#strftime">6.2.2.1 strftime</a></li>
+                  <li><a href="#tonumber">6.2.2.2 to_number</a></li>
+                </ul>
+              </li>
+              <li><a href="#integer-functions">6.2.3 Integer functions</a>                <ul>
+                  <li><a href="#iseven">6.2.3.1 is_even</a></li>
+                  <li><a href="#isodd">6.2.3.2 is_odd</a></li>
+                </ul>
+              </li>
+              <li><a href="#string-functions">6.2.4 String functions</a>                <ul>
+                  <li><a href="#downcase">6.2.4.1 downcase</a></li>
+                  <li><a href="#upcase">6.2.4.2 upcase</a></li>
+                  <li><a href="#capitalize">6.2.4.3 capitalize</a></li>
+                  <li><a href="#startswith">6.2.4.4 starts_with</a></li>
+                  <li><a href="#stripnewlines">6.2.4.5 strip_newlines</a></li>
+                  <li><a href="#join">6.2.4.6 join</a></li>
+                  <li><a href="#split">6.2.4.7 split</a></li>
+                  <li><a href="#replace">6.2.4.8 replace</a></li>
+                  <li><a href="#replacefirst">6.2.4.9 replace_first</a></li>
+                  <li><a href="#remove">6.2.4.10 remove</a></li>
+                  <li><a href="#removefirst">6.2.4.11 remove_first</a></li>
+                  <li><a href="#newlinetobr">6.2.4.12 newline_to_br</a></li>
+                  <li><a href="#urlescape">6.2.4.13 url_escape</a></li>
+                  <li><a href="#function-html-escape">6.2.4.14 html_escape</a></li>
+                  <li><a href="#htmlescapeonce-h">6.2.4.15 html_escape_once, h</a></li>
+                  <li><a href="#striphtml">6.2.4.16 strip_html</a></li>
+                  <li><a href="#decodehtmlentities">6.2.4.17 decode_html_entities</a></li>
+                </ul>
+              </li>
+              <li><a href="#tuple-functions">6.2.5 Tuple functions</a>                <ul>
+                  <li><a href="#compact">6.2.5.1 compact</a></li>
+                  <li><a href="#reverse">6.2.5.2 reverse</a></li>
+                  <li><a href="#uniq">6.2.5.3 uniq</a></li>
+                  <li><a href="#function-min">6.2.5.4 min</a></li>
+                  <li><a href="#max">6.2.5.5 max</a></li>
+                  <li><a href="#ingroupsof">6.2.5.6 in_groups_of</a></li>
+                  <li><a href="#ingroups">6.2.5.7 in_groups</a></li>
+                  <li><a href="#includes">6.2.5.8 includes</a></li>
+                  <li><a href="#indexof">6.2.5.9 index_of</a></li>
+                </ul>
+              </li>
+              <li><a href="#truncation-functions">6.2.6 Truncation functions</a>                <ul>
+                  <li><a href="#function-truncate">6.2.6.1 truncate</a></li>
+                  <li><a href="#truncatewords">6.2.6.2 truncate_words</a></li>
+                  <li><a href="#htmltruncate">6.2.6.3 html_truncate</a></li>
+                  <li><a href="#htmltruncatewords">6.2.6.4 html_truncate_words</a></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><a href="#appendix-layouts">7 Layouts</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="preface">1 Preface</h2>
+
+<p>Liquor 2.0 language is developed with several goals in mind.</p>
+
+<ul>
+  <li>First, it should be secure. There must not be a way to bypass sandbox restrictions.</li>
+  <li>Second, it should not necessarily be compatible with Liquor 1.0, but should not have vastly different syntax. Liquor 1.0 syntax is easy to understand by frontend developers, and it should remain so.</li>
+  <li>Third, it should be as much statically verifiable as it is rationally possible. The amount of errors which can be detected only at runtime should be minimal. This will also lead to efficient implementations.</li>
+  <li>Fourth, it should be elegant and minimalistic.</li>
+</ul>
+
+<p>This specification is primarily targeted at language implementors.</p>
+
+<h2 id="overview">2 Overview</h2>
+
+<h3 id="introduction">2.1 Introduction</h3>
+
+<p>Liquor 2.0 language is a templating language for text-based content, e.g. HTML pages. As Liquor is a templating language, it is useless without extension with domain-specific features from a host environment; it is similar to <a href="http://www.lua.org/">Lua</a> in this aspect.</p>
+
+<p>Liquor is meant to be statically compiled to another language for efficiency, typically to the one the host environment is executed in. It also provides sandbox restrictions, which allow Liquor code to invoke certain methods on the host objects, but only ones explicitly marked as scriptable.</p>
+
+<p>Liquor is a statically scoped, weakly and dynamically typed imperative language with lazily evaluated expressions. As it is essentially a domain-specific language for string concatenation, it has an unusual syntax where code is embedded in a text stream, and a final result of executing a Liquor program is always a string. All language constructs are similarly centered around string manipulation.</p>
+
+<p>Liquor has four basic elements: <em>blocks</em>, <em>tags</em>, <em>interpolations</em> and <em>expressions</em>. All four of these elements can be <em>executed</em> and return a value. <em>Blocks</em>, <em>tags</em> and <em>interpolations</em> always return a string value.</p>
+
+<p>Liquor does not have non-local control flow constructs by itself, such as exceptions and function definitions. This was done intentionally in order to simplify the language.</p>
+
+<p>Liquor has distinct compile-time and runtime error checking. There are no fatal runtime errors, i.e. a Liquor program always evaluates to some value.</p>
+
+<h3 id="types-and-values">2.2 Types and Values</h3>
+
+<p>Liquor has the following basic types: <strong>Null</strong>, <strong>Boolean</strong>, <strong>Integer</strong>, <strong>String</strong>, <strong>Tuple</strong> and <strong>External</strong>. A value of every type except <strong>External</strong> can be created from within a Liquor program. Values of type <strong>External</strong> can only be returned by the host environment.</p>
+
+<p>All Liquor values are immutable; once created, a value cannot change.</p>
+
+<p>There is exactly one value of type <strong>Null</strong>, and it is called <em>null</em>.</p>
+
+<p>There are exactly two values of type <strong>Boolean</strong>, and they are called <em>true</em> and <em>false</em>.</p>
+
+<p>The only values considered “falseful” in a conditional context are <em>null</em> and <em>false</em>. Every other value, including <strong>Integer</strong> 0 (zero), is considered “truthful”.</p>
+
+<p>Type <strong>Integer</strong> denotes an integer value of unspecified size. Implementation may impose additional restrictions on the representable range of <strong>Integer</strong> type.</p>
+
+<p>Type <strong>String</strong> denotes a sequence of <a href="http://unicode.org/">Unicode</a> codepoints. Note that codepoints are not the same as characters or graphemes; there may exist an implementation-specific way of handling composite characters. See also the relevant <a href="http://www.unicode.org/faq/char_combmark.html">Unicode FAQ entry</a>.</p>
+
+<p>Type <strong>Tuple</strong> denotes a heteromorphic sequence of values.</p>
+
+<p>Type <strong>External</strong> denotes an object belonging to the host environment.</p>
+
+<h3 id="type-conversion">2.3 Type Conversion</h3>
+
+<p>Liquor supports exactly one implicit type conversion. In any context where a <strong>String</strong> value is expected, an <strong>Integer</strong> value can be provided. The <strong>Integer</strong> value will then be converted to a corresponding decimal ASCII representation without any leading zeroes.</p>
+
+<h3 id="expressions">2.4 Expressions</h3>
+
+<p>Liquor features <em>expressions</em>, which can be used to perform computations with values. This section does not define a normative grammar; the full grammar is provided in section <a href="#grammar">Grammar</a>.</p>
+
+<p>Order of evaluation of Liquor expressions is not defined. As every value is immutable, the value of the entire expression should not depend upon the order of evaluation. Implementation-provided functions must not access or mutate global state; implementation-provided tags may access or mutate global state, but this is highly discouraged.</p>
+
+<h4 id="literals">2.4.1 Literals</h4>
+
+<p>All Liquor types except <strong>External</strong> can be specified as literals in expressions.</p>
+
+<p>Identifiers <em>null</em>, <em>true</em> and <em>false</em> evaluate to the corresponding values.</p>
+
+<p>Numeric literals evaluate to a corresponding <strong>Integer</strong> value, and always use base 10. Numeric literals can be specified with any amount of leading zeroes. There are no negative numeric literals.</p>
+
+<p>String literals evaluate to a corresponding <strong>String</strong> value. String literals can be equivalently specified with single or double quotes. Strings support escaping with backslash, and there are exactly two escape sequences: one inserts a literal backslash, and the other one inserts a literal quote. More specifically, single quoted string supports escape sequences <code>\\</code> and <code>\'</code>, and double quoted string supports escape sequences <code>\\</code> and <code>\"</code>. A single backslash followed by any character not specified above is translated to a literal backslash.</p>
+
+<p>Tuple literals evaluate to a corresponding <strong>Tuple</strong> value. Tuple literals are surrounded by square brackets and delimited with commas; that is, <code>[ 1, 2, 3 ]</code> is a tuple literal containing three integer values, one, two and three, in that exact order.</p>
+
+<h4 id="operators">2.4.2 Operators</h4>
+
+<p>Liquor supports unary and binary infix operators in expressions. All operators are left-associative.</p>
+
+<p>Liquor operators are listed in order of precedence, from highest to lowest, by the following table:</p>
+
+<ol>
+  <li><code>[]</code>, <code>.</code>, <code>()</code>, <code>.()</code></li>
+  <li>unary <code>-</code>, <code>!</code></li>
+  <li><code>*</code>, <code>/</code>, <code>%</code></li>
+  <li><code>+</code>, binary <code>-</code></li>
+  <li><code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code></li>
+  <li><code>&amp;&amp;</code></li>
+  <li><code>||</code></li>
+</ol>
+
+<p>The following operators are infix and binary: <code>*</code>, <code>/</code>, <code>%</code>, <code>+</code>, <code>-</code>, <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>&amp;&amp;</code>, <code>||</code>.
+The following operators are infix and unary: <code>-</code>, <code>!</code>.</p>
+
+<p>The operators <code>[]</code>, <code>.</code>, <code>()</code>, <code>.()</code> are not infix and are provided in this table only to define precedence rules.</p>
+
+<h5 id="arithmetic-operators">2.4.2.1 Arithmetic Operators</h5>
+
+<p>Arithmetic operators are <code>*</code> (multiplication), <code>/</code> (division), <code>%</code> (modulo), <code>+</code> (plus) and <code>-</code> (minus; binary and unary).</p>
+
+<p>All arithmetic operators except <code>+</code>, whether unary or binary, require every argument to be of type <strong>Integer</strong>. If this is not the case, a runtime error condition (<a href="#type-error">type error</a>) is signaled.</p>
+
+<p>Operator <code>+</code> requires both arguments to be of the same type, and only accepts arguments of type <strong>Integer</strong>, <strong>String</strong> or <strong>Tuple</strong>. If any of the conditions is not satisfied, a runtime error condition (<a href="#type-error">type error</a>) is signaled. For arguments of type <strong>String</strong> or <strong>Tuple</strong>, the <code>+</code> operator evaluates to the concatenation of left and right arguments in that order.</p>
+
+<p>If the result of an arithmetic operation, except operator <code>+</code> with non-<strong>Integer</strong> arguments, exceeds the range an implementation can represent, the behavior is implementation-defined.</p>
+
+<h5 id="boolean-operators">2.4.2.2 Boolean Operators</h5>
+
+<p>Boolean operators are <code>!</code> (not; unary), <code>&amp;&amp;</code> (and) and <code>||</code> (or).</p>
+
+<p>All boolean operators, whether unary or binary, convert each argument to type <strong>Boolean</strong> prior to evaluation. The rules of conversion are:</p>
+
+<ol>
+  <li>If the value equals <em>null</em> or <em>false</em>, it is assumed to be <em>false</em>.</li>
+  <li>Else, the value is assumed to be <em>true</em>.</li>
+</ol>
+
+<p>All boolean operators return a value of type <strong>Boolean</strong>. Binary boolean operators do not provide any guarantees on order or sequence of evaluation. However, a correct implementation which does not feature functions with side effects will not suffer from this behavior.</p>
+
+<h5 id="comparison-operators">2.4.2.3 Comparison Operators</h5>
+
+<p>Comparison operators are <code>==</code> (equals), <code>!=</code> (not equals), <code>&lt;</code> (less), <code>&lt;=</code> (less or equal), <code>&gt;</code> (greater) and <code>&gt;=</code> (greater or equal).</p>
+
+<p>Operators <code>==</code> and <code>!=</code> compare values by equality, not identity. Thus, the expression <code>[ 1, 2 ] == [ 1, 2 ]</code> evluates to <em>true</em>. These operators never signal an error condition or implicitly convert types.</p>
+
+<p>Operators <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code> and <code>&gt;=</code> require both arguments to be of type <strong>Integer</strong>. If this is not the case, a runtime error condition (<a href="#type-error">type error</a>) is signaled. Otherwise, a corresponding value of type <strong>Boolean</strong> is returned.</p>
+
+<h5 id="indexing-operator">2.4.2.4 Indexing Operator</h5>
+
+<p>Indexing operator is <code>[]</code>.</p>
+
+<p>Indexing operator requires its left-hand side argument to be of type <strong>Tuple</strong> or <strong>External</strong>, and right-hand side argument to be of type <strong>Integer</strong>. If this is not the case, a runtime error condition (<a href="#type-error">type error</a>) is signaled.</p>
+
+<p>If the left-hand side argument is of type <strong>External</strong>, the behavior is implementation-defined. A runtime error condition (<a href="#external-error">external error</a>) is signaled if the particular external value does not support indexing.</p>
+
+<p>Indexing operator of form <code><em>t</em>[<em>n</em>]</code> evaluates to <em>n</em>-th value from tuple <em>t</em> with zero-based indexing. If <code>n</code> is negative, then <em>n</em>+1-th element from the end of tuple is returned. For example, <code><em>t</em>[-1]</code> will evaluate to the last element of the tuple <em>t</em>.</p>
+
+<p>If the requested element does not exist in the tuple, the indexing operator evaluates to <em>null</em>.</p>
+
+<h4 id="function-calls">2.4.3 Function Calls</h4>
+
+<p>Identifiers can be bound to functions prior to compilation. Identifiers <em>null</em>, <em>true</em> and <em>false</em> cannot be bound to a function.</p>
+
+<p>Functions are defined in an implementation-specific way. Functions can have zero to one unnamed formal parameters and any amount of named formal parameters. If an unnamed formal parameter is accepted, it is mandatory. Named formal parameters can be either mandatory or optional. Absence of a mandatory formal parameter will result in a compile-time error (<a href="#argument-error">argument error</a>). Named formal parameter order is irrelevant.</p>
+
+<p>Function calls have mandatory parentheses, and arguments are whitespace-delimited.</p>
+
+<p>If a function call includes two named parameters with the same name, a compile-time error (<a href="#syntax-error">syntax error</a>) is raised.</p>
+
+<p>If a hypothetical function <em>substr</em> has one unnamed formal parameter and two optional named formal parameters <em>from</em> and <em>length</em>, then all of the following expressions are syntactically valid and will not result in a compile-time error: <code>substr("foobar")</code>, <code>substr("foobar" from: 1)</code>, <code>substr("foobar" from: 1 length:(5 - 2))</code>. The following expression, however, is syntactically valid but will result in a compile-time error: <code>substr(from: 1)</code>.</p>
+
+<h4 id="access-operators">2.4.4 Access Operators</h4>
+
+<p>Access operators are <code>.</code> and <code>.()</code>.</p>
+
+<p>The <code>.</code> form is syntactic sugar for <code>.()</code> form without any arguments. That is, <code><em>e</em>.<em>f</em></code> is completely equivalent to <code><em>e</em>.<em>f</em>()</code>.</p>
+
+<p>Access operator requires its left-hand side argument to be of type <strong>External</strong>. If this is not the case, a runtime error condition (<a href="#type-error">type error</a>) is signaled.</p>
+
+<p>Access operator of form <code><em>e</em>.<em>f</em>(<em>arg</em> <em>kw:</em> <em>value</em>)</code> evaluates to the result of calling method <em>f</em> of external object <em>e</em> with the corresponding arguments. Argument syntax is the same as for <a href="#function-calls">function calls</a>.</p>
+
+<p>This evaluation is done in an implementation-defined way. Access operator can evaluate to any type.</p>
+
+<p>If the requested method does not exist in the external object or cannot successfully evaluate, a runtime error condition (<a href="#external-error">external error</a>) is signaled. Errors in the called method must not interrupt execution of the calling Liquor program.</p>
+
+<h4 id="variable-access">2.4.5 Variable Access</h4>
+
+<p>Every identifier except <em>null</em>, <em>true</em> and <em>false</em> which is not bound to a function name is available to be bound as a variable name. Such identifier would evaluate to a value of the variable.</p>
+
+<p>Variable definition and scoping will be further discussed in section <a href="#tags">Tags</a>.</p>
+
+<p>Referencing an undefined variable will result in a compile-time error (<a href="#name-error">name error</a>).</p>
+
+<h4 id="filter-expressions">2.4.6 Filter Expressions</h4>
+
+<p>Filter expressions are a syntactic sugar for chaining method calls.</p>
+
+<p>Filter expressions consist of a linear chain of function calls where <em>n</em>-th function’s return value is passed to <em>n+1</em>-th function’s unnamed parameter. Named parameters may be specified without parentheses within a corresponding chain element.</p>
+
+<p>All functions used in a filter expression should accept an unnamed parameter. If this is not the case, a compile-time error (<a href="#argument-error">argument error</a>) is raised. Semantics of mandatory and optional named parameters are the same as for <a href="#function-calls">regular function calls</a>.</p>
+
+<p>
+In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent to <code><em>g</em>(<em>f</em>(<em>e</em>() a: 1))</code>.
+</p>
+
+<h3 id="blocks">2.5 Blocks</h3>
+
+<p>A block is a chunk of plaintext with <em>tags</em> and <em>interpolations</em> embedded into it. Every Liquor program has at least one block: the toplevel one.</p>
+
+<p>A block consisting only of plaintext would return its literal value upon execution. Thus, the famous Hello World program would be as follows:</p>
+
+<pre><code>Hello World!
+</code></pre>
+
+<p>This program would evaluate to a string <code>Hello World!</code>.</p>
+
+<p>A block can have other elements embedded into it. When such a block is executed, these elements are executed in lexical order and are replaced with the value returned by the element.</p>
+
+<h3 id="interpolations">2.6 Interpolations</h3>
+
+<p>An interpolation is a syntactic construct of form <code>{{ expr }}</code> which can be embedded in a block. The expression <code>expr</code> should evaluate to a value of type <strong>String</strong> or <strong>Null</strong>; an <a href="#type-conversion">implicit conversion</a> might take place. If this is not the case, a runtime error condition (<a href="#type-error">type error</a>) is signaled.</p>
+
+<p>If <em>expr</em> evaluates to a <strong>String</strong>, the interpolation returns it. Otherwise, the interpolation returns an empty string.</p>
+
+<p>An example of using an interpolation would be:</p>
+
+<pre><code>The sum of two and three is: {{ 2 + 3 }}
+</code></pre>
+
+<p>This program would evaluate to a string <code>The sum of two and three is: 5</code>.</p>
+
+<h3 id="tags">2.7 Tags</h3>
+
+<p>A tag is a syntactic construct of form <code>{% tag expr kw: arg do: %} ... {% end  tag %}</code>. A tag has a syntax similar to a function call, but it can receive blocks of code as argument values and lazily evaluate passed expressions and blocks of code.</p>
+
+<p>Tags have full control upon parameter evaluation. Tags can require arguments to be of a certain lexical form, e.g. a <code>for</code> tag could require its unnamed formal parameter to be a lexical identifier.</p>
+
+<p>To pass a block of code to a tag, the closing tag delimiter should immediately follow a parameter name. Everything from the closing tag delimiter to the matching opening tag delimiter should be parsed as a block and passed as a value of the corresponding parameter. After the matching opening tag delimiter, the parameter list is continued.</p>
+
+<p>If a tag <code><em>t</em></code> does not include any embedded blocks, it ends after a first matching closing tag delimiter. Otherwise, the tag ends after a first matching construct of the form <code>{% end <em>t</em> %}</code>.</p>
+
+<p>Unlike functions, tags can receive multiple named parameters with the same name. Named parameters of tags are a syntactic tool and should be thoroughly verified by the implementation. Specifying incorrect names or order of named parameters may result in a compile-time error (<a href="#syntax-error">syntax error</a>).</p>
+
+<p>All of the following are examples of syntactically valid tags:</p>
+
+<pre><code>{% yield %}
+
+{% if var &gt; 10 do: %}
+  Var is greater than 10.
+{% end if %}
+
+{% for i in: [ 1, 2, 3 ] do: %}
+  Value: {{ i }}
+{% end for %}
+
+{% if length(params.test) == 1 then: %}
+  Test has length 1.
+{% elsif: length(params.test) == 2 then: %}
+  Test has length 2.
+{% else: %}
+  Test has unidentified length.
+{% end if %}
+
+{% capture "buffer" do: %}
+  This text will be printed twice.
+{% end capture %}
+{% yield from: "buffer" %}
+{% yield from: "buffer" %}
+</code></pre>
+
+<h2 id="grammar">3 Grammar</h2>
+
+<p>The following Extended Backus-Naur Form grammar is normative. The native character set of Liquor is Unicode, and every character literal specified is an explicit codepoint.</p>
+
+<p>Statement <code><em>a</em> to <em>b</em></code> is equivalent to codepoint set which includes every codepoint from <em>a</em> to <em>b</em> inclusive. Statement <code><em>a</em> except <em>b</em></code> means that both <em>a</em> and <em>b</em> are tokens which consist of exactly one codepoint, and every character satisfying <em>a</em> and not satisfying in <em>b</em> is accepted. Statement <code>lookahead <em>a</em></code> means that the current token should only be produced if the codepoint immediately following it satisfies <em>a</em>.</p>
+
+<p>Strictly speaking, this grammar lies within <em>GLR</em> domain, but if, as it is usually the case, an implementation has separate lexer and parser, a <em>LALR(1)</em> parser could be used. This will be further explained in section <a href="#blocks-1">Blocks</a>.</p>
+
+<h3 id="basic-syntax">3.1 Basic Syntax</h3>
+
+<dl>
+  <dt>Whitespace</dt>
+  <dd><strong>U+0007</strong> | <strong>U+000A</strong> | <strong>U+0020</strong></dd>
+  <dt>Alpha</dt>
+  <dd><strong>a</strong> to <strong>z</strong> | <strong>A</strong> to <strong>Z</strong></dd>
+  <dt>Digit</dt>
+  <dd><strong>0</strong> to <strong>9</strong></dd>
+  <dt>Any</dt>
+  <dd>any Unicode character</dd>
+  <dt>Symbol</dt>
+  <dd><em>Alpha</em> | <strong>_</strong></dd>
+  <dt>Identifier</dt>
+  <dd><em>Symbol</em> ( <em>Symbol</em> | <em>Digit</em> )* lookahead ( <em>Any</em> except <strong>:</strong> )</dd>
+  <dt>Keyword</dt>
+  <dd><em>Symbol</em> ( <em>Symbol</em> | <em>Digit</em> )* <strong>:</strong></dd>
+  <dd><strong>=</strong></dd>
+  <dt>IntegerLiteral</dt>
+  <dd><em>Digit</em>+ lookahead ( <em>Any</em> except <em>Symbol</em> )</dd>
+  <dt>StringLiteral</dt>
+  <dd><strong>"</strong> ( <strong>\\</strong>  | <strong>\"</strong> | <em>Any</em> except <strong>"</strong> )* <strong>"</strong></dd>
+  <dd><strong>'</strong> ( <strong>\\</strong>  | <strong>\'</strong> | <em>Any</em> except <strong>'</strong> )* <strong>'</strong></dd>
+  <dt>TupleLiteral</dt>
+  <dd><strong>[</strong> <em>TupleLiteralContent</em> <strong>]</strong></dd>
+  <dt>TupleLiteralContent</dt>
+  <dd><em>Expression</em> <strong>,</strong> <em>TupleLiteralContent</em></dd>
+  <dd><em>Expression</em></dd>
+  <dd>empty</dd>
+</dl>
+
+<h3 id="expressions-1">3.2 Expressions</h3>
+
+<p>Operator precedence table is provided in section <a href="#operators">Operators</a>.</p>
+
+<dl>
+  <dt>PrimaryExpression</dt>
+  <dd><em>Identifier</em></dd>
+  <dd><strong>(</strong> <em>Expression</em> <strong>)</strong></dd>
+  <dt>Expression</dt>
+  <dd><em>IntegerLiteral</em></dd>
+  <dd><em>StringLiteral</em></dd>
+  <dd><em>TupleLiteral</em></dd>
+  <dd><em>Identifier</em> <em>FunctionArguments</em></dd>
+  <dd><em>PrimaryExpression</em> <strong>[</strong> <em>Expression</em> <strong>]</strong></dd>
+  <dd><em>Expression</em> <strong>.</strong> <em>Identifier</em>  <em>FunctionArguments</em>?</dd>
+  <dd><strong>-</strong> <em>Expression</em></dd>
+  <dd><strong>!</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>*</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>/</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>%</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>+</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>-</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>==</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>!=</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>&lt;</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>&lt;=</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>&gt;</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>&gt;=</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>&amp;&amp;</strong> <em>Expression</em></dd>
+  <dd><em>Expression</em> <strong>||</strong> <em>Expression</em></dd>
+  <dt>KeywordArguments</dt>
+  <dd>( <em>Keyword</em> <em>Expression</em> )*</dd>
+  <dt>FunctionArguments</dt>
+  <dd><strong>(</strong> <em>Expression</em>? <em>KeywordArguments</em> <strong>)</strong></dd>
+  <dt>FilterChain</dt>
+  <dd><em>Expression</em> <strong>|</strong> <em>FilterChainContinuation</em></dd>
+  <dt>FilterChainContinuation</dt>
+  <dd><em>FilterFunctionCall</em> <strong>|</strong> <em>FilterChainContinuation</em></dd>
+  <dd><em>FilterFunctionCall</em></dd>
+  <dt>FilterFunctionCall</dt>
+  <dd><em>Identifier</em> <em>FunctionKeywordArguments</em></dd>
+</dl>
+
+<h3 id="blocks-1">3.3 Blocks</h3>
+
+<p>Inside a <em>Tag</em> or <em>Interpolation</em> body any <em>Whitespace</em> is used to separate adjacent tokens, but is otherwise ignored. The cases where naïvely removing <em>Whitespace</em> would cause ambiguity can be determined by watching for <code>lookahead</code> clauses.</p>
+
+<p>The <em>Tag</em>, <em>TagFirstContinuation</em> and <em>EndTag</em> production rules deviate from canonical <em>LR(1)</em> grammar structure. To parse these rules correctly, a <em>LALR(1)</em> parser should maintain a stack of tag identifiers and correctly decide on ambiguous reduction of rules <em>Identifier</em> and <em>EndTag</em>.</p>
+
+<p>When the parser follows the second reduction for rule <em>TagFirstContinuation</em>, it should push the corresponding <em>Tag</em> <em>Identifier</em> on the top of the tag stack.</p>
+
+<p>When the parser is about to decide whether it should reduce the sequence satisfying <em>Identifier</em> to <em>EndTag</em> or leave it as is, it should only reduce the sequence to <em>EndTag</em> if the <em>Identifier</em> part of the <em>EndTag</em> rule equals the value at the top of the tag stack. If this is the case, the topmost value is popped from the tag stack.</p>
+
+<dl>
+  <dt>Block</dt>
+  <dd><em>Plaintext</em> <em>Block</em></dd>
+  <dd><em>Interpolation</em> <em>Block</em></dd>
+  <dd><em>Tag</em> <em>Block</em></dd>
+  <dd><em>Comment</em> <em>Block</em></dd>
+  <dd>empty</dd>
+  <dt>Comment</dt>
+  <dd><strong>{!</strong> ( <em>Comment</em> | <em>Any</em>* )+  <strong>!}</strong></dd>
+  <dt>Plaintext</dt>
+  <dd>( <em>Any</em> except <strong>{</strong> | <strong>{</strong> <em>Any</em> except ( <strong>{</strong> | <strong>%</strong> ) )+</dd>
+  <dt>Interpolation</dt>
+  <dd><strong>{{</strong> ( <em>Expression</em> | <em>FilterChain</em> ) <strong>}}</strong></dd>
+  <dt>Tag</dt>
+  <dd><strong>{%</strong> <em>Identifier</em> <em>Expression</em>? <em>KeywordArguments</em> <em>TagFirstContinuation</em></dd>
+  <dt>TagFirstContinuation</dt>
+  <dd><strong>%}</strong></dd>
+  <dd><em>TagBlock</em> <em>TagNextContinuation</em></dd>
+  <dt>TagNextContinuation</dt>
+  <dd><em>KeywordArguments</em> <em>TagBlock</em> <em>TagNextContinuation</em></dd>
+  <dd><em>EndTag</em> <strong>%}</strong></dd>
+  <dt>TagBlock</dt>
+  <dd><em>Keyword</em> <strong>%}</strong> <em>Block</em> <strong>{%</strong></dd>
+  <dt>EndTag</dt>
+  <dd><strong>end</strong> <strong>U+0020</strong> <em>Identifier</em> at the top of tag stack</dd>
+</dl>
+
+<h2 id="compile-time-behavior">4 Compile-time Behavior</h2>
+
+<p>Liquor compiling process consists of three distinct parts: <em>parsing</em>, <em>scope resolution</em> and <em>translation</em>. Each stage includes exhaustive error checking; additionally, translation and scope resolution are heavily dependent on the defined tags and their behavior.</p>
+
+<h3 id="compile-time-errors">4.1 Errors</h3>
+
+<p>To ease development process, an implementation generally should not stop compilation after encountering an error. As an exception to the general rule, implementation must stop parsing and abandon any intermediate result after encountering a syntax error. Rationale to this behavior is that with Liquor’s interleaved structure, successful error recovery after parsing errors is unlikely.</p>
+
+<p>Every error must carry precise location information: in particular, an error location must feature <em>line</em>, <em>start column</em> and <em>end column</em>.</p>
+
+<p>The following algorithm can be used to calculate precise location information for every Unicode character in the source code:</p>
+
+<ol>
+  <li>The initial line and column numbers equal 1.</li>
+  <li>For each character in the source, in order, perform the following:
+    <ol>
+      <li>If the character is <strong>U+000A</strong>, increase line number by 1 and set column number to 1.</li>
+      <li>If the character is <strong>U+0007</strong>, increase column number by 1 until it equals zero modulo 8. If the column number already equals zero modulo 8, increase it by 8.</li>
+      <li>If the character is a combining character, the implementation may recognize this fact and do nothing.</li>
+      <li>If nothing of the above applies, increase column number by 1.</li>
+    </ol>
+  </li>
+</ol>
+
+<p>This algorithm, unlike the rest of Liquor, is specified in terms of characters and not codepoints. This means that an implementation must recognize surrogate pairs and compose them into one character.</p>
+
+<h4 id="syntax-error">4.1.1 Syntax Error</h4>
+
+<p>Syntax error will be signaled upon encountering any of the following conditions:</p>
+
+<ol>
+  <li>Parsing failure (section <a href="#grammar">Grammar</a>)</li>
+  <li>Duplicate function keyword arguments (section <a href="#function-calls">Function Calls</a>)</li>
+  <li>Incorrect tag syntax (section <a href="#tags">Tags</a>)</li>
+</ol>
+
+<p>Syntax errors must include source location information and point to the exact token which caused the error.</p>
+
+<h4 id="argument-error">4.1.2 Argument Error</h4>
+
+<p>Argument error will be signaled upon encountering any of the following conditions:</p>
+
+<ol>
+  <li>Absence of a mandatory parameter, or presence of non-accepted parameter (sections <a href="#function-calls">Function Calls</a>, <a href="#tags">Tags</a>)</li>
+</ol>
+
+<p>Argument errors must include source location information and point either to the exact parameter which caused the error, or to the argument list in case of a missing parameter.</p>
+
+<h4 id="name-error">4.1.3 Name Error</h4>
+
+<p>Name error will be signaled upon encountering any of the following conditions:</p>
+
+<ol>
+  <li>Referencing an undefined variable (sections <a href="#variable-access">Variable Access</a>, <a href="#scope-resolution">Scope Resolution</a>)</li>
+  <li>Referencing an undefined function (section <a href="#function-calls">Function Calls</a>)</li>
+  <li>Encountering an undefined tag (section <a href="#tags">Tags</a>)</li>
+  <li>Trying to bind an already bound identifier (section <a href="#scope-resolution">Scope Resolution</a>)</li>
+</ol>
+
+<p>Name errors must include source location information and point to the exact token which caused the error.</p>
+
+<h3 id="scope-resolution">4.2 Scope Resolution</h3>
+
+<p><a href="#tags">Tags</a> control every aspect of scope construction and resolution.</p>
+
+<p>Basically, tags can perform three scope-related actions: <em>declare</em> a variable, <em>assign</em> a variable and create a <em>nested scope</em>.</p>
+
+<p>Declaring a variable binds the identifier to a value. To declare a variable, the identifier should not be bound in the current scope. If this is not the case, a compile-time error (<a href="#name-error">name error</a>) is raised. If the identifier is bound in an outer scope, it will be rebound in the current scope. Such a binding ceases to exist when the current scope is left.</p>
+
+<p>Assigning a variable, similarly to accessing, requires the variable to be declared in any of the scopes. Assigning a variable changes its value in the innermost scope.</p>
+
+<p>Creating a nested scope allows for shadowing of the variables. Tags must only execute contents of the passed blocks in a nested scope. Passed expressions are always executed in the tag’s scope. A tag must ensure that every scope it created will be left before the tag will finish executing.</p>
+
+<p>An implementation should have a way to inject variables into the outermost scope.</p>
+
+<h2 id="runtime-behavior">5 Runtime Behavior</h2>
+
+<p>Evaluation of Liquor programs follows lexical order for blocks, and is undefined for expressions. As all expressions are pure, this does not result in ambiguity.</p>
+
+<p>A Liquor program always evaluates to a string. Liquor recognizes the value of and attempts to produce sensible output even for partially invalid programs; to keep the codebase manageable, the runtime environment must report all runtime errors to the programmer.</p>
+
+<h3 id="type-error">5.1 Type Error</h3>
+
+<p>A type error arises when a value of certain type(s) is expected in a context, but a value of a different type is provided. In this case, the runtime records the error and substitutes the value for a zero value, respectively for every type:</p>
+
+<ul>
+  <li><strong>Null</strong>: <em>null</em>.</li>
+  <li><strong>Boolean</strong>: <em>false</em>.</li>
+  <li><strong>Integer</strong>: <em>0</em>.</li>
+  <li><strong>String</strong>: <em>"”</em>.</li>
+  <li><strong>Tuple</strong>: <em>[]</em>.</li>
+  <li><strong>External</strong>: the <a href="#dummy-external">dummy external</a>.</li>
+</ul>
+
+<h3 id="external-error">5.2 External Error</h3>
+
+<p>An external error arises when an unknown external method is called, or there is a problem evaluating the external method. In this case, the runtime records the error and returns <em>null</em> instead.</p>
+
+<h3 id="the-dummy-external">5.3 The dummy external</h3>
+
+<p>The dummy external is an external object which performs no operation when any method is called on it and returns <em>null</em>.</p>
+
+<h2 id="builtins">6 Builtins</h2>
+
+<p>Implementations must implement every builtin tag and function mentioned in this section. Implementations may implement any additional tags, but must not alter behavior of the described ones.</p>
+
+<h3 id="builtin-tags">6.1 Required tags</h3>
+
+<h4 id="declare">6.1.1 declare</h4>
+
+<p>Tag <em>declare</em> has one valid syntactic form:</p>
+
+<pre><code>{% declare <em>var</em> = <em>expr</em> %}</code></pre>
+
+<p><em>Declare</em> binds the name <em>var</em> to the result of executing <em>expr</em> in the current scope. If <em>var</em> is already bound in current scope, <em>declare</em> mutates the binding. If <em>var</em> is already bound in an outer scope, <em>declare</em> creates a new binding in the current scope.</p>
+
+<p>The <em>declare</em> tag itself evaluates to an empty string.</p>
+
+<h4 id="assign">6.1.2 assign</h4>
+
+<p>Tag <em>assign</em> has one valid syntactic form:</p>
+
+<pre><code>{% assign <em>var</em> = <em>expr</em> %}</code></pre>
+
+<p><em>Assign</em> binds the name <em>var</em> to the result of executing <em>expr</em> in the current scope. If <em>var</em> is already bound, <em>assign</em> mutates the binding.</p>
+
+<p>The <em>assign</em> tag itself evaluates to an empty string.</p>
+
+<h4 id="for">6.1.3 for</h4>
+
+<p>Tag <em>for</em> has two valid syntactic forms:</p>
+
+<pre><code>{% for <em>var</em> in: <em>list</em> do: %}
+  <em>code</em>
+{% end for %}</code></pre>
+
+<pre><code>{% for <em>var</em> from: <em>lower-limit</em> to: <em>upper-limit</em> do: %}
+  <em>code</em>
+{% end for %}</code></pre>
+
+<p>In the <em>for..in</em> form, this tag invokes <em>code</em> with <em>var</em> bound to each element of <em>list</em> sequentally. If <em>list</em> is not a <em>Tuple</em>, a runtime error condition (<a href="#type-error">type error</a>) is signaled.</p>
+
+<p>In the <em>for..from..to</em> form, this tag invokes <em>code</em> with <em>var</em> bound to each integer between <em>lower-limit</em> and <em>upper-limit</em>, inclusive. If <em>lower-limit</em> or <em>upper-limit</em> is not an <em>Integer</em>, a runtime error condition (<a href="#type-error">type error</a>) is signaled.</p>
+
+<p>Both forms of the tag also bind a special <em>var</em>_loop variable to the [for loop external]{#for-external}.</p>
+
+<p>The <em>for</em> tag evaluates to the concatenation of the values its <em>code</em> has evaluated to.</p>
+
+<h5 id="for-loop-external">6.1.3.1 for loop external</h5>
+
+<p>The for loop external is an <strong>External</strong> that allows to query the current state of the loop. It provides the following parameterless methods:</p>
+
+<ul>
+  <li>length, returning the total amount of iterations.</li>
+  <li>index, returning the number of current iteration.</li>
+  <li>rindex, equivalent to <code>length - index - 1</code>.</li>
+  <li>is_first, equivalent to <code>index == 0</code>.</li>
+  <li>is_last, equivalent to <code>index == length - 1</code>.</li>
+</ul>
+
+<h4 id="if">6.1.4 if</h4>
+
+<p>Tag <em>if</em> has one valid syntactic form:</p>
+
+<pre><code>{% if <em>cond-1</em> then: %}
+  <em>code-1</em>
+<em>[</em>{% elsif: <em>cond-2</em> then: %}
+  <em>code-2</em><em>] ...</em>
+<em>[</em>{% else: %}
+  <em>code-else</em><em>]</em>
+{% end if %}
+</code></pre>
+
+<p>This tag can optionally have any amount of <em>elsif</em> clauses and only one <em>else</em> clause.</p>
+
+<p>The <em>if</em> tag sequentally evaluates each passed condition <em>cond-1</em>, <em>cond-2</em>, … until a <a href="#boolean-operators">truthful</a> value is computed. Then, it executes the corresponding code. If none of the conditions evaluate to a truthful value, the tag executes <em>code-else</em> if it exists.</p>
+
+<p>The <em>if</em> tag returns the result of evaluating the corresponding code block, or an empty string if none of the blocks were executed.</p>
+
+<h4 id="unless">6.1.5 unless</h4>
+
+<p>Tag <em>unless</em> has one valid syntactic form:</p>
+
+<pre><code>{% unless <em>cond</em> then: %}
+  <em>code</em>
+{% end unless %}</code></pre>
+
+<p>The <em>unless</em> tag evaluates <em>cond</em>. Unless it yields a <a href="#boolean-operators">truthful</a>, <em>code</em> is also evaluated.</p>
+
+<p>The <em>unless</em> tag returns the result of evaluating <em>code</em>, or an empty string.</p>
+
+<h4 id="capture">6.1.6 capture</h4>
+
+<p>Tag <em>capture</em> has one valid syntactic form:</p>
+
+<pre><code>{% capture <em>var</em> = %}
+  <em>code</em>
+{% end capture %}</code></pre>
+
+<p>The <em>capture</em> tag evaluates <em>code</em> and binds the name <em>var</em> to the result. If <em>var</em> is already bound, <em>capture</em> mutates the binding.</p>
+
+<p>The <em>capture</em> tag returns an empty string.</p>
+
+<h4 id="contentfor">6.1.7 content_for</h4>
+
+<p>Tag <em>content_for</em> has one valid syntactic form:</p>
+
+<pre><code>{% content_for <em>"handle"</em> capture: %}
+  <em>code</em>
+{% end content_for %}</code></pre>
+
+<p>The <em>content_for</em> tag accepts a <strong>String</strong> handle as an immediate value. It evaluates <em>code</em> and assigns the result to the handle <em>handle</em>, which must be stored in an implementation-specific way.</p>
+
+<p>The <em>content_for</em> tag returns an empty string.</p>
+
+<p>See also notes on <a href="#appendix-layouts">Layout implementation</a>.</p>
+
+<h4 id="yield">6.1.8 yield</h4>
+
+<p>Tag <em>yield</em> has three valid syntactic forms:</p>
+
+<pre><code>{% yield %}</code></pre>
+
+<p>In this form, the <em>yield</em> tag evaluates to the content of inner template.</p>
+
+<pre><code>{% yield <em>"handle"</em> %}</code></pre>
+<pre><code>{% yield <em>"handle"</em> if_none: %}
+  <em>code</em>
+{% end yield %}</code></pre>
+
+<p>The <em>yield</em> tag accepts a <strong>String</strong> <em>handle</em> as an immediate value. If a string with handle <em>handle</em> was captured previously with <a href="#content_for">{% content_for %}</a>, then <em>yield</em> returns that string. If there is no captured string with that handle, <em>yield</em> either returns the result of evaluating <em>if_none</em> block if it exists, or an empty string.</p>
+
+<p>See also notes on <a href="#appendix-layouts">Layout implementation</a>.</p>
+
+<h4 id="include">6.1.9 include</h4>
+
+<p>Tag <em>include</em> has one valid syntactic form:</p>
+
+<pre><code>{% include <em>"partial_name"</em> %}</code></pre>
+
+<p>The <em>include</em> tag accepts a <strong>String</strong> <em>partial_name</em> as an immediate value. It lexically includes the code of partial template <em>partial_name</em> in a newly created scope.</p>
+
+<p>The <em>include</em> tag must not allow infinite recursion to happen. If such a condition is encountered, a compile-time error (<a href="#syntax-error">syntax error</a>) is signaled.</p>
+
+<p>See also notes on <a href="#appendix-layouts">Layout implementation</a>.</p>
+
+<h3 id="functions">6.2 Functions</h3>
+
+<p>Liquor offers a number of builtin <a href="#function-calls">functions</a>. Their formal parameters are described using a shorthand notation:</p>
+
+<p><code>fn_name(<em>unnamed-arg-type</em> kwarg1: <em>kwarg1-type</em> [kwarg2: <em>kwarg2-type, kwarg2-alt-type</em>])</code></p>
+
+<p>In this case, function <em>fn_name</em> has an unnamed parameter accepting value of type <em>unnamed-arg-type</em>, a mandatory keyword parameter <em>kwarg1</em> accepting values of type <em>kwarg1-type</em>, and an optional keyword parameter <em>kwarg2</em> accepting values of either type <em>kwarg2-type</em> or <em>kwarg2-alt-type</em>.</p>
+
+<h4 id="universal-functions">6.2.1 Universal functions</h4>
+
+<h5 id="isempty">6.2.1.1 is_empty</h5>
+
+<p><code>is_empty(<em>Any</em>)</code></p>
+
+<p>Returns <em>true</em> iff the unnamed argument is one of <em>null</em>, <em>"”</em>, <em>[]</em>.</p>
+
+<h5 id="size">6.2.1.2 size</h5>
+
+<p><code>size(<em>String, Tuple</em>)</code></p>
+
+<p>Returns the length of the unnamed argument as an integer.</p>
+
+<h4 id="conversion-functions">6.2.2 Conversion functions</h4>
+
+<h5 id="strftime">6.2.2.1 strftime</h5>
+
+<p><code>size(<em>String</em> format: <em>String</em>)</code></p>
+
+<p>Parses the unnamed argument as time in <a href="http://www.w3.org/TR/NOTE-datetime">ISO8601</a> format, and reformats it using an implementation-defined <a href="http://strftime.org/">strftime</a> alike function.</p>
+
+<h5 id="tonumber">6.2.2.2 to_number</h5>
+
+<p><code>to_number(<em>String, Integer</em>)</code></p>
+
+<p>If the unnamed argument is an <strong>Integer</strong>, returns it. If it is a string, parses it as a decimal number, possibly with leading minus sign.</p>
+
+<h4 id="integer-functions">6.2.3 Integer functions</h4>
+
+<h5 id="iseven">6.2.3.1 is_even</h5>
+
+<p><code>is_even(<em>Integer</em>)</code></p>
+
+<p>Returns <em>true</em> if the unnamed argument is even, <em>false</em> otherwise.</p>
+
+<h5 id="isodd">6.2.3.2 is_odd</h5>
+
+<p><code>is_odd(<em>Integer</em>)</code></p>
+
+<p>Returns <em>true</em> if the unnamed argument is odd, <em>false</em> otherwise.</p>
+
+<h4 id="string-functions">6.2.4 String functions</h4>
+
+<h5 id="downcase">6.2.4.1 downcase</h5>
+
+<p><code>downcase(<em>String</em>)</code></p>
+
+<p>Returns the unnamed argument, converted to lowercase, using the Unicode case folding.</p>
+
+<h5 id="upcase">6.2.4.2 upcase</h5>
+
+<p><code>upcase(<em>String</em>)</code></p>
+
+<p>Returns the unnamed argument, converted to uppercase, using the Unicode case folding.</p>
+
+<h5 id="capitalize">6.2.4.3 capitalize</h5>
+
+<p><code>capitalize(<em>String</em>)</code></p>
+
+<p>Returns the unnamed argument with its first character converted to uppercase, using the Unicode case folding.</p>
+
+<h5 id="startswith">6.2.4.4 starts_with</h5>
+
+<p><code>starts_with(<em>String</em> pattern: <em>String</em>)</code></p>
+
+<p>Returns <em>true</em> if the unnamed argument starts with <em>pattern</em>, <em>false</em> otherwise. No normalization is performed.</p>
+
+<h5 id="stripnewlines">6.2.4.5 strip_newlines</h5>
+
+<p><code>strip_newlines(<em>String</em>)</code></p>
+
+<p>Returns the unnamed argument without any <strong>U+000A</strong> characters.</p>
+
+<h5 id="join">6.2.4.6 join</h5>
+
+<p><code>join(<em>Tuple</em> with: <em>String</em>)</code></p>
+
+<p>Returns the concatenation of elements of the unnamed argument (which all must be <strong>String</strong>s) interpsersed with the value of <em>with</em>.</p>
+
+<h5 id="split">6.2.4.7 split</h5>
+
+<p><code>split(<em>String</em> by: <em>String</em>)</code></p>
+
+<p>Returns a tuple of fragments of the unnamed argument, extracted between occurences of <em>by</em>. If the unnamed argument is <em>"”</em>, returns <em>[]</em>.</p>
+
+<h5 id="replace">6.2.4.8 replace</h5>
+
+<p><code>replace(<em>String</em> pattern: <em>String</em> replacement: <em>String</em>)</code></p>
+
+<p>Returns the unnamed argument with all occurences of <em>pattern</em> replaced with <em>replacement</em>.</p>
+
+<h5 id="replacefirst">6.2.4.9 replace_first</h5>
+
+<p><code>replace_first(<em>String</em> pattern: <em>String</em> replacement: <em>String</em>)</code></p>
+
+<p>Returns the unnamed argument with the first occurence of <em>pattern</em> replaced with <em>replacement</em>.</p>
+
+<h5 id="remove">6.2.4.10 remove</h5>
+
+<p><code>remove(<em>String</em> pattern: <em>String</em>)</code></p>
+
+<p>Returns the unnamed argument with all occurences of <em>pattern</em> removed.</p>
+
+<h5 id="removefirst">6.2.4.11 remove_first</h5>
+
+<p><code>remove_first(<em>String</em> pattern: <em>String</em>)</code></p>
+
+<p>Returns the unnamed argument with the first occurences of <em>pattern</em> removed.</p>
+
+<h5 id="newlinetobr">6.2.4.12 newline_to_br</h5>
+
+<p><code>newline_to_br(<em>String</em>)</code></p>
+
+<p>Returns the unnamed argument with <code>&lt;br&gt;</code> inserted before every <strong>U+000A</strong> character.</p>
+
+<h5 id="urlescape">6.2.4.13 url_escape</h5>
+
+<p><code>url_escape(<em>String</em>)</code></p>
+
+<p>Returns the unnamed argument, processed using the <a href="http://www.w3.org/TR/html5/forms.html#url-encoded-form-data">application/x-www-form-urlencoded encoding algorithm</a>.</p>
+
+<h5 id="function-html-escape">6.2.4.14 html_escape</h5>
+
+<p><code>html_escape(<em>String</em>)</code></p>
+
+<p>Returns the unnamed argument with <code>&amp;</code>, <code>&lt;</code>, <code>&gt;</code>, <code>'</code>, <code>"</code> and <code>/</code> escaped to the correpsonding HTML entities.</p>
+
+<h5 id="htmlescapeonce-h">6.2.4.15 html_escape_once, h</h5>
+
+<p><code>html_escape(<em>String</em>)</code></p>
+
+<p><code>h(<em>String</em>)</code></p>
+
+<p>Like <a href="#function-html-escape">html_escape</a>, but does not affect <code>&amp;</code> that is a part of an HTML entity.</p>
+
+<h5 id="striphtml">6.2.4.16 strip_html</h5>
+
+<p><code>strip_html(<em>String</em>)</code></p>
+
+<p>Returns the unnamed argument with all HTML tags and comments removed.</p>
+
+<h5 id="decodehtmlentities">6.2.4.17 decode_html_entities</h5>
+
+<p><code>decode_html_entities(<em>String</em>)</code></p>
+
+<p>Returns the unnamed argument with all HTML entities replaced by the corresponding Unicode character.</p>
+
+<h4 id="tuple-functions">6.2.5 Tuple functions</h4>
+
+<h5 id="compact">6.2.5.1 compact</h5>
+
+<p><code>compact(<em>Tuple</em>)</code></p>
+
+<p>Returns the unnamed argument without <em>null</em> elements.</p>
+
+<h5 id="reverse">6.2.5.2 reverse</h5>
+
+<p><code>reverse(<em>Tuple</em>)</code></p>
+
+<p>Returns the unnamed argument, reversed.</p>
+
+<h5 id="uniq">6.2.5.3 uniq</h5>
+
+<p><code>reverse(<em>Tuple</em>)</code></p>
+
+<p>Returns the unnamed argument with only first instance of non-unique elements left.</p>
+
+<h5 id="function-min">6.2.5.4 min</h5>
+
+<p><code>min(<em>Tuple</em> [by: <em>String</em>])</code></p>
+
+<p>Returns the minimal element of the unnamed argument. The ordering between values of different types is implementation-defined. Including an <strong>External</strong> in the unnamed argument may lead to a runtime error (<a href="#type-error">type error</a>).</p>
+
+<p>If <em>by</em> is passed, the unnamed argument must consist only of <strong>External</strong> values. In this case, the ordering is performed by calling the method specified by <em>by</em>.</p>
+
+<h5 id="max">6.2.5.5 max</h5>
+
+<p><code>max(<em>Tuple</em> [by: <em>String</em>])</code></p>
+
+<p>See <a href="#function-min">the min function</a>.</p>
+
+<h5 id="ingroupsof">6.2.5.6 in_groups_of</h5>
+
+<p><code>in_groups_of(<em>Tuple</em> size: <em>Integer</em> [fill_with: <em>String, Boolean</em>])</code></p>
+
+<p>Returns the unnamed argument, split into tuples of <em>size</em> elements. If <em>fill_with</em> is passed, appends the value of <em>fill_with</em> to the last tuple, so that it is <em>size</em> elements big.</p>
+
+<h5 id="ingroups">6.2.5.7 in_groups</h5>
+
+<p><code>in_groups(<em>Tuple</em> count: <em>Integer</em> [fill_with: <em>String, Boolean</em>])</code></p>
+
+<p>Returns the unnamed argument, split into <em>count</em> equally-sized (except the last one) tuples. If <em>fill_with</em> is passed, appends the value of <em>fill_with</em> to the last tuple, so that it is as big as the others.</p>
+
+<h5 id="includes">6.2.5.8 includes</h5>
+
+<p><code>includes(<em>Tuple, External</em> element: <em>Any</em>)</code></p>
+
+<p>Returns <em>true</em> if the unnamed argument contains <em>element</em>, <em>false</em> otherwise. Not all externals support this operation; if an unsupported external is passed, runtime error condition (<a href="#type-error">type error</a>) is signaled.</p>
+
+<h5 id="indexof">6.2.5.9 index_of</h5>
+
+<p><code>index_of(<em>Tuple, External</em> element: <em>Any</em>)</code></p>
+
+<p>Returns the index of <em>element</em> in the unnamed argument or <em>null</em> if it does not contain <em>element</em>. Not all externals support this operation; if an unsupported external is passed, runtime error condition (<a href="#type-error">type error</a>) is signaled.</p>
+
+<h4 id="truncation-functions">6.2.6 Truncation functions</h4>
+
+<h5 id="function-truncate">6.2.6.1 truncate</h5>
+
+<p><code>truncate(<em>String</em> [length: <em>Integer</em> omission: <em>String</em>])</code></p>
+
+<p>Returns the unnamed argument, truncated to <em>length</em> (50 by default) characters and with <em>omission</em> (<code>...</code> by default) appended.</p>
+
+<h5 id="truncatewords">6.2.6.2 truncate_words</h5>
+
+<p><code>truncate_words(<em>String</em> [length: <em>Integer</em> omission: <em>String</em>])</code></p>
+
+<p>Returns the unnamed argument, truncated to <em>length</em> (15 by default) words and with <em>omission</em> (<code>...</code> by default) appended.</p>
+
+<h5 id="htmltruncate">6.2.6.3 html_truncate</h5>
+
+<p><code>html_truncate(<em>String</em> [length: <em>Integer</em> omission: <em>String</em>])</code></p>
+
+<p>Returns the unnamed argument, truncated to <em>length</em> (50 by default) characters inside HTML text node and with <em>omission</em> (<code>...</code> by default) appended to the last HTML text node.</p>
+
+<h5 id="htmltruncatewords">6.2.6.4 html_truncate_words</h5>
+
+<p><code>html_truncate_words(<em>String</em> [length: <em>Integer</em> omission: <em>String</em>])</code></p>
+
+<p>Returns the unnamed argument, truncated to <em>length</em> (15 by default) words inside HTML text node and with <em>omission</em> (<code>...</code> by default) appended to the last HTML text node.</p>
+
+<h2 id="appendix-layouts">7 Layouts</h2>
+
+<p>In order to support the <a href="#contentfor"><em>content_for</em></a> and <a href="#yield"><em>yield</em></a> tags, the runtime maintains a dictionary associating the handles provided to <em>content_for</em> with the content. This dictionary is shared between all layout(s) and the innermost template; the templates are evaluated from the innermost to outermost.</p>
+
+  </body>
+</html>
