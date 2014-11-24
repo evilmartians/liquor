@@ -120,7 +120,7 @@ Liquor contains built-in support for passing ActiveRecord scopes and model insta
 
 #### Rails
 
-Liquor contains a Rails renderer for Liquor templates that supports layouts. To use it, use the following code in your actions:
+Liquor contains a Rails renderer for Liquor templates that supports layouts. To use it `require 'liquor/extensions/rails', then use the following code in your actions:
 
 ``` ruby
 render liquor: {
