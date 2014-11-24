@@ -26,3 +26,16 @@ RSpec::Core::RakeTask.new do |t|
   t.pattern = FileList['spec/**/*_spec.rb']
   t.rspec_opts = %w(-fs --color)
 end
+
+desc "Populate github pages from doc/"
+task :gh_pages => ['doc/language-spec.html'] do
+  `git clone \`git config --get remote.origin.url\` .gh-pages --reference .`
+  `git -C .gh-pages checkout --orphan gh-pages`
+  `git -C .gh-pages reset`
+  `git -C .gh-pages clean -dxf`
+  `cp -t .gh-pages/ doc/language-spec.html`
+  `git -C .gh-pages add .`
+  `git -C .gh-pages commit -m "Update Pages"`
+  `git -C .gh-pages push origin gh-pages -f`
+  `rm -rf .gh-pages`
+end
