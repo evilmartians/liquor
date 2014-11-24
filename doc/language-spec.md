@@ -204,9 +204,9 @@ The operators `[]`, `.`, `()`, `.()` are not infix and are provided in this tabl
 
 Arithmetic operators are `*` (multiplication), `/` (division), `%` (modulo), `+` (plus) and `-` (minus; binary and unary).
 
-All arithmetic operators except `+`, whether unary or binary, require every argument to be of type **Integer**. If this is not the case, a runtime error condition is signaled.
+All arithmetic operators except `+`, whether unary or binary, require every argument to be of type **Integer**. If this is not the case, a runtime error condition ([type error](#type-error)) is signaled.
 
-Operator `+` requires both arguments to be of the same type, and only accepts arguments of type **Integer**, **String** or **Tuple**. If any of the conditions is not satisfied, a runtime error condition is signaled. For arguments of type **String** or **Tuple**, the `+` operator evaluates to the concatenation of left and right arguments in that order.
+Operator `+` requires both arguments to be of the same type, and only accepts arguments of type **Integer**, **String** or **Tuple**. If any of the conditions is not satisfied, a runtime error condition ([type error](#type-error)) is signaled. For arguments of type **String** or **Tuple**, the `+` operator evaluates to the concatenation of left and right arguments in that order.
 
 If the result of an arithmetic operation, except operator `+` with non-**Integer** arguments, exceeds the range an implementation can represent, the behavior is implementation-defined.
 
@@ -227,15 +227,15 @@ Comparison operators are `==` (equals), `!=` (not equals), `<` (less), `<=` (les
 
 Operators `==` and `!=` compare values by equality, not identity. Thus, the expression `[ 1, 2 ] == [ 1, 2 ]` evluates to _true_. These operators never signal an error condition or implicitly convert types.
 
-Operators `<`, `<=`, `>` and `>=` require both arguments to be of type **Integer**. If this is not the case, a runtime error condition is signaled. Otherwise, a corresponding value of type **Boolean** is returned.
+Operators `<`, `<=`, `>` and `>=` require both arguments to be of type **Integer**. If this is not the case, a runtime error condition ([type error](#type-error)) is signaled. Otherwise, a corresponding value of type **Boolean** is returned.
 
 ##### 2.4.2.4 Indexing Operator
 
 Indexing operator is `[]`.
 
-Indexing operator requires its left-hand side argument to be of type **Tuple** or **External**, and right-hand side argument to be of type **Integer**. If this is not the case, a runtime error condition is signaled.
+Indexing operator requires its left-hand side argument to be of type **Tuple** or **External**, and right-hand side argument to be of type **Integer**. If this is not the case, a runtime error condition ([type error](#type-error)) is signaled.
 
-If the left-hand side argument is of type **External**, the behavior is implementation-defined. A runtime error condition can be signaled if the particular external value does not support indexing.
+If the left-hand side argument is of type **External**, the behavior is implementation-defined. A runtime error condition ([external error](#external-error)) is signaled if the particular external value does not support indexing.
 
 Indexing operator of form <code><em>t</em>[<em>n</em>]</code> evaluates to _n_-th value from tuple _t_ with zero-based indexing. If `n` is negative, then _n_+1-th element from the end of tuple is returned. For example, <code><em>t</em>[-1]</code> will evaluate to the last element of the tuple _t_.
 
@@ -259,13 +259,13 @@ Access operators are `.` and `.()`.
 
 The `.` form is syntactic sugar for `.()` form without any arguments. That is, <code><em>e</em>.<em>f</em></code> is completely equivalent to <code><em>e</em>.<em>f</em>()</code>.
 
-Access operator requires its left-hand side argument to be of type **External**. If this is not the case, a runtime error condition is signaled.
+Access operator requires its left-hand side argument to be of type **External**. If this is not the case, a runtime error condition ([type error](#type-error)) is signaled.
 
 Access operator of form <code><em>e</em>.<em>f</em>(<em>arg</em> <em>kw:</em> <em>value</em>)</code> evaluates to the result of calling method _f_ of external object _e_ with the corresponding arguments. Argument syntax is the same as for [function calls](#function-calls).
 
 This evaluation is done in an implementation-defined way. Access operator can evaluate to any type.
 
-If the requested method does not exist in the external object or cannot successfully evaluate, a runtime error condition is signaled. Errors in the called method must not interrupt execution of the calling Liquor program.
+If the requested method does not exist in the external object or cannot successfully evaluate, a runtime error condition ([external error](#external-error)) is signaled. Errors in the called method must not interrupt execution of the calling Liquor program.
 
 #### 2.4.5 Variable Access
 
@@ -301,7 +301,7 @@ A block can have other elements embedded into it. When such a block is executed,
 
 ### 2.6 Interpolations
 
-An interpolation is a syntactic construct of form `{{ expr }}` which can be embedded in a block. The expression `expr` should evaluate to a value of type **String** or **Null**; an [implicit conversion](#type-conversion) might take place. If this is not the case, a runtime error condition is signaled.
+An interpolation is a syntactic construct of form `{{ expr }}` which can be embedded in a block. The expression `expr` should evaluate to a value of type **String** or **Null**; an [implicit conversion](#type-conversion) might take place. If this is not the case, a runtime error condition ([type error](#type-error)) is signaled.
 
 If _expr_ evaluates to a **String**, the interpolation returns it. Otherwise, the interpolation returns an empty string.
 
@@ -556,7 +556,28 @@ An implementation should have a way to inject variables into the outermost scope
 5 Runtime Behavior
 ------------------
 
-TODO
+Evaluation of Liquor programs follows lexical order for blocks, and is undefined for expressions. As all expressions are pure, this does not result in ambiguity.
+
+A Liquor program always evaluates to a string. Liquor recognizes the value of and attempts to produce sensible output even for partially invalid programs; to keep the codebase manageable, the runtime environment must report all runtime errors to the programmer.
+
+### 5.1 Type Error {#type-error}
+
+A type error arises when a value of certain type(s) is expected in a context, but a value of a different type is provided. In this case, the runtime records the error and substitutes the value for a zero value, respectively for every type:
+
+ * **Null**: _null_.
+ * **Boolean**: _false_.
+ * **Integer**: _0_.
+ * **String**: _""_.
+ * **Tuple**: _[]_.
+ * **External**: the [dummy external](#dummy-external).
+
+### 5.2 External Error {#external-error}
+
+An external error arises when an unknown external method is called, or there is a problem evaluating the external method. In this case, the runtime records the error and returns _null_ instead.
+
+### 5.3 The dummy external
+
+The dummy external is an external object which performs no operation when any method is called on it and returns _null_.
 
 6 Builtins
 ----------
@@ -597,9 +618,9 @@ Tag _for_ has two valid syntactic forms:
   <em>code</em>
 {% end for %}</code></pre>
 
-In the _for..in_ form, this tag invokes _code_ with _var_ bound to each element of _list_ sequentally. If _list_ is not a *Tuple*, a runtime error condition is signaled.
+In the _for..in_ form, this tag invokes _code_ with _var_ bound to each element of _list_ sequentally. If _list_ is not a *Tuple*, a runtime error condition ([type error](#type-error)) is signaled.
 
-In the _for..from..to_ form, this tag invokes _code_ with _var_ bound to each integer between _lower-limit_ and _upper-limit_, inclusive. If _lower-limit_ or _upper-limit_ is not an *Integer*, a [runtime error condition] is signaled.
+In the _for..from..to_ form, this tag invokes _code_ with _var_ bound to each integer between _lower-limit_ and _upper-limit_, inclusive. If _lower-limit_ or _upper-limit_ is not an *Integer*, a runtime error condition ([type error](#type-error)) is signaled.
 
 The _for_ tag returns the concatenation of the values its _code_ has evaluated to.
 

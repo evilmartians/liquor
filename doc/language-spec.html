@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-
-    <meta http-equiv="Content-type" content="text/html;UTF-8">
-
+    
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+    
 
     <title>Liquor 2.0 Language Specification</title>
-    <meta name="generator" content="kramdown 1.3.0" />
+    <meta name="generator" content="kramdown 1.4.2" />
   </head>
   <body>
   <style>
@@ -160,7 +160,12 @@ dd strong, code {
           <li><a href="#scope-resolution">4.2 Scope Resolution</a></li>
         </ul>
       </li>
-      <li><a href="#runtime-behavior">5 Runtime Behavior</a></li>
+      <li><a href="#runtime-behavior">5 Runtime Behavior</a>        <ul>
+          <li><a href="#type-error">5.1 Type Error</a></li>
+          <li><a href="#external-error">5.2 External Error</a></li>
+          <li><a href="#the-dummy-external">5.3 The dummy external</a></li>
+        </ul>
+      </li>
       <li><a href="#builtins">6 Builtins</a>        <ul>
           <li><a href="#builtin-tags">6.1 Required tags</a>            <ul>
               <li><a href="#declare">6.1.1 declare</a></li>
@@ -278,9 +283,9 @@ The following operators are infix and unary: <code>-</code>, <code>!</code>.</p>
 
 <p>Arithmetic operators are <code>*</code> (multiplication), <code>/</code> (division), <code>%</code> (modulo), <code>+</code> (plus) and <code>-</code> (minus; binary and unary).</p>
 
-<p>All arithmetic operators except <code>+</code>, whether unary or binary, require every argument to be of type <strong>Integer</strong>. If this is not the case, a runtime error condition is signaled.</p>
+<p>All arithmetic operators except <code>+</code>, whether unary or binary, require every argument to be of type <strong>Integer</strong>. If this is not the case, a runtime error condition (<a href="#type-error">type error</a>) is signaled.</p>
 
-<p>Operator <code>+</code> requires both arguments to be of the same type, and only accepts arguments of type <strong>Integer</strong>, <strong>String</strong> or <strong>Tuple</strong>. If any of the conditions is not satisfied, a runtime error condition is signaled. For arguments of type <strong>String</strong> or <strong>Tuple</strong>, the <code>+</code> operator evaluates to the concatenation of left and right arguments in that order.</p>
+<p>Operator <code>+</code> requires both arguments to be of the same type, and only accepts arguments of type <strong>Integer</strong>, <strong>String</strong> or <strong>Tuple</strong>. If any of the conditions is not satisfied, a runtime error condition (<a href="#type-error">type error</a>) is signaled. For arguments of type <strong>String</strong> or <strong>Tuple</strong>, the <code>+</code> operator evaluates to the concatenation of left and right arguments in that order.</p>
 
 <p>If the result of an arithmetic operation, except operator <code>+</code> with non-<strong>Integer</strong> arguments, exceeds the range an implementation can represent, the behavior is implementation-defined.</p>
 
@@ -303,15 +308,15 @@ The following operators are infix and unary: <code>-</code>, <code>!</code>.</p>
 
 <p>Operators <code>==</code> and <code>!=</code> compare values by equality, not identity. Thus, the expression <code>[ 1, 2 ] == [ 1, 2 ]</code> evluates to <em>true</em>. These operators never signal an error condition or implicitly convert types.</p>
 
-<p>Operators <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code> and <code>&gt;=</code> require both arguments to be of type <strong>Integer</strong>. If this is not the case, a runtime error condition is signaled. Otherwise, a corresponding value of type <strong>Boolean</strong> is returned.</p>
+<p>Operators <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code> and <code>&gt;=</code> require both arguments to be of type <strong>Integer</strong>. If this is not the case, a runtime error condition (<a href="#type-error">type error</a>) is signaled. Otherwise, a corresponding value of type <strong>Boolean</strong> is returned.</p>
 
 <h5 id="indexing-operator">2.4.2.4 Indexing Operator</h5>
 
 <p>Indexing operator is <code>[]</code>.</p>
 
-<p>Indexing operator requires its left-hand side argument to be of type <strong>Tuple</strong> or <strong>External</strong>, and right-hand side argument to be of type <strong>Integer</strong>. If this is not the case, a runtime error condition is signaled.</p>
+<p>Indexing operator requires its left-hand side argument to be of type <strong>Tuple</strong> or <strong>External</strong>, and right-hand side argument to be of type <strong>Integer</strong>. If this is not the case, a runtime error condition (<a href="#type-error">type error</a>) is signaled.</p>
 
-<p>If the left-hand side argument is of type <strong>External</strong>, the behavior is implementation-defined. A runtime error condition can be signaled if the particular external value does not support indexing.</p>
+<p>If the left-hand side argument is of type <strong>External</strong>, the behavior is implementation-defined. A runtime error condition (<a href="#external-error">external error</a>) is signaled if the particular external value does not support indexing.</p>
 
 <p>Indexing operator of form <code><em>t</em>[<em>n</em>]</code> evaluates to <em>n</em>-th value from tuple <em>t</em> with zero-based indexing. If <code>n</code> is negative, then <em>n</em>+1-th element from the end of tuple is returned. For example, <code><em>t</em>[-1]</code> will evaluate to the last element of the tuple <em>t</em>.</p>
 
@@ -335,13 +340,13 @@ The following operators are infix and unary: <code>-</code>, <code>!</code>.</p>
 
 <p>The <code>.</code> form is syntactic sugar for <code>.()</code> form without any arguments. That is, <code><em>e</em>.<em>f</em></code> is completely equivalent to <code><em>e</em>.<em>f</em>()</code>.</p>
 
-<p>Access operator requires its left-hand side argument to be of type <strong>External</strong>. If this is not the case, a runtime error condition is signaled.</p>
+<p>Access operator requires its left-hand side argument to be of type <strong>External</strong>. If this is not the case, a runtime error condition (<a href="#type-error">type error</a>) is signaled.</p>
 
 <p>Access operator of form <code><em>e</em>.<em>f</em>(<em>arg</em> <em>kw:</em> <em>value</em>)</code> evaluates to the result of calling method <em>f</em> of external object <em>e</em> with the corresponding arguments. Argument syntax is the same as for <a href="#function-calls">function calls</a>.</p>
 
 <p>This evaluation is done in an implementation-defined way. Access operator can evaluate to any type.</p>
 
-<p>If the requested method does not exist in the external object or cannot successfully evaluate, a runtime error condition is signaled. Errors in the called method must not interrupt execution of the calling Liquor program.</p>
+<p>If the requested method does not exist in the external object or cannot successfully evaluate, a runtime error condition (<a href="#external-error">external error</a>) is signaled. Errors in the called method must not interrupt execution of the calling Liquor program.</p>
 
 <h4 id="variable-access">2.4.5 Variable Access</h4>
 
@@ -378,7 +383,7 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <h3 id="interpolations">2.6 Interpolations</h3>
 
-<p>An interpolation is a syntactic construct of form <code>{{ expr }}</code> which can be embedded in a block. The expression <code>expr</code> should evaluate to a value of type <strong>String</strong> or <strong>Null</strong>; an <a href="#type-conversion">implicit conversion</a> might take place. If this is not the case, a runtime error condition is signaled.</p>
+<p>An interpolation is a syntactic construct of form <code>{{ expr }}</code> which can be embedded in a block. The expression <code>expr</code> should evaluate to a value of type <strong>String</strong> or <strong>Null</strong>; an <a href="#type-conversion">implicit conversion</a> might take place. If this is not the case, a runtime error condition (<a href="#type-error">type error</a>) is signaled.</p>
 
 <p>If <em>expr</em> evaluates to a <strong>String</strong>, the interpolation returns it. Otherwise, the interpolation returns an empty string.</p>
 
@@ -624,7 +629,30 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <h2 id="runtime-behavior">5 Runtime Behavior</h2>
 
-<p>TODO</p>
+<p>Evaluation of Liquor programs follows lexical order for blocks, and is undefined for expressions. As all expressions are pure, this does not result in ambiguity.</p>
+
+<p>A Liquor program always evaluates to a string. Liquor recognizes the value of and attempts to produce sensible output even for partially invalid programs; to keep the codebase manageable, the runtime environment must report all runtime errors to the programmer.</p>
+
+<h3 id="type-error">5.1 Type Error</h3>
+
+<p>A type error arises when a value of certain type(s) is expected in a context, but a value of a different type is provided. In this case, the runtime records the error and substitutes the value for a zero value, respectively for every type:</p>
+
+<ul>
+  <li><strong>Null</strong>: <em>null</em>.</li>
+  <li><strong>Boolean</strong>: <em>false</em>.</li>
+  <li><strong>Integer</strong>: <em>0</em>.</li>
+  <li><strong>String</strong>: <em>"”</em>.</li>
+  <li><strong>Tuple</strong>: <em>[]</em>.</li>
+  <li><strong>External</strong>: the <a href="#dummy-external">dummy external</a>.</li>
+</ul>
+
+<h3 id="external-error">5.2 External Error</h3>
+
+<p>An external error arises when an unknown external method is called, or there is a problem evaluating the external method. In this case, the runtime records the error and returns <em>null</em> instead.</p>
+
+<h3 id="the-dummy-external">5.3 The dummy external</h3>
+
+<p>The dummy external is an external object which performs no operation when any method is called on it and returns <em>null</em>.</p>
 
 <h2 id="builtins">6 Builtins</h2>
 
@@ -664,9 +692,9 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
   <em>code</em>
 {% end for %}</code></pre>
 
-<p>In the <em>for..in</em> form, this tag invokes <em>code</em> with <em>var</em> bound to each element of <em>list</em> sequentally. If <em>list</em> is not a <em>Tuple</em>, a runtime error condition is signaled.</p>
+<p>In the <em>for..in</em> form, this tag invokes <em>code</em> with <em>var</em> bound to each element of <em>list</em> sequentally. If <em>list</em> is not a <em>Tuple</em>, a runtime error condition (<a href="#type-error">type error</a>) is signaled.</p>
 
-<p>In the <em>for..from..to</em> form, this tag invokes <em>code</em> with <em>var</em> bound to each integer between <em>lower-limit</em> and <em>upper-limit</em>, inclusive. If <em>lower-limit</em> or <em>upper-limit</em> is not an <em>Integer</em>, a [runtime error condition] is signaled.</p>
+<p>In the <em>for..from..to</em> form, this tag invokes <em>code</em> with <em>var</em> bound to each integer between <em>lower-limit</em> and <em>upper-limit</em>, inclusive. If <em>lower-limit</em> or <em>upper-limit</em> is not an <em>Integer</em>, a runtime error condition (<a href="#type-error">type error</a>) is signaled.</p>
 
 <p>The <em>for</em> tag returns the concatenation of the values its <em>code</em> has evaluated to.</p>
 
