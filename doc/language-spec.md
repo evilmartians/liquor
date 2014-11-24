@@ -620,7 +620,19 @@ In the _for..in_ form, this tag invokes _code_ with _var_ bound to each element 
 
 In the _for..from..to_ form, this tag invokes _code_ with _var_ bound to each integer between _lower-limit_ and _upper-limit_, inclusive. If _lower-limit_ or _upper-limit_ is not an *Integer*, a runtime error condition ([type error](#type-error)) is signaled.
 
+Both forms of the tag also bind a special <em>var</em>_loop variable to the [for loop external]{#for-external}.
+
 The _for_ tag evaluates to the concatenation of the values its _code_ has evaluated to.
+
+##### 6.1.3.1 for loop external
+
+The for loop external is an **External** that allows to query the current state of the loop. It provides the following parameterless methods:
+
+  * length, returning the total amount of iterations.
+  * index, returning the number of current iteration.
+  * rindex, equivalent to `length - index - 1`.
+  * is_first, equivalent to `index == 0`.
+  * is_last, equivalent to `index == length - 1`.
 
 #### 6.1.4 if
 

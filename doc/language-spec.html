@@ -168,7 +168,10 @@ dd strong, code {
           <li><a href="#builtin-tags">6.1 Required tags</a>            <ul>
               <li><a href="#declare">6.1.1 declare</a></li>
               <li><a href="#assign">6.1.2 assign</a></li>
-              <li><a href="#for">6.1.3 for</a></li>
+              <li><a href="#for">6.1.3 for</a>                <ul>
+                  <li><a href="#for-loop-external">6.1.3.1 for loop external</a></li>
+                </ul>
+              </li>
               <li><a href="#if">6.1.4 if</a></li>
               <li><a href="#unless">6.1.5 unless</a></li>
               <li><a href="#capture">6.1.6 capture</a></li>
@@ -750,7 +753,21 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <p>In the <em>for..from..to</em> form, this tag invokes <em>code</em> with <em>var</em> bound to each integer between <em>lower-limit</em> and <em>upper-limit</em>, inclusive. If <em>lower-limit</em> or <em>upper-limit</em> is not an <em>Integer</em>, a runtime error condition (<a href="#type-error">type error</a>) is signaled.</p>
 
+<p>Both forms of the tag also bind a special <em>var</em>_loop variable to the [for loop external]{#for-external}.</p>
+
 <p>The <em>for</em> tag evaluates to the concatenation of the values its <em>code</em> has evaluated to.</p>
+
+<h5 id="for-loop-external">6.1.3.1 for loop external</h5>
+
+<p>The for loop external is an <strong>External</strong> that allows to query the current state of the loop. It provides the following parameterless methods:</p>
+
+<ul>
+  <li>length, returning the total amount of iterations.</li>
+  <li>index, returning the number of current iteration.</li>
+  <li>rindex, equivalent to <code>length - index - 1</code>.</li>
+  <li>is_first, equivalent to <code>index == 0</code>.</li>
+  <li>is_last, equivalent to <code>index == length - 1</code>.</li>
+</ul>
 
 <h4 id="if">6.1.4 if</h4>
 
