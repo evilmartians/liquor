@@ -112,8 +112,6 @@ dd strong, code {
 
 <h1 id="liquor-20-language-specification">Liquor 2.0 Language Specification</h1>
 
-<p style="text-align: right"><em>This version of specification is a working draft.</em></p>
-
 <h2 id="table-of-contents">Table of Contents</h2>
 
 <ul id="markdown-toc">
@@ -238,7 +236,7 @@ dd strong, code {
           </li>
         </ul>
       </li>
-      <li><a href="#appendix-layouts">A Layouts</a></li>
+      <li><a href="#appendix-layouts">7 Layouts</a></li>
     </ul>
   </li>
 </ul>
@@ -1080,9 +1078,9 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <p>Returns the unnamed argument, truncated to <em>length</em> (15 by default) words inside HTML text node and with <em>omission</em> (<code>...</code> by default) appended to the last HTML text node.</p>
 
-<h2 id="appendix-layouts">A Layouts</h2>
+<h2 id="appendix-layouts">7 Layouts</h2>
 
-<p>TODO</p>
+<p>In order to support the <a href="#contentfor"><em>content_for</em></a> and <a href="#yield"><em>yield</em></a> tags, the runtime maintains a dictionary associating the handles provided to <em>content_for</em> with the content. This dictionary is shared between all layout(s) and the innermost template; the templates are evaluated from the innermost to outermost.</p>
 
   </body>
 </html>

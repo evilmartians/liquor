@@ -102,8 +102,6 @@ dd strong, code {
 Liquor 2.0 Language Specification
 =================================
 
-<p style="text-align: right" markdown="1">*This version of specification is a working draft.*</p>
-
 Table of Contents
 -----------------
 
@@ -950,6 +948,6 @@ Returns the unnamed argument, truncated to _length_ (50 by default) characters i
 
 Returns the unnamed argument, truncated to _length_ (15 by default) words inside HTML text node and with _omission_ (`...` by default) appended to the last HTML text node.
 
-## A Layouts {#appendix-layouts}
+## 7 Layouts {#appendix-layouts}
 
-TODO
+In order to support the [_content_for_](#contentfor) and [_yield_](#yield) tags, the runtime maintains a dictionary associating the handles provided to _content_for_ with the content. This dictionary is shared between all layout(s) and the innermost template; the templates are evaluated from the innermost to outermost.
