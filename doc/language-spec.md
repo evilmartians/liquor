@@ -391,7 +391,7 @@ StringLiteral
 : **\'** ( **\\\\**  \| **\\\'** \| _Any_ except **\'** )* **\'**
 
 TupleLiteral
-: **[** _TupleLiteralContent_ **]**
+: **\[** _TupleLiteralContent_ **]**
 
 TupleLiteralContent
 : _Expression_ **,** _TupleLiteralContent_
@@ -411,7 +411,7 @@ Expression
 : _StringLiteral_
 : _TupleLiteral_
 : _Identifier_ _FunctionArguments_
-: _PrimaryExpression_ **[** _Expression_ **]**
+: _PrimaryExpression_ **\[** _Expression_ **]**
 : _Expression_ **.** _Identifier_  _FunctionArguments_?
 : **-** _Expression_
 : **!** _Expression_
@@ -622,7 +622,7 @@ In the _for..in_ form, this tag invokes _code_ with _var_ bound to each element 
 
 In the _for..from..to_ form, this tag invokes _code_ with _var_ bound to each integer between _lower-limit_ and _upper-limit_, inclusive. If _lower-limit_ or _upper-limit_ is not an *Integer*, a runtime error condition ([type error](#type-error)) is signaled.
 
-The _for_ tag returns the concatenation of the values its _code_ has evaluated to.
+The _for_ tag evaluates to the concatenation of the values its _code_ has evaluated to.
 
 #### 6.1.4 if
 
@@ -712,8 +712,244 @@ See also notes on [Layout implementation](#appendix-layouts).
 
 ### 6.2 Functions
 
-TODO
+Liquor offers a number of builtin [functions](#function-calls). Their formal parameters are described using a shorthand notation:
 
-## Appendix A: Layouts {#appendix-layouts}
+<code>fn_name(<em>unnamed-arg-type</em> kwarg1: <em>kwarg1-type</em> [kwarg2: <em>kwarg2-type, kwarg2-alt-type</em>])</code>
+
+In this case, function _fn_name_ has an unnamed parameter accepting value of type _unnamed-arg-type_, a mandatory keyword parameter _kwarg1_ accepting values of type _kwarg1-type_, and an optional keyword parameter _kwarg2_ accepting values of either type _kwarg2-type_ or _kwarg2-alt-type_.
+
+#### 6.2.1 Universal functions
+
+##### 6.2.1.1 is_empty
+
+<code>is_empty(<em>Any</em>)</code>
+
+Returns _true_ iff the unnamed argument is one of _null_, _""_, _[]_.
+
+##### 6.2.1.2 size
+
+<code>size(<em>String, Tuple</em>)</code>
+
+Returns the length of the unnamed argument as an integer.
+
+#### 6.2.2 Conversion functions
+
+##### 6.2.2.1 strftime
+
+<code>size(<em>String</em> format: <em>String</em>)</code>
+
+Parses the unnamed argument as time in [ISO8601](http://www.w3.org/TR/NOTE-datetime) format, and reformats it using an implementation-defined [strftime](http://strftime.org/) alike function.
+
+##### 6.2.2.2 to_number
+
+<code>to_number(<em>String, Integer</em>)</code>
+
+If the unnamed argument is an **Integer**, returns it. If it is a string, parses it as a decimal number, possibly with leading minus sign.
+
+#### 6.2.3 Integer functions
+
+##### 6.2.3.1 is_even
+
+<code>is_even(<em>Integer</em>)</code>
+
+Returns _true_ if the unnamed argument is even, _false_ otherwise.
+
+##### 6.2.3.2 is_odd
+
+<code>is_odd(<em>Integer</em>)</code>
+
+Returns _true_ if the unnamed argument is odd, _false_ otherwise.
+
+#### 6.2.4 String functions
+
+##### 6.2.4.1 downcase
+
+<code>downcase(<em>String</em>)</code>
+
+Returns the unnamed argument, converted to lowercase, using the Unicode case folding.
+
+##### 6.2.4.2 upcase
+
+<code>upcase(<em>String</em>)</code>
+
+Returns the unnamed argument, converted to uppercase, using the Unicode case folding.
+
+##### 6.2.4.3 capitalize
+
+<code>capitalize(<em>String</em>)</code>
+
+Returns the unnamed argument with its first character converted to uppercase, using the Unicode case folding.
+
+##### 6.2.4.4 starts_with
+
+<code>starts_with(<em>String</em> pattern: <em>String</em>)</code>
+
+Returns _true_ if the unnamed argument starts with _pattern_, _false_ otherwise. No normalization is performed.
+
+##### 6.2.4.5 strip_newlines
+
+<code>strip_newlines(<em>String</em>)</code>
+
+Returns the unnamed argument without any **U+000A** characters.
+
+##### 6.2.4.6 join
+
+<code>join(<em>Tuple</em> with: <em>String</em>)</code>
+
+Returns the concatenation of elements of the unnamed argument (which all must be **String**s) interpsersed with the value of _with_.
+
+##### 6.2.4.7 split
+
+<code>split(<em>String</em> by: <em>String</em>)</code>
+
+Returns a tuple of fragments of the unnamed argument, extracted between occurences of _by_. If the unnamed argument is _""_, returns _[]_.
+
+##### 6.2.4.8 replace
+
+<code>replace(<em>String</em> pattern: <em>String</em> replacement: <em>String</em>)</code>
+
+Returns the unnamed argument with all occurences of _pattern_ replaced with _replacement_.
+
+##### 6.2.4.9 replace_first
+
+<code>replace_first(<em>String</em> pattern: <em>String</em> replacement: <em>String</em>)</code>
+
+Returns the unnamed argument with the first occurence of _pattern_ replaced with _replacement_.
+
+##### 6.2.4.10 remove
+
+<code>remove(<em>String</em> pattern: <em>String</em>)</code>
+
+Returns the unnamed argument with all occurences of _pattern_ removed.
+
+##### 6.2.4.11 remove_first
+
+<code>remove_first(<em>String</em> pattern: <em>String</em>)</code>
+
+Returns the unnamed argument with the first occurences of _pattern_ removed.
+
+##### 6.2.4.12 newline_to_br
+
+<code>newline_to_br(<em>String</em>)</code>
+
+Returns the unnamed argument with `<br>` inserted before every **U+000A** character.
+
+##### 6.2.4.13 url_escape
+
+<code>url_escape(<em>String</em>)</code>
+
+Returns the unnamed argument, processed using the [application/x-www-form-urlencoded encoding algorithm](http://www.w3.org/TR/html5/forms.html#url-encoded-form-data).
+
+##### 6.2.4.14 html_escape {#function-html-escape}
+
+<code>html_escape(<em>String</em>)</code>
+
+Returns the unnamed argument with `&`, `<`, `>`, `'`, `"` and `/` escaped to the correpsonding HTML entities.
+
+##### 6.2.4.15 html_escape_once, h
+
+<code>html_escape(<em>String</em>)</code>
+
+<code>h(<em>String</em>)</code>
+
+Like [html_escape](#function-html-escape), but does not affect `&` that is a part of an HTML entity.
+
+##### 6.2.4.16 strip_html
+
+<code>strip_html(<em>String</em>)</code>
+
+Returns the unnamed argument with all HTML tags and comments removed.
+
+##### 6.2.4.17 decode_html_entities
+
+<code>decode_html_entities(<em>String</em>)</code>
+
+Returns the unnamed argument with all HTML entities replaced by the corresponding Unicode character.
+
+#### 6.2.5 Tuple functions
+
+##### 6.2.5.1 compact
+
+<code>compact(<em>Tuple</em>)</code>
+
+Returns the unnamed argument without _null_ elements.
+
+##### 6.2.5.2 reverse
+
+<code>reverse(<em>Tuple</em>)</code>
+
+Returns the unnamed argument, reversed.
+
+##### 6.2.5.3 uniq
+
+<code>reverse(<em>Tuple</em>)</code>
+
+Returns the unnamed argument with only first instance of non-unique elements left.
+
+##### 6.2.5.4 min {#function-min}
+
+<code>min(<em>Tuple</em> [by: <em>String</em>])
+
+Returns the minimal element of the unnamed argument. The ordering between values of different types is implementation-defined. Including an **External** in the unnamed argument may lead to a runtime error ([type error](#type-error)).
+
+If _by_ is passed, the unnamed argument must consist only of **External** values. In this case, the ordering is performed by calling the method specified by _by_.
+
+##### 6.2.5.5 max
+
+<code>max(<em>Tuple</em> [by: <em>String</em>])
+
+See [the min function](#function-min).
+
+##### 6.2.5.6 in_groups_of
+
+<code>in_groups_of(<em>Tuple</em> size: <em>Integer</em> [fill_with: <em>String, Boolean</em>])</code>
+
+Returns the unnamed argument, split into tuples of _size_ elements. If _fill_with_ is passed, appends the value of _fill_with_ to the last tuple, so that it is _size_ elements big.
+
+##### 6.2.5.7 in_groups
+
+<code>in_groups(<em>Tuple</em> count: <em>Integer</em> [fill_with: <em>String, Boolean</em>])</code>
+
+Returns the unnamed argument, split into _count_ equally-sized (except the last one) tuples. If _fill_with_ is passed, appends the value of _fill_with_ to the last tuple, so that it is as big as the others.
+
+##### 6.2.5.8 includes
+
+<code>includes(<em>Tuple, External</em> element: <em>Any</em>)</code>
+
+Returns _true_ if the unnamed argument contains _element_, _false_ otherwise. Not all externals support this operation; if an unsupported external is passed, runtime error condition ([type error](#type-error)) is signaled.
+
+##### 6.2.5.9 index_of
+
+<code>index_of(<em>Tuple, External</em> element: <em>Any</em>)</code>
+
+Returns the index of _element_ in the unnamed argument or _null_ if it does not contain _element_. Not all externals support this operation; if an unsupported external is passed, runtime error condition ([type error](#type-error)) is signaled.
+
+#### 6.2.6 Truncation functions
+
+##### 6.2.6.1 truncate {#function-truncate}
+
+<code>truncate(<em>String</em> [length: <em>Integer</em> omission: <em>String</em>])</code>
+
+Returns the unnamed argument, truncated to _length_ (50 by default) characters and with _omission_ (`...` by default) appended.
+
+##### 6.2.6.2 truncate_words
+
+<code>truncate_words(<em>String</em> [length: <em>Integer</em> omission: <em>String</em>])</code>
+
+Returns the unnamed argument, truncated to _length_ (15 by default) words and with _omission_ (`...` by default) appended.
+
+##### 6.2.6.3 html_truncate
+
+<code>html_truncate(<em>String</em> [length: <em>Integer</em> omission: <em>String</em>])</code>
+
+Returns the unnamed argument, truncated to _length_ (50 by default) characters inside HTML text node and with _omission_ (`...` by default) appended to the last HTML text node.
+
+##### 6.2.6.4 html_truncate_words
+
+<code>html_truncate_words(<em>String</em> [length: <em>Integer</em> omission: <em>String</em>])</code>
+
+Returns the unnamed argument, truncated to _length_ (15 by default) words inside HTML text node and with _omission_ (`...` by default) appended to the last HTML text node.
+
+## A Layouts {#appendix-layouts}
 
 TODO

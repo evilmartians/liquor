@@ -179,10 +179,66 @@ dd strong, code {
               <li><a href="#include">6.1.9 include</a></li>
             </ul>
           </li>
-          <li><a href="#functions">6.2 Functions</a></li>
+          <li><a href="#functions">6.2 Functions</a>            <ul>
+              <li><a href="#universal-functions">6.2.1 Universal functions</a>                <ul>
+                  <li><a href="#isempty">6.2.1.1 is_empty</a></li>
+                  <li><a href="#size">6.2.1.2 size</a></li>
+                </ul>
+              </li>
+              <li><a href="#conversion-functions">6.2.2 Conversion functions</a>                <ul>
+                  <li><a href="#strftime">6.2.2.1 strftime</a></li>
+                  <li><a href="#tonumber">6.2.2.2 to_number</a></li>
+                </ul>
+              </li>
+              <li><a href="#integer-functions">6.2.3 Integer functions</a>                <ul>
+                  <li><a href="#iseven">6.2.3.1 is_even</a></li>
+                  <li><a href="#isodd">6.2.3.2 is_odd</a></li>
+                </ul>
+              </li>
+              <li><a href="#string-functions">6.2.4 String functions</a>                <ul>
+                  <li><a href="#downcase">6.2.4.1 downcase</a></li>
+                  <li><a href="#upcase">6.2.4.2 upcase</a></li>
+                  <li><a href="#capitalize">6.2.4.3 capitalize</a></li>
+                  <li><a href="#startswith">6.2.4.4 starts_with</a></li>
+                  <li><a href="#stripnewlines">6.2.4.5 strip_newlines</a></li>
+                  <li><a href="#join">6.2.4.6 join</a></li>
+                  <li><a href="#split">6.2.4.7 split</a></li>
+                  <li><a href="#replace">6.2.4.8 replace</a></li>
+                  <li><a href="#replacefirst">6.2.4.9 replace_first</a></li>
+                  <li><a href="#remove">6.2.4.10 remove</a></li>
+                  <li><a href="#removefirst">6.2.4.11 remove_first</a></li>
+                  <li><a href="#newlinetobr">6.2.4.12 newline_to_br</a></li>
+                  <li><a href="#urlescape">6.2.4.13 url_escape</a></li>
+                  <li><a href="#function-html-escape">6.2.4.14 html_escape</a></li>
+                  <li><a href="#htmlescapeonce-h">6.2.4.15 html_escape_once, h</a></li>
+                  <li><a href="#striphtml">6.2.4.16 strip_html</a></li>
+                  <li><a href="#decodehtmlentities">6.2.4.17 decode_html_entities</a></li>
+                </ul>
+              </li>
+              <li><a href="#tuple-functions">6.2.5 Tuple functions</a>                <ul>
+                  <li><a href="#compact">6.2.5.1 compact</a></li>
+                  <li><a href="#reverse">6.2.5.2 reverse</a></li>
+                  <li><a href="#uniq">6.2.5.3 uniq</a></li>
+                  <li><a href="#function-min">6.2.5.4 min</a></li>
+                  <li><a href="#max">6.2.5.5 max</a></li>
+                  <li><a href="#ingroupsof">6.2.5.6 in_groups_of</a></li>
+                  <li><a href="#ingroups">6.2.5.7 in_groups</a></li>
+                  <li><a href="#includes">6.2.5.8 includes</a></li>
+                  <li><a href="#indexof">6.2.5.9 index_of</a></li>
+                </ul>
+              </li>
+              <li><a href="#truncation-functions">6.2.6 Truncation functions</a>                <ul>
+                  <li><a href="#function-truncate">6.2.6.1 truncate</a></li>
+                  <li><a href="#truncatewords">6.2.6.2 truncate_words</a></li>
+                  <li><a href="#htmltruncate">6.2.6.3 html_truncate</a></li>
+                  <li><a href="#htmltruncatewords">6.2.6.4 html_truncate_words</a></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
         </ul>
       </li>
-      <li><a href="#appendix-layouts">Appendix A: Layouts</a></li>
+      <li><a href="#appendix-layouts">A Layouts</a></li>
     </ul>
   </li>
 </ul>
@@ -696,7 +752,7 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <p>In the <em>for..from..to</em> form, this tag invokes <em>code</em> with <em>var</em> bound to each integer between <em>lower-limit</em> and <em>upper-limit</em>, inclusive. If <em>lower-limit</em> or <em>upper-limit</em> is not an <em>Integer</em>, a runtime error condition (<a href="#type-error">type error</a>) is signaled.</p>
 
-<p>The <em>for</em> tag returns the concatenation of the values its <em>code</em> has evaluated to.</p>
+<p>The <em>for</em> tag evaluates to the concatenation of the values its <em>code</em> has evaluated to.</p>
 
 <h4 id="if">6.1.4 if</h4>
 
@@ -786,9 +842,245 @@ In essence, <code><em>e</em> | <em>f</em> a: 1 | <em>g</em></code> is equivalent
 
 <h3 id="functions">6.2 Functions</h3>
 
-<p>TODO</p>
+<p>Liquor offers a number of builtin <a href="#function-calls">functions</a>. Their formal parameters are described using a shorthand notation:</p>
 
-<h2 id="appendix-layouts">Appendix A: Layouts</h2>
+<p><code>fn_name(<em>unnamed-arg-type</em> kwarg1: <em>kwarg1-type</em> [kwarg2: <em>kwarg2-type, kwarg2-alt-type</em>])</code></p>
+
+<p>In this case, function <em>fn_name</em> has an unnamed parameter accepting value of type <em>unnamed-arg-type</em>, a mandatory keyword parameter <em>kwarg1</em> accepting values of type <em>kwarg1-type</em>, and an optional keyword parameter <em>kwarg2</em> accepting values of either type <em>kwarg2-type</em> or <em>kwarg2-alt-type</em>.</p>
+
+<h4 id="universal-functions">6.2.1 Universal functions</h4>
+
+<h5 id="isempty">6.2.1.1 is_empty</h5>
+
+<p><code>is_empty(<em>Any</em>)</code></p>
+
+<p>Returns <em>true</em> iff the unnamed argument is one of <em>null</em>, <em>"”</em>, <em>[]</em>.</p>
+
+<h5 id="size">6.2.1.2 size</h5>
+
+<p><code>size(<em>String, Tuple</em>)</code></p>
+
+<p>Returns the length of the unnamed argument as an integer.</p>
+
+<h4 id="conversion-functions">6.2.2 Conversion functions</h4>
+
+<h5 id="strftime">6.2.2.1 strftime</h5>
+
+<p><code>size(<em>String</em> format: <em>String</em>)</code></p>
+
+<p>Parses the unnamed argument as time in <a href="http://www.w3.org/TR/NOTE-datetime">ISO8601</a> format, and reformats it using an implementation-defined <a href="http://strftime.org/">strftime</a> alike function.</p>
+
+<h5 id="tonumber">6.2.2.2 to_number</h5>
+
+<p><code>to_number(<em>String, Integer</em>)</code></p>
+
+<p>If the unnamed argument is an <strong>Integer</strong>, returns it. If it is a string, parses it as a decimal number, possibly with leading minus sign.</p>
+
+<h4 id="integer-functions">6.2.3 Integer functions</h4>
+
+<h5 id="iseven">6.2.3.1 is_even</h5>
+
+<p><code>is_even(<em>Integer</em>)</code></p>
+
+<p>Returns <em>true</em> if the unnamed argument is even, <em>false</em> otherwise.</p>
+
+<h5 id="isodd">6.2.3.2 is_odd</h5>
+
+<p><code>is_odd(<em>Integer</em>)</code></p>
+
+<p>Returns <em>true</em> if the unnamed argument is odd, <em>false</em> otherwise.</p>
+
+<h4 id="string-functions">6.2.4 String functions</h4>
+
+<h5 id="downcase">6.2.4.1 downcase</h5>
+
+<p><code>downcase(<em>String</em>)</code></p>
+
+<p>Returns the unnamed argument, converted to lowercase, using the Unicode case folding.</p>
+
+<h5 id="upcase">6.2.4.2 upcase</h5>
+
+<p><code>upcase(<em>String</em>)</code></p>
+
+<p>Returns the unnamed argument, converted to uppercase, using the Unicode case folding.</p>
+
+<h5 id="capitalize">6.2.4.3 capitalize</h5>
+
+<p><code>capitalize(<em>String</em>)</code></p>
+
+<p>Returns the unnamed argument with its first character converted to uppercase, using the Unicode case folding.</p>
+
+<h5 id="startswith">6.2.4.4 starts_with</h5>
+
+<p><code>starts_with(<em>String</em> pattern: <em>String</em>)</code></p>
+
+<p>Returns <em>true</em> if the unnamed argument starts with <em>pattern</em>, <em>false</em> otherwise. No normalization is performed.</p>
+
+<h5 id="stripnewlines">6.2.4.5 strip_newlines</h5>
+
+<p><code>strip_newlines(<em>String</em>)</code></p>
+
+<p>Returns the unnamed argument without any <strong>U+000A</strong> characters.</p>
+
+<h5 id="join">6.2.4.6 join</h5>
+
+<p><code>join(<em>Tuple</em> with: <em>String</em>)</code></p>
+
+<p>Returns the concatenation of elements of the unnamed argument (which all must be <strong>String</strong>s) interpsersed with the value of <em>with</em>.</p>
+
+<h5 id="split">6.2.4.7 split</h5>
+
+<p><code>split(<em>String</em> by: <em>String</em>)</code></p>
+
+<p>Returns a tuple of fragments of the unnamed argument, extracted between occurences of <em>by</em>. If the unnamed argument is <em>"”</em>, returns <em>[]</em>.</p>
+
+<h5 id="replace">6.2.4.8 replace</h5>
+
+<p><code>replace(<em>String</em> pattern: <em>String</em> replacement: <em>String</em>)</code></p>
+
+<p>Returns the unnamed argument with all occurences of <em>pattern</em> replaced with <em>replacement</em>.</p>
+
+<h5 id="replacefirst">6.2.4.9 replace_first</h5>
+
+<p><code>replace_first(<em>String</em> pattern: <em>String</em> replacement: <em>String</em>)</code></p>
+
+<p>Returns the unnamed argument with the first occurence of <em>pattern</em> replaced with <em>replacement</em>.</p>
+
+<h5 id="remove">6.2.4.10 remove</h5>
+
+<p><code>remove(<em>String</em> pattern: <em>String</em>)</code></p>
+
+<p>Returns the unnamed argument with all occurences of <em>pattern</em> removed.</p>
+
+<h5 id="removefirst">6.2.4.11 remove_first</h5>
+
+<p><code>remove_first(<em>String</em> pattern: <em>String</em>)</code></p>
+
+<p>Returns the unnamed argument with the first occurences of <em>pattern</em> removed.</p>
+
+<h5 id="newlinetobr">6.2.4.12 newline_to_br</h5>
+
+<p><code>newline_to_br(<em>String</em>)</code></p>
+
+<p>Returns the unnamed argument with <code>&lt;br&gt;</code> inserted before every <strong>U+000A</strong> character.</p>
+
+<h5 id="urlescape">6.2.4.13 url_escape</h5>
+
+<p><code>url_escape(<em>String</em>)</code></p>
+
+<p>Returns the unnamed argument, processed using the <a href="http://www.w3.org/TR/html5/forms.html#url-encoded-form-data">application/x-www-form-urlencoded encoding algorithm</a>.</p>
+
+<h5 id="function-html-escape">6.2.4.14 html_escape</h5>
+
+<p><code>html_escape(<em>String</em>)</code></p>
+
+<p>Returns the unnamed argument with <code>&amp;</code>, <code>&lt;</code>, <code>&gt;</code>, <code>'</code>, <code>"</code> and <code>/</code> escaped to the correpsonding HTML entities.</p>
+
+<h5 id="htmlescapeonce-h">6.2.4.15 html_escape_once, h</h5>
+
+<p><code>html_escape(<em>String</em>)</code></p>
+
+<p><code>h(<em>String</em>)</code></p>
+
+<p>Like <a href="#function-html-escape">html_escape</a>, but does not affect <code>&amp;</code> that is a part of an HTML entity.</p>
+
+<h5 id="striphtml">6.2.4.16 strip_html</h5>
+
+<p><code>strip_html(<em>String</em>)</code></p>
+
+<p>Returns the unnamed argument with all HTML tags and comments removed.</p>
+
+<h5 id="decodehtmlentities">6.2.4.17 decode_html_entities</h5>
+
+<p><code>decode_html_entities(<em>String</em>)</code></p>
+
+<p>Returns the unnamed argument with all HTML entities replaced by the corresponding Unicode character.</p>
+
+<h4 id="tuple-functions">6.2.5 Tuple functions</h4>
+
+<h5 id="compact">6.2.5.1 compact</h5>
+
+<p><code>compact(<em>Tuple</em>)</code></p>
+
+<p>Returns the unnamed argument without <em>null</em> elements.</p>
+
+<h5 id="reverse">6.2.5.2 reverse</h5>
+
+<p><code>reverse(<em>Tuple</em>)</code></p>
+
+<p>Returns the unnamed argument, reversed.</p>
+
+<h5 id="uniq">6.2.5.3 uniq</h5>
+
+<p><code>reverse(<em>Tuple</em>)</code></p>
+
+<p>Returns the unnamed argument with only first instance of non-unique elements left.</p>
+
+<h5 id="function-min">6.2.5.4 min</h5>
+
+<p><code>min(<em>Tuple</em> [by: <em>String</em>])</code></p>
+
+<p>Returns the minimal element of the unnamed argument. The ordering between values of different types is implementation-defined. Including an <strong>External</strong> in the unnamed argument may lead to a runtime error (<a href="#type-error">type error</a>).</p>
+
+<p>If <em>by</em> is passed, the unnamed argument must consist only of <strong>External</strong> values. In this case, the ordering is performed by calling the method specified by <em>by</em>.</p>
+
+<h5 id="max">6.2.5.5 max</h5>
+
+<p><code>max(<em>Tuple</em> [by: <em>String</em>])</code></p>
+
+<p>See <a href="#function-min">the min function</a>.</p>
+
+<h5 id="ingroupsof">6.2.5.6 in_groups_of</h5>
+
+<p><code>in_groups_of(<em>Tuple</em> size: <em>Integer</em> [fill_with: <em>String, Boolean</em>])</code></p>
+
+<p>Returns the unnamed argument, split into tuples of <em>size</em> elements. If <em>fill_with</em> is passed, appends the value of <em>fill_with</em> to the last tuple, so that it is <em>size</em> elements big.</p>
+
+<h5 id="ingroups">6.2.5.7 in_groups</h5>
+
+<p><code>in_groups(<em>Tuple</em> count: <em>Integer</em> [fill_with: <em>String, Boolean</em>])</code></p>
+
+<p>Returns the unnamed argument, split into <em>count</em> equally-sized (except the last one) tuples. If <em>fill_with</em> is passed, appends the value of <em>fill_with</em> to the last tuple, so that it is as big as the others.</p>
+
+<h5 id="includes">6.2.5.8 includes</h5>
+
+<p><code>includes(<em>Tuple, External</em> element: <em>Any</em>)</code></p>
+
+<p>Returns <em>true</em> if the unnamed argument contains <em>element</em>, <em>false</em> otherwise. Not all externals support this operation; if an unsupported external is passed, runtime error condition (<a href="#type-error">type error</a>) is signaled.</p>
+
+<h5 id="indexof">6.2.5.9 index_of</h5>
+
+<p><code>index_of(<em>Tuple, External</em> element: <em>Any</em>)</code></p>
+
+<p>Returns the index of <em>element</em> in the unnamed argument or <em>null</em> if it does not contain <em>element</em>. Not all externals support this operation; if an unsupported external is passed, runtime error condition (<a href="#type-error">type error</a>) is signaled.</p>
+
+<h4 id="truncation-functions">6.2.6 Truncation functions</h4>
+
+<h5 id="function-truncate">6.2.6.1 truncate</h5>
+
+<p><code>truncate(<em>String</em> [length: <em>Integer</em> omission: <em>String</em>])</code></p>
+
+<p>Returns the unnamed argument, truncated to <em>length</em> (50 by default) characters and with <em>omission</em> (<code>...</code> by default) appended.</p>
+
+<h5 id="truncatewords">6.2.6.2 truncate_words</h5>
+
+<p><code>truncate_words(<em>String</em> [length: <em>Integer</em> omission: <em>String</em>])</code></p>
+
+<p>Returns the unnamed argument, truncated to <em>length</em> (15 by default) words and with <em>omission</em> (<code>...</code> by default) appended.</p>
+
+<h5 id="htmltruncate">6.2.6.3 html_truncate</h5>
+
+<p><code>html_truncate(<em>String</em> [length: <em>Integer</em> omission: <em>String</em>])</code></p>
+
+<p>Returns the unnamed argument, truncated to <em>length</em> (50 by default) characters inside HTML text node and with <em>omission</em> (<code>...</code> by default) appended to the last HTML text node.</p>
+
+<h5 id="htmltruncatewords">6.2.6.4 html_truncate_words</h5>
+
+<p><code>html_truncate_words(<em>String</em> [length: <em>Integer</em> omission: <em>String</em>])</code></p>
+
+<p>Returns the unnamed argument, truncated to <em>length</em> (15 by default) words inside HTML text node and with <em>omission</em> (<code>...</code> by default) appended to the last HTML text node.</p>
+
+<h2 id="appendix-layouts">A Layouts</h2>
 
 <p>TODO</p>
 
