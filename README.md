@@ -153,6 +153,9 @@ To use ThinkingSphinx integration, `require 'liquor/extensions/thinking_sphinx'`
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
+<a href="https://evilmartians.com/">
+<img src="https://evilmartians.com/badges/sponsored-by-evil-martians.svg" alt="Sponsored by Evil Martians" width="236" height="54"></a>
+
 ## License
 
 Liquor is distributed under the terms of [MIT license](MIT-LICENSE).
